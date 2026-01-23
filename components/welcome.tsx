@@ -11,12 +11,14 @@ export const Welcome = () => {
 
     if (!tgWebAppData || !tgWebAppData.user) return null;
 
-    const {first_name, last_name, username} = tgWebAppData.user;
+    const {first_name, last_name, username, photo_url} = tgWebAppData.user;
     const {model, manufacturer} = androidDeviceData;
 
     return <div>
         <h1>Welcome, {first_name} {last_name}</h1>
         <p style={{fontSize: '8px'}}>@{username}</p>
+
+        <img src={photo_url} alt="avatar"/>
 
         <h2>You enter from {manufacturer} {model}</h2>
 
