@@ -19,6 +19,7 @@ export async function init(options: {
 
     try {
         miniApp.mount();
+        viewport.requestFullscreen();
         themeParams.bindCssVars();
     } catch (e) {
         // miniApp not available

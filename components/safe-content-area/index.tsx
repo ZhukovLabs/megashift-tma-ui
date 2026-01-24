@@ -22,7 +22,7 @@ export const SafeContentArea = ({children, className}: SafeContentAreaProps) => 
         <div
             style={dynamicStyles}
             className={clsx(
-                "overflow-x-auto",
+                "overflow-x-hidden",
                 "w-full",
                 "md:overflow-x-visible",
                 className
