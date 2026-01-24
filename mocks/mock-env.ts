@@ -20,7 +20,7 @@ export async function mockEnv() {
                     subtitle_text_color: '#708499',
                     text_color: '#f5f5f5',
                 } as const;
-                const noInsets = { left: 0, top: 0, bottom: 0, right: 0 } as const;
+                const noInsets = { left: 0, top: 46, bottom: 0, right: 0 } as const;
 
                 mockTelegramEnv({
                     onEvent(e, next) {

@@ -30,6 +30,6 @@ export const Welcome = () => {
 
         <img src={photo_url} alt="avatar"/>
 
-        <p>isValid: {JSON.stringify(isValid)}</p>
+        <p>Auth is valid: {JSON.stringify(isValid)}</p>
     </div>
 }
