@@ -2,11 +2,20 @@
 
 import {useLaunchParams, useRawInitData} from '@tma.js/sdk-react';
 import {useMessages} from "next-intl";
+import {useEffect, useState} from "react";
+import {serverAction} from "@/components/server-action";
 
 export const Welcome = () => {
     const launchParams = useLaunchParams();
     const rawInitData = useRawInitData();
     const messages = useMessages();
+    const [isValid, setIsValid] = useState<any>(null);
+
+    useEffect(() => {
+        if (rawInitData) {
+            serverAction(rawInitData).then(data => setIsValid(data));
+        }
+    }, [rawInitData]);
 
     const {tgWebAppData} = launchParams;
 
@@ -21,7 +30,6 @@ export const Welcome = () => {
 
         <img src={photo_url} alt="avatar"/>
 
-        <p>RawInitData:</p>
-        <code>{rawInitData}</code>
+        <p>isValid: {JSON.stringify(isValid)}</p>
     </div>
 }
