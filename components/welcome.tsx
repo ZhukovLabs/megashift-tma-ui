@@ -9,7 +9,7 @@ export const Welcome = () => {
     const launchParams = useLaunchParams();
     const rawInitData = useRawInitData();
     const messages = useMessages();
-    const [isValid, setIsValid] = useState<any>(null);
+    const [isValid, setIsValid] = useState<boolean | null>(null);
 
     useEffect(() => {
         if (rawInitData) {
