@@ -4,6 +4,7 @@ import {useLaunchParams, useRawInitData} from '@tma.js/sdk-react';
 import {useMessages} from "next-intl";
 import {useEffect, useState} from "react";
 import {serverAction} from "@/components/server-action";
+import {Avatar, Blockquote} from "@telegram-apps/telegram-ui";
 
 export const Welcome = () => {
     const launchParams = useLaunchParams();
@@ -28,8 +29,10 @@ export const Welcome = () => {
         <h1>{messages.welcome}, {first_name} {last_name}</h1>
         <p style={{fontSize: '8px'}}>@{username}</p>
 
-        <img src={photo_url} alt="avatar"/>
+        <Avatar src={photo_url} alt="avatar"/>
 
-        <p>Auth is valid: {JSON.stringify(isValid)}</p>
+        <Blockquote type="text">
+            Auth is valid: {JSON.stringify(isValid)}
+        </Blockquote>
     </div>
 }

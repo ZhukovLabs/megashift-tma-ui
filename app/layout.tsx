@@ -1,9 +1,13 @@
 import type {Metadata} from "next";
 import {Geist, Geist_Mono} from "next/font/google";
-import "./globals.css";
 import {SafeContentArea} from "@/components/safe-content-area";
 import {I18nProvider} from "@/i18n/provider";
 import {getLocale} from "@/i18n/locale";
+
+import "./globals.css";
+
+import {AppRoot} from '@telegram-apps/telegram-ui';
+import '@telegram-apps/telegram-ui/dist/styles.css';
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -21,8 +25,8 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({
-                                       children,
-                                   }: Readonly<{
+                                             children,
+                                         }: Readonly<{
     children: React.ReactNode;
 }>) {
     const locale = await getLocale();
@@ -33,9 +37,11 @@ export default async function RootLayout({
             className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
         <I18nProvider>
-            <SafeContentArea>
-                {children}
-            </SafeContentArea>
+            <AppRoot>
+                <SafeContentArea>
+                    {children}
+                </SafeContentArea>
+            </AppRoot>
         </I18nProvider>
         </body>
         </html>
