@@ -18,8 +18,6 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 ENV PORT=3000
-ENV SERVER=${SERVER}
-ENV BOT_TOKEN=${BOT_TOKEN}
 
 COPY --from=build /app/package.json ./
 COPY --from=build /app/next.config.* ./
