@@ -2,11 +2,11 @@
 
 import dynamic from "next/dynamic";
 
-const Welcome = dynamic(
-    () => import("@/components/welcome").then(m => m.Welcome),
+const StartForm = dynamic(
+    () => import("@/components/start-form").then(m => m.StartForm),
     { ssr: false }
 );
 
 export default function WelcomeClient() {
-    return <Welcome />;
+    return <StartForm />;
 }

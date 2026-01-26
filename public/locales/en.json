@@ -1,3 +1,11 @@
 {
-  "welcome": "Welcome"
+  "start-form": {
+    "welcome-step": {
+      "title": "Hello",
+      "subtitle": "Let's fill in your details. It will only take a few steps.",
+      "description": "In the next step, you will need to enter your personal data. We guarantee the confidentiality and security of your information.",
+      "next": "Start filling out",
+      "user": "User"
+    }
+  }
 }
