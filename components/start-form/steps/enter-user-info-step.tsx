@@ -1,52 +1,59 @@
 import {Button, Card, Title} from '@telegram-apps/telegram-ui';
 import React from "react";
 import {StepProps} from "../types";
-import {Field} from "../field";
+import {Field} from "@/components/field";
+import {useTranslations} from "next-intl";
 
-export const EnterUserInfoStep = ({onNext, onBack, isValid}: StepProps & { isValid: boolean }) => (
-    <Card className="w-full max-w-md mx-auto p-6 bg-tg-secondary-bg-color rounded-2xl">
-        <Title level="2" className="text-tg-text-color mb-6">
-            Личные данные
-        </Title>
+type EnterUserInfoStepProps = StepProps & { isValid: boolean };
 
-        <div className="space-y-4">
-            <Field
-                name="surname"
-                label="Фамилия*"
-                placeholder="Введите вашу фамилию"
-                autoComplete="family-name"
-                required
-            />
+export const EnterUserInfoStep = ({onNext, onBack, isValid}: EnterUserInfoStepProps) => {
+    const t = useTranslations('start-form.enter-user-info-step');
 
-            <Field
-                name="name"
-                label="Имя*"
-                placeholder="Введите ваше имя"
-                autoComplete="given-name"
-                required
-            />
+    return (
+        <Card className="w-full mx-auto p-6 rounded-2xl">
+            <Title level="2" className="text-tg-text-color mb-6">
+                {t("title")}
+            </Title>
 
-            <Field
-                name="patronymic"
-                label="Отчество"
-                placeholder="Введите ваше отчество (если есть)"
-                autoComplete="additional-name"
-            />
-        </div>
+            <div className="space-y-4">
+                <Field
+                    name="surname"
+                    label={t('surname.label')}
+                    placeholder={t('surname.placeholder')}
+                    autoComplete="family-name"
+                    required
+                />
 
-        <div className="flex gap-3 mt-8">
-            <Button mode="outline" size="l" onClick={onBack} className="flex-1">
-                Назад
-            </Button>
-            <Button
-                mode="filled"
-                size="l"
-                onClick={onNext}
-                disabled={!isValid}
-                className="flex-1"
-            >
-                Продолжить
-            </Button>
-        </div>
-    </Card>
-);
+                <Field
+                    name="name"
+                    label={t('name.label')}
+                    placeholder={t('name.placeholder')}
+                    autoComplete="given-name"
+                    required
+                />
+
+                <Field
+                    name="patronymic"
+                    label={t('patronymic.label')}
+                    placeholder={t('patronymic.placeholder')}
+                    autoComplete="additional-name"
+                />
+            </div>
+
+            <div className="flex gap-3 mt-8">
+                <Button mode="outline" size="l" onClick={onBack} className="flex-1">
+                    Назад
+                </Button>
+                <Button
+                    mode="filled"
+                    size="l"
+                    onClick={onNext}
+                    disabled={!isValid}
+                    className="flex-1"
+                >
+                    Продолжить
+                </Button>
+            </div>
+        </Card>
+    );
+}

@@ -18,16 +18,16 @@ export const StartForm = () => {
 
     return (
         <FormProvider {...methods}>
-            <div className="p-4 flex flex-col h-full justify-center bg-red-100">
+            <div className="p-4 flex flex-col h-full justify-center ">
                 <div className="mb-8">
+                    <Text className="block w-full text-center text-tg-hint-color mt-2">
+                        Шаг {currentStep} из {totalSteps}
+                    </Text>
                     <Steps
                         count={totalSteps}
                         progress={currentStep}
                         className="max-w-md mx-auto"
                     />
-                    <Text className="text-center text-tg-hint-color mt-2">
-                        Шаг {currentStep} из {totalSteps}
-                    </Text>
                 </div>
 
                 <div className="flex-1">

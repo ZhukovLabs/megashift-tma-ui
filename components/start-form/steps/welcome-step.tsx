@@ -12,7 +12,7 @@ export const WelcomeStep = ({onNext}: StepProps) => {
     const t = useTranslations("start-form.welcome-step");
 
     return (
-        <Card className="w-full max-w-md mx-auto p-6 bg-tg-secondary-bg-color rounded-2xl">
+        <Card className="w-full mx-auto p-6 rounded-2xl">
             <div className="flex flex-col items-center text-center space-y-4">
                 <div className="w-16 h-16 bg-tg-accent-color rounded-full flex items-center justify-center">
                     <Avatar src={photoUrl} alt="user"/>

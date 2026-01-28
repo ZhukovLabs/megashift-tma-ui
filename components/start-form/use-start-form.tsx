@@ -15,7 +15,7 @@ export const useStartForm = () => {
             surname: '',
             patronymic: '',
         },
-        mode: 'onChange',
+        mode: 'onTouched',
     });
 
     const {
