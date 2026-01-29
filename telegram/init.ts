@@ -15,7 +15,6 @@ export async function init(options: {
     setDebug(options.debug);
     initSDK();
     backButton.mount();
-    initData.restore();
 
     try {
         miniApp.mount();

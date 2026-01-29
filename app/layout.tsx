@@ -8,6 +8,8 @@ import "./globals.css";
 
 import {AppRoot} from '@telegram-apps/telegram-ui';
 import '@telegram-apps/telegram-ui/dist/styles.css';
+import {QueryClientProvider} from "@tanstack/react-query";
+import {queryClient} from "@/lib/react-query";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -36,13 +38,15 @@ export default async function RootLayout({
         <body
             className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
-        <I18nProvider>
-            <AppRoot>
-                <SafeContentArea>
-                    {children}
-                </SafeContentArea>
-            </AppRoot>
-        </I18nProvider>
+        <QueryClientProvider client={queryClient}>
+            <I18nProvider>
+                <AppRoot>
+                    <SafeContentArea>
+                        {children}
+                    </SafeContentArea>
+                </AppRoot>
+            </I18nProvider>
+        </QueryClientProvider>
         </body>
         </html>
     );
