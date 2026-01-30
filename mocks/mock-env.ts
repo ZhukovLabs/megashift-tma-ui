@@ -1,10 +1,10 @@
-import { mockTelegramEnv, isTMA, emitEvent } from '@tma.js/sdk-react';
+import {mockTelegramEnv, isTMA, emitEvent} from '@tma.js/sdk-react';
 
 export async function mockEnv() {
     return process.env.NODE_ENV !== 'development'
         ? undefined
         : isTMA('complete').then((isTma) => {
-            if (!isTma){
+            if (!isTma) {
                 const themeParams = {
                     accent_text_color: '#6ab2f2',
                     bg_color: '#17212b',
@@ -20,12 +20,12 @@ export async function mockEnv() {
                     subtitle_text_color: '#708499',
                     text_color: '#f5f5f5',
                 } as const;
-                const noInsets = { left: 0, top: 46, bottom: 0, right: 0 } as const;
+                const noInsets = {left: 0, top: 46, bottom: 0, right: 0} as const;
 
                 mockTelegramEnv({
                     onEvent(e, next) {
                         if (e.name === 'web_app_request_theme') {
-                            return emitEvent('theme_changed', { theme_params: themeParams });
+                            return emitEvent('theme_changed', {theme_params: themeParams});
                         }
                         if (e.name === 'web_app_request_viewport') {
                             return emitEvent('viewport_changed', {
@@ -49,7 +49,17 @@ export async function mockEnv() {
                             ['auth_date', (new Date().getTime() / 1000 | 0).toString()],
                             ['hash', 'some-hash'],
                             ['signature', 'some-signature'],
-                            ['user', JSON.stringify({ id: 52524902, first_name: 'Denis' })],
+                            ['user', JSON.stringify({
+                                allowsWriteToPm: true,
+                                firstName: 'Denis',
+                                id: 1160368886,
+                                isPremium: true,
+                                lastName: 'Zhukov',
+                                languageCode: 'ru',
+                                photoUrl:
+                                    'https://t.me/i/userpic/320/pIgDdBcvL0ik_M-UrvDiZCtYWx1En2v5aFu3KTpzzDc.svg',
+                                username: 'Denis_Zhukov_Hachiko',
+                            })],
                         ]).toString()],
                         ['tgWebAppVersion', '8.4'],
                         ['tgWebAppPlatform', 'tdesktop'],
