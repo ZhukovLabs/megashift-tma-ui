@@ -30,11 +30,11 @@ export const DevelopmentStep = () => {
                     <Text className="text-tg-text-color text-lg font-medium">
                         {t("status")}
                     </Text>
-
-                    <Text className="text-tg-hint-color">
+                    <br/>
+                    <Text className="text-tg-hint-color whitespace-pre-wrap">
                         {t("description")}
                     </Text>
-
+                    <br/>
                     <div className="bg-tg-secondary-bg-color p-4 rounded-lg mt-4">
                         <Text className="text-tg-text-color">
                             {t("thankYou")}
