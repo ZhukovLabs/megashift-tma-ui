@@ -1,15 +1,19 @@
-import { Button, Card, Title, Text } from "@telegram-apps/telegram-ui";
-import type { StepProps } from "../types";
-import { useTranslations } from "next-intl";
-import { useLaunchParams } from "@tma.js/sdk-react";
+import {Button, Card, Title, Text} from "@telegram-apps/telegram-ui";
+import {useTranslations} from "next-intl";
+import {useLaunchParams} from "@tma.js/sdk-react";
+import {useUserStore} from "@/store/user-store";
 
 export const DevelopmentStep = () => {
+    const t = useTranslations("start-form.development-step");
+
     const {
         tgWebAppData: {
-            user: { firstName } = {},
+            user: {firstName} = {},
         } = {},
     } = useLaunchParams(true);
-    const t = useTranslations("start-form.development-step");
+    const user = useUserStore((s) => s.user);
+
+    const name = user?.name ?? firstName ?? "Пользователь";
 
     return (
         <Card className="w-full mx-auto p-6 rounded-2xl">
@@ -19,7 +23,7 @@ export const DevelopmentStep = () => {
                 </div>
 
                 <Title level="2" className="text-center">
-                    {firstName ? t("titleWithName", { name: firstName }) : t("title")}
+                    {firstName ? t("titleWithName", {name}) : t("title")}
                 </Title>
 
                 <div className="space-y-4">
@@ -38,7 +42,6 @@ export const DevelopmentStep = () => {
                     </div>
                 </div>
 
-                {/* Дополнительная информация, если нужно */}
                 <div className="w-full border-t border-tg-secondary-bg-color pt-4">
                     <Text className="text-tg-hint-color text-sm">
                         {t("additionalInfo")}

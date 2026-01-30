@@ -21,9 +21,7 @@ function normalizeServerRaw(raw?: string): URL {
     const original = raw ?? '';
     const trimmed = original.trim();
 
-    if (!trimmed) {
-        throw new Error('SERVER env is empty');
-    }
+    if (!trimmed) throw new Error('SERVER env is empty');
 
     const hasScheme = /^[a-zA-Z][a-zA-Z\d+\-.]*:\/\//.test(trimmed);
     const candidate = hasScheme ? trimmed : `http://${trimmed}`;
@@ -96,12 +94,6 @@ async function proxyRequest(request: NextRequest, paths: string[]): Promise<Next
             // @ts-expect-error node fetch duplex
             init.duplex = 'half';
         }
-
-        console.log('[proxy] fetch init summary:', {
-            method,
-            target: targetUrl.toString(),
-            hasBody: !!request.body,
-        });
 
         const upstream = await fetch(targetUrl.toString(), init);
 
