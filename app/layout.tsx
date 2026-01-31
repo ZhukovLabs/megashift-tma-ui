@@ -6,8 +6,6 @@ import {getLocale} from "@/i18n/locale";
 
 import "./globals.css";
 
-import {AppRoot} from '@telegram-apps/telegram-ui';
-import '@telegram-apps/telegram-ui/dist/styles.css';
 import {QueryClientProvider} from "@tanstack/react-query";
 import {queryClient} from "@/lib/react-query";
 
@@ -40,11 +38,9 @@ export default async function RootLayout({
         >
         <QueryClientProvider client={queryClient}>
             <I18nProvider>
-                <AppRoot>
-                    <SafeContentArea>
-                        {children}
-                    </SafeContentArea>
-                </AppRoot>
+                <SafeContentArea>
+                    {children}
+                </SafeContentArea>
             </I18nProvider>
         </QueryClientProvider>
         </body>

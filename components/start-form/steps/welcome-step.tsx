@@ -1,4 +1,3 @@
-import {Avatar, Button, Card, Subheadline, Text, Title} from "@telegram-apps/telegram-ui";
 import type {StepProps} from "../types";
 import {useTranslations} from "next-intl";
 import {useLaunchParams} from "@tma.js/sdk-react";
@@ -12,30 +11,34 @@ export const WelcomeStep = ({onNext}: StepProps) => {
     const t = useTranslations("start-form.welcome-step");
 
     return (
-        <Card className="w-full mx-auto p-6 rounded-2xl">
+        <div className="w-full mx-auto p-6 rounded-2xl">
             <div className="flex flex-col items-center text-center space-y-4">
                 <div className="w-16 h-16 bg-tg-accent-color rounded-full flex items-center justify-center">
-                    <Avatar src={photoUrl} alt="user"/>
+                    <div className="avatar">
+                        <div className="w-24 rounded-full">
+                            <img src={photoUrl} alt="user"/>
+                        </div>
+                    </div>
                 </div>
 
-                <Title level="2" className="flex items-center">
+                <h2 className="flex items-center">
                     {t("title")}, {firstName ?? t('user')}!
-                </Title>
+                </h2>
 
-                <Subheadline className="text-tg-hint-color">
+                <h3 className="text-tg-hint-color">
                     {t("subtitle")}
-                </Subheadline>
+                </h3>
 
-                <Text className="text-tg-text-color">
+                <div className="text-tg-text-color">
                     {t("description")}
-                </Text>
+                </div>
 
                 <div className="mt-4 w-full">
-                    <Button mode="filled" size="l" onClick={onNext} className="w-full">
+                    <button className="btn btn-primary w-full" onClick={onNext}>
                         {t("next")}
-                    </Button>
+                    </button>
                 </div>
             </div>
-        </Card>
+        </div>
     );
 }

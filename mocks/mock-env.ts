@@ -50,13 +50,10 @@ export async function mockEnv() {
                             ['hash', 'some-hash'],
                             ['signature', 'some-signature'],
                             ['user', JSON.stringify({
-                                allowsWriteToPm: true,
-                                firstName: 'Denis',
+                                first_name: 'Denis',
                                 id: 1160368886,
-                                isPremium: true,
-                                lastName: 'Zhukov',
-                                languageCode: 'ru',
-                                photoUrl:
+                                last_name: 'Zhukov',
+                                photo_url:
                                     'https://t.me/i/userpic/320/pIgDdBcvL0ik_M-UrvDiZCtYWx1En2v5aFu3KTpzzDc.svg',
                                 username: 'Denis_Zhukov_Hachiko',
                             })],

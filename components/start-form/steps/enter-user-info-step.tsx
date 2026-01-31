@@ -1,63 +1,62 @@
-import {Button, Card, Title} from '@telegram-apps/telegram-ui';
 import React from "react";
-import {StepProps} from "../types";
-import {Field} from "@/components/field";
+import {StepProps, FormData} from "../types";
 import {useTranslations} from "next-intl";
 import {useFormContext} from "react-hook-form";
 
 type EnterUserInfoStepProps = StepProps & { isValid: boolean };
 
 export const EnterUserInfoStep = ({onNext, onBack, isValid}: EnterUserInfoStepProps) => {
-    const {handleSubmit} = useFormContext();
+    const {handleSubmit, formState:{errors}, register} = useFormContext<FormData>();
     const t = useTranslations('start-form.enter-user-info-step');
 
     return (
-        <Card className="w-full mx-auto p-6 rounded-2xl">
-            <Title level="2" className="text-tg-text-color mb-6">
+        <div className="w-full mx-auto p-6 rounded-2xl">
+            <h2 className="mb-6">
                 {t("title")}
-            </Title>
+            </h2>
 
-            <form onSubmit={handleSubmit(onNext)}>
-                <div className="space-y-4">
-                    <Field
-                        name="surname"
-                        label={t('surname.label')}
+            <form onSubmit={handleSubmit(onNext)} className="w-full">
+                <div className="flex flex-col [&>span]:mb-5">
+                    <input
+                        {...register('surname')}
+                        className="input w-full"
                         placeholder={t('surname.placeholder')}
                         autoComplete="family-name"
                         required
                     />
+                    <span className="text-red-500 text-sm">{errors.surname?.message}</span>
 
-                    <Field
-                        name="name"
-                        label={t('name.label')}
+                    <input
+                        {...register('name')}
+                        className="input w-full"
                         placeholder={t('name.placeholder')}
                         autoComplete="given-name"
                         required
                     />
+                    <span className="text-red-500 text-sm">{errors.name?.message}</span>
 
-                    <Field
-                        name="patronymic"
-                        label={t('patronymic.label')}
+                    <input
+                        {...register('patronymic')}
+                        className="input w-full"
                         placeholder={t('patronymic.placeholder')}
                         autoComplete="additional-name"
                     />
+                    <span className="text-red-500 text-sm">{errors.patronymic?.message}</span>
                 </div>
 
                 <div className="flex gap-3 mt-8">
-                    <Button mode="outline" size="l" onClick={onBack} className="flex-1">
+                    <button onClick={onBack} className="btn btn-outline flex-1">
                         Назад
-                    </Button>
-                    <Button
+                    </button>
+                    <button
                         type="submit"
-                        mode="filled"
-                        size="l"
                         disabled={!isValid}
-                        className="flex-1"
+                        className="btn btn-primary flex-1"
                     >
                         Продолжить
-                    </Button>
+                    </button>
                 </div>
             </form>
-        </Card>
+        </div>
     );
 }
