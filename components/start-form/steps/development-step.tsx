@@ -1,18 +1,30 @@
 import {useTranslations} from "next-intl";
 import {miniApp, useLaunchParams} from "@tma.js/sdk-react";
 import {useUserStore} from "@/store/user-store";
+import {StepProps} from "../types";
 
-export const DevelopmentStep = () => {
+const ownerId = 1160368886;
+
+export const DevelopmentStep = ({onNext}: StepProps) => {
     const t = useTranslations("start-form.development-step");
 
     const {
         tgWebAppData: {
-            user: {firstName} = {},
+            user: {firstName, id} = {},
         } = {},
     } = useLaunchParams(true);
     const user = useUserStore((s) => s.user);
 
     const name = user?.name ?? firstName ?? "Пользователь";
+
+    const handleGotIt = () => {
+        if (id === ownerId) {
+            onNext();
+        } else {
+            miniApp.unmount();
+            miniApp.close();
+        }
+    }
 
     return (
         <div className="w-full mx-auto p-6 rounded-2xl">
@@ -47,10 +59,7 @@ export const DevelopmentStep = () => {
                     </div>
                 </div>
 
-                <button className="btn w-full btn-accent" onClick={()=>{
-                    miniApp.unmount();
-                    miniApp.close();
-                }}>
+                <button className="btn w-full btn-accent" onClick={handleGotIt}>
                     {t("continue")}
                 </button>
             </div>

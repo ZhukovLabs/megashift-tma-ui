@@ -4,6 +4,7 @@ import {ConfirmationStep, EnterUserInfoStep, WelcomeStep} from "./steps";
 import {DevelopmentStep} from "@/components/start-form/steps/development-step";
 import {useSyncRegisteredUser} from "@/components/start-form/hooks/use-sync-registered-user";
 import cn from 'classnames'
+import {OwnerStep} from "@/components/start-form/steps/owner-step";
 
 export const StartForm = () => {
     const {
@@ -56,7 +57,8 @@ export const StartForm = () => {
                     {currentStep === 3 && (
                         <ConfirmationStep onNext={goToNext} onBack={goToBack} values={values}/>
                     )}
-                    {currentStep === 4 && <DevelopmentStep/>}
+                    {currentStep === 4 && <DevelopmentStep onNext={goToNext}/>}
+                    {currentStep === 5 && <OwnerStep/>}
                 </div>
             </div>
         </FormProvider>
