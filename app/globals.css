@@ -9,7 +9,3 @@ html, body {
 * {
     box-sizing: border-box;
 }
-
-.calendar-swipe {
-    touch-action: none;
-}

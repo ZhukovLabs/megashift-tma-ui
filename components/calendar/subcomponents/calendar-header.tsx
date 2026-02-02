@@ -1,24 +1,27 @@
-import {format} from "date-fns";
+import {format, isSameYear} from "date-fns";
 import {ru} from "date-fns/locale";
 
 type CalendarHeaderProps = {
     currentDate: Date;
-    onToday: VoidFunction;
 }
 
-export const CalendarHeader = ({
-                                   currentDate,
-                                   onToday,
-                               }: CalendarHeaderProps) => {
-    return (
-        <div className="flex items-center justify-between mb-3">
-            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
-                {format(currentDate, "LLLL yyyy", {locale: ru})}
-            </h1>
+export const CalendarHeader = ({currentDate}: CalendarHeaderProps) => {
+    const isCurrentYear = isSameYear(currentDate, new Date());
 
-            <button className="btn btn-sm btn-outline" onClick={onToday}>
-                Сегодня
-            </button>
+    const monthName = format(currentDate, "LLLL", {locale: ru});
+    const capitalizedMonth = monthName.charAt(0).toUpperCase() + monthName.slice(1);
+
+    const year = format(currentDate, "yyyy");
+
+    const displayText = isCurrentYear
+        ? capitalizedMonth
+        : `${capitalizedMonth} ${year}`;
+
+    return (
+        <div className="flex items-center justify-center mb-3">
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
+                {displayText}
+            </h1>
         </div>
     );
 }

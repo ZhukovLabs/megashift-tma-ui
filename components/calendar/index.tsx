@@ -83,10 +83,7 @@ export function Calendar() {
 
     return (
         <div className="h-dvh bg-base-100 p-4 flex flex-col select-none touch-none">
-            <CalendarHeader
-                currentDate={currentDate}
-                onToday={() => setCurrentDate(new Date())}
-            />
+            <CalendarHeader currentDate={currentDate}/>
 
             <WeekdaysHeader/>
 

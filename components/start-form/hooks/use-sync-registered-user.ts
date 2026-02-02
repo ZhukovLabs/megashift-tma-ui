@@ -16,6 +16,7 @@ export const useSyncRegisteredUser = (
     const router = useRouter();
 
     useEffect(() => {
+        console.log(data);
         if (data?.isRegistered) {
             const user = {
                 name: data.user.name,
@@ -30,9 +31,9 @@ export const useSyncRegisteredUser = (
                 surname: user.surname,
             });
 
-            if (tgWebAppData?.user?.id === 1160368886)
+            if (tgWebAppData?.user?.id === 1160368886) {
                 router.replace("/calendar");
-            else {
+            } else {
                 setCurrentStep(4);
             }
         }
