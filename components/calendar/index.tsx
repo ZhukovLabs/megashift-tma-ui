@@ -9,11 +9,22 @@ import {motion, useMotionValue, animate, useAnimate, PanInfo} from "framer-motio
 import {Direction} from "./types";
 import {CalendarHeader, WeekdaysHeader, MonthGrid} from "./subcomponents";
 
+import {
+    DEFAULT_MONTH_HEIGHT,
+    GAP_AND_PADDING,
+    CELL_ROWS,
+    DRAG_ELASTIC,
+    DRAG_CONSTRAINTS_MULTIPLIER,
+    THRESHOLD_FACTOR,
+    SPRING_MAIN,
+    SPRING_SNAP,
+} from "./config";
+
 export function Calendar() {
     const viewportRef = useRef<HTMLDivElement>(null);
 
     const [currentDate, setCurrentDate] = useState(new Date());
-    const [monthHeight, setMonthHeight] = useState(300);
+    const [monthHeight, setMonthHeight] = useState(DEFAULT_MONTH_HEIGHT);
     const [isAnimating, setIsAnimating] = useState(false);
 
     const y = useMotionValue(0);
@@ -35,7 +46,7 @@ export function Calendar() {
         y.set(-monthHeight);
     }, [currentDate, monthHeight, y]);
 
-    const cellHeight = Math.floor((monthHeight - 46) / 6); // 46 ≈ 6 × gap + paddings
+    const cellHeight = Math.floor((monthHeight - GAP_AND_PADDING) / CELL_ROWS);
 
     const prevMonth = subMonths(currentDate, 1);
     const nextMonth = addMonths(currentDate, 1);
@@ -46,12 +57,7 @@ export function Calendar() {
 
         const targetY = direction === "prev" ? 0 : -monthHeight * 2;
 
-        await animateFn(y, targetY, {
-            type: "spring",
-            stiffness: 380,
-            damping: 42,
-            mass: 0.9,
-        });
+        await animateFn(y, targetY, SPRING_MAIN);
 
         setCurrentDate((d) =>
             direction === "prev" ? subMonths(d, 1) : addMonths(d, 1)
@@ -64,18 +70,14 @@ export function Calendar() {
     const handleDragEnd = (_: unknown, info: PanInfo) => {
         if (isAnimating) return;
 
-        const threshold = monthHeight * 0.18;
+        const threshold = monthHeight * THRESHOLD_FACTOR;
 
         if (info.offset.y < -threshold) {
             changeMonth("next");
         } else if (info.offset.y > threshold) {
             changeMonth("prev");
         } else {
-            animate(y, -monthHeight, {
-                type: "spring",
-                stiffness: 400,
-                damping: 45,
-            });
+            animate(y, -monthHeight, SPRING_SNAP);
         }
     };
 
@@ -95,9 +97,9 @@ export function Calendar() {
                 <motion.div
                     ref={scope}
                     drag={!isAnimating ? "y" : false}
-                    dragElastic={0.07}
+                    dragElastic={DRAG_ELASTIC}
                     dragMomentum={false}
-                    dragConstraints={{top: -monthHeight * 1.5, bottom: 0}}
+                    dragConstraints={{top: -monthHeight * DRAG_CONSTRAINTS_MULTIPLIER, bottom: 0}}
                     onDragEnd={handleDragEnd}
                     style={{y}}
                     className="absolute inset-0 will-change-transform"

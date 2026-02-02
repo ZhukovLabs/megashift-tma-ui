@@ -18,7 +18,7 @@ export const WeekRow = ({
         const isCurrentMonth = isSameMonth(day, weekStart);
 
         const cellClasses = cn(
-            "flex items-center justify-center rounded-lg transition-colors",
+            "flex justify-center rounded-lg transition-colors",
             isCurrentMonth && "hover:bg-base-200/70 cursor-pointer",
             !isCurrentMonth && "pointer-events-none"
         )

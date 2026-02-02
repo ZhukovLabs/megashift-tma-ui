@@ -6,7 +6,7 @@ import {FormData} from './types';
 
 export const useStartForm = () => {
     const [currentStep, setCurrentStep] = useState(1);
-    const totalSteps = 5;
+    const totalSteps = 4;
 
     const methods = useForm<FormData>({
         resolver: zodResolver(formSchema),
@@ -20,7 +20,6 @@ export const useStartForm = () => {
 
     const {
         trigger,
-        handleSubmit,
         formState: {isValid, isSubmitting},
         watch,
     } = methods;
