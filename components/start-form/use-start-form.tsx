@@ -6,7 +6,7 @@ import {FormData} from './types';
 
 export const useStartForm = () => {
     const [currentStep, setCurrentStep] = useState(1);
-    const totalSteps = 4;
+    const totalSteps = 3;
 
     const methods = useForm<FormData>({
         resolver: zodResolver(formSchema),
@@ -47,7 +47,6 @@ export const useStartForm = () => {
         isSubmitting,
         values,
         goToNext,
-        goToBack,
-        setCurrentStep
+        goToBack
     };
 };

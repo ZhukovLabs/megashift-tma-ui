@@ -2,7 +2,7 @@ import {z} from "zod";
 import {formSchema} from "./schema";
 
 export type StepProps = {
-    onNext: VoidFunction;
+    onNext?: VoidFunction;
     onBack?: VoidFunction;
 };
 

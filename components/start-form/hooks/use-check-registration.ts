@@ -17,5 +17,6 @@ export const useCheckRegistration = (): UseQueryResult<ResponseData, unknown> =>
             const { data } = await api.get<ResponseData>('/api/users/check-registration');
             return data;
         },
+
     });
 };

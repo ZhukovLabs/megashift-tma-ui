@@ -1,11 +1,11 @@
 import {FormProvider} from "react-hook-form";
 import {useStartForm} from "./use-start-form";
 import {ConfirmationStep, EnterUserInfoStep, WelcomeStep} from "./steps";
-import {DevelopmentStep} from "@/components/start-form/steps/development-step";
 import {useSyncRegisteredUser} from "@/components/start-form/hooks/use-sync-registered-user";
 import cn from 'classnames'
 import {useEffect} from "react";
 import {useRouter} from "next/navigation";
+import {useUserStore} from "@/store/user-store";
 
 export const StartForm = () => {
     const {
@@ -16,15 +16,15 @@ export const StartForm = () => {
         values,
         goToNext,
         goToBack,
-        setCurrentStep,
     } = useStartForm();
     const router = useRouter();
 
-    const {isLoading} = useSyncRegisteredUser(methods, setCurrentStep);
+    const {isLoading} = useSyncRegisteredUser();
+    const user = useUserStore(s => s.user);
 
     useEffect(() => {
-        if (currentStep === 4) router.replace('/calendar');
-    }, [currentStep]);
+        if (user) router.replace('/calendar');
+    }, [user]);
 
     if (isLoading) {
         return (
@@ -61,9 +61,8 @@ export const StartForm = () => {
                         <EnterUserInfoStep onNext={goToNext} onBack={goToBack} isValid={isValid}/>
                     )}
                     {currentStep === 3 && (
-                        <ConfirmationStep onNext={goToNext} onBack={goToBack} values={values}/>
+                        <ConfirmationStep onBack={goToBack} values={values}/>
                     )}
-                    {currentStep === 4 && <DevelopmentStep onNext={goToNext}/>}
                 </div>
             </div>
         </FormProvider>

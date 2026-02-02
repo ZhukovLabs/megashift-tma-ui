@@ -13,7 +13,7 @@ export const ConfirmationStep = ({onNext, onBack, values}: StepProps & {
             ...data,
             ...{patronymic: data.patronymic ? data.patronymic : undefined}
         });
-        onNext();
+        onNext?.();
     });
 
     return (

@@ -15,7 +15,7 @@ export const EnterUserInfoStep = ({onNext, onBack, isValid}: EnterUserInfoStepPr
                 {t("title")}
             </h2>
 
-            <form onSubmit={handleSubmit(onNext)} className="w-full">
+            <form onSubmit={handleSubmit(onNext!)} className="w-full">
                 <div className="flex flex-col [&>span]:mb-5">
                     <input
                         {...register('surname')}
