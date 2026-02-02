@@ -24,10 +24,8 @@ export const SafeContentArea = ({children, className}: SafeContentAreaProps) => 
         <div
             style={{
                 paddingTop: top + INNER_PADDING,
-                paddingLeft: left + INNER_PADDING,
-                paddingRight: right + INNER_PADDING,
                 paddingBottom: bottom + INNER_PADDING,
-                maxWidth: `calc(100vw - ${left + right + 2 * INNER_PADDING}px)`,
+                maxWidth: `calc(100vw - ${left + right}px)`,
                 height: '100dvh',
             }}
             className={clsx(

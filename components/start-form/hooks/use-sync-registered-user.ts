@@ -4,40 +4,27 @@ import {useUserStore} from "@/store/user-store";
 import {UseFormReturn} from "react-hook-form";
 import {FormData} from "@/components/start-form/types";
 import {useRouter} from "next/navigation";
-import {useLaunchParams} from "@tma.js/sdk-react";
 
 export const useSyncRegisteredUser = (
     methods: UseFormReturn<FormData>,
     setCurrentStep: (step: number) => void
 ) => {
-    const {tgWebAppData} = useLaunchParams(true);
     const {data, isLoading} = useCheckRegistration();
     const setUser = useUserStore((s) => s.setUser);
     const router = useRouter();
 
     useEffect(() => {
-        console.log(data);
-        if (data?.isRegistered) {
-            const user = {
-                name: data.user.name,
-                surname: data.user.surname,
-                isRegistered: true,
-            };
+        if (!data) return;
 
-            setUser(user);
+        const {isRegistered, user} = data;
 
-            methods.reset({
-                name: user.name,
-                surname: user.surname,
-            });
-
-            if (tgWebAppData?.user?.id === 1160368886) {
-                router.replace("/calendar");
-            } else {
-                setCurrentStep(4);
-            }
+        if (isRegistered && user) {
+            const {name, surname} = user;
+            const currentUser = {name, surname, isRegistered: true};
+            setUser(currentUser);
+            router.replace("/calendar");
         }
-    }, [data, methods, router, setCurrentStep, setUser, tgWebAppData?.user?.id]);
+    }, [data, methods, router, setCurrentStep, setUser]);
 
     return {isLoading};
 };

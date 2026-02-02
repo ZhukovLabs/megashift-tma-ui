@@ -1,23 +1,19 @@
 "use client";
 
 import React, {useLayoutEffect, useRef, useState, useEffect} from "react";
-import {
-    addMonths,
-    subMonths,
-} from "date-fns";
+import {addMonths, subMonths} from "date-fns";
 import {motion, useMotionValue, animate, useAnimate, PanInfo} from "framer-motion";
 import {Direction} from "./types";
 import {CalendarHeader, WeekdaysHeader, MonthGrid} from "./subcomponents";
 
 import {
-    DEFAULT_MONTH_HEIGHT,
-    GAP_AND_PADDING,
     CELL_ROWS,
     DRAG_ELASTIC,
     DRAG_CONSTRAINTS_MULTIPLIER,
     THRESHOLD_FACTOR,
     SPRING_MAIN,
     SPRING_SNAP,
+    DEFAULT_MONTH_HEIGHT,
 } from "./config";
 
 export function Calendar() {
@@ -25,6 +21,7 @@ export function Calendar() {
 
     const [currentDate, setCurrentDate] = useState(new Date());
     const [monthHeight, setMonthHeight] = useState(DEFAULT_MONTH_HEIGHT);
+    const [gapAndPadding, setGapAndPadding] = useState(0);
     const [isAnimating, setIsAnimating] = useState(false);
 
     const y = useMotionValue(0);
@@ -33,7 +30,12 @@ export function Calendar() {
     useLayoutEffect(() => {
         const measure = () => {
             if (viewportRef.current) {
+                const style = getComputedStyle(viewportRef.current);
+                const paddingTop = parseInt(style.paddingTop) || 0;
+                const paddingBottom = parseInt(style.paddingBottom) || 0;
+                const gap = 16;
                 setMonthHeight(viewportRef.current.clientHeight);
+                setGapAndPadding(8 + paddingTop + paddingBottom + gap * (CELL_ROWS - 1));
             }
         };
 
@@ -46,7 +48,8 @@ export function Calendar() {
         y.set(-monthHeight);
     }, [currentDate, monthHeight, y]);
 
-    const cellHeight = Math.floor((monthHeight - GAP_AND_PADDING) / CELL_ROWS);
+    // Высота ячейки теперь зависит от динамического GAP_AND_PADDING
+    const cellHeight = Math.floor((monthHeight - gapAndPadding) / CELL_ROWS);
 
     const prevMonth = subMonths(currentDate, 1);
     const nextMonth = addMonths(currentDate, 1);
@@ -82,7 +85,7 @@ export function Calendar() {
     };
 
     return (
-        <div className="h-dvh bg-base-100 p-4 flex flex-col select-none touch-none">
+        <div className="h-dvh bg-base-100 flex flex-col select-none touch-none">
             <CalendarHeader currentDate={currentDate}/>
 
             <WeekdaysHeader/>

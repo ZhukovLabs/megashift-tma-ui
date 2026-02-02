@@ -4,6 +4,8 @@ import {ConfirmationStep, EnterUserInfoStep, WelcomeStep} from "./steps";
 import {DevelopmentStep} from "@/components/start-form/steps/development-step";
 import {useSyncRegisteredUser} from "@/components/start-form/hooks/use-sync-registered-user";
 import cn from 'classnames'
+import {useEffect} from "react";
+import {useRouter} from "next/navigation";
 
 export const StartForm = () => {
     const {
@@ -16,8 +18,13 @@ export const StartForm = () => {
         goToBack,
         setCurrentStep,
     } = useStartForm();
+    const router = useRouter();
 
     const {isLoading} = useSyncRegisteredUser(methods, setCurrentStep);
+
+    useEffect(() => {
+        if (currentStep === 4) router.replace('/calendar');
+    }, [currentStep]);
 
     if (isLoading) {
         return (

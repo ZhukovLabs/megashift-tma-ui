@@ -45,7 +45,7 @@ export const EnterUserInfoStep = ({onNext, onBack, isValid}: EnterUserInfoStepPr
                 </div>
 
                 <div className="flex gap-3 mt-8">
-                    <button onClick={onBack} className="btn btn-outline flex-1">
+                    <button type="button" onClick={onBack} className="btn btn-outline flex-1">
                         Назад
                     </button>
                     <button

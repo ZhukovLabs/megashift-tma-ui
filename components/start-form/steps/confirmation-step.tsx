@@ -2,14 +2,17 @@ import {FormData, StepProps} from "../types";
 import {useCreateUser} from "@/components/start-form/hooks/use-create-user";
 import {useFormContext} from "react-hook-form";
 
-export const ConfirmationStep = ({onNext, onBack, isSubmitting, values}: StepProps & {
+export const ConfirmationStep = ({onNext, onBack, values}: StepProps & {
     values: FormData;
 }) => {
-    const {handleSubmit} = useFormContext<FormData>();
+    const {handleSubmit, formState: {isSubmitting}} = useFormContext<FormData>();
     const {mutateAsync: createUser} = useCreateUser();
 
     const handleClick = handleSubmit(async (data) => {
-        await createUser(data);
+        await createUser({
+            ...data,
+            ...{patronymic: data.patronymic ? data.patronymic : undefined}
+        });
         onNext();
     });
 
