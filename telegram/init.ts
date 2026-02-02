@@ -4,54 +4,59 @@ import {
     miniApp,
     viewport,
     swipeBehavior,
+    closingBehavior
 } from '@tma.js/sdk-react';
 
 export interface InitOptions {
     debug?: boolean;
 }
 
-export const init=(options: InitOptions = {})=> {
+export const init = (options: InitOptions = {}) => {
     const {debug = false} = options;
+
     setDebug(debug);
 
     initSDK();
 
-    try {
-        miniApp.mount();
-    } catch (err) {
-        console.warn('[TMA] miniApp.mount failed', err);
-    }
 
-    try {
-        viewport.expand();
-    } catch (err) {
-        console.warn('[TMA] viewport.expand failed', err);
-    }
+    mountSafely(miniApp, 'miniApp.mount');
 
-    try {
-        viewport.requestFullscreen();
-    } catch {
-    }
+    mountSafely(closingBehavior, 'closingBehavior.mount', () => {
+        closingBehavior.enableConfirmation();
+    });
 
-    try {
-        swipeBehavior.mount();
-        swipeBehavior.disableVertical();
-    } catch (err) {
-        console.warn('[TMA] swipeBehavior disable failed', err);
-    }
-
-    try {
-        await viewport.mount();
+    mountSafely(viewport, 'viewport.mount', () => {
         viewport.bindCssVars();
-    } catch (err) {
-        console.warn('[TMA] viewport mount failed', err);
-    }
+        viewport.expand();
+        viewport.requestFullscreen();
+    });
 
     setTimeout(() => {
         try {
             viewport.expand();
             viewport.requestFullscreen();
-        } catch {
+        } catch (err) {
+            console.warn('[TMA] delayed expand & fullscreen failed', err);
         }
-    }, 300);
+    }, 320);
+
+    mountSafely(swipeBehavior, 'swipeBehavior.mount', () => {
+        swipeBehavior.disableVertical();
+    });
+};
+
+
+function mountSafely(
+    component: { mount?: () => void; },
+    label: string,
+    afterMount?: () => void,
+) {
+    if (!component?.mount) return;
+
+    try {
+        component.mount();
+        afterMount?.();
+    } catch (err) {
+        console.warn(`[TMA] ${label} failed`, err);
+    }
 }
