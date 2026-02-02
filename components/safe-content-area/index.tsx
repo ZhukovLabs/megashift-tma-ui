@@ -29,7 +29,7 @@ export const SafeContentArea = ({children, className}: SafeContentAreaProps) => 
                 paddingBottom: bottom + INNER_PADDING,
                 maxWidth: `calc(100vw - ${left + right + 2 * INNER_PADDING}px)`
             }}
-            className={clsx("mx-auto w-full h-screen overflow-x-hidden", className)}
+            className={clsx("mx-auto w-full max-h-screen h-full overflow-x-hidden", className)}
         >
             {children}
         </div>
