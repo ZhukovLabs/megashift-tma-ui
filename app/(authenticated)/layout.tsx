@@ -6,11 +6,11 @@ export default function Layout({children}: { children: React.ReactNode }) {
         {children}
         <BottomMenu items={[
             {
-                id: 'calendar',
+                path: '/calendar',
                 icon: <Calendar size={22}/>,
             },
             {
-                id: 'profile',
+                path: '/profile',
                 icon: <User size={22}/>,
             },
         ]}/>

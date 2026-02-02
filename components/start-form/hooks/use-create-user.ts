@@ -19,8 +19,7 @@ export const useCreateUser = () => {
         onSuccess: async (data: CreateUserData) => {
             setUser({
                 name: data.name,
-                surname: data.surname,
-                isRegistered: true,
+                surname: data.surname
             });
         }
     });

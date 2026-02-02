@@ -3,23 +3,29 @@
 import {motion} from 'framer-motion';
 import cn from 'classnames'
 import {ReactNode} from 'react';
+import {usePathname, useRouter} from "next/navigation";
 
 type MenuItem = {
-    id: string;
+    path: string;
     icon: ReactNode;
-    active?: boolean;
-    onClick?: () => void;
 };
 
-type FloatingBottomMenuProps = {
+type BottomMenuProps = {
     items: MenuItem[];
     className?: string;
 };
 
 export function BottomMenu({
-                                       items,
-                                       className,
-                                   }: FloatingBottomMenuProps) {
+                               items,
+                               className,
+                           }: BottomMenuProps) {
+    const router = useRouter();
+    const pathname = usePathname();
+
+    const handleClick = (path: string) => () => {
+        router.push(path);
+    }
+
     return (
         <motion.div
             initial={{y: 40, opacity: 0, scale: 0.95}}
@@ -42,37 +48,39 @@ export function BottomMenu({
                     'border border-base-300'
                 )}
             >
-                {items.map((item) => (
-                    <button
-                        key={item.id}
-                        onClick={item.onClick}
-                        className={cn(
-                            'relative flex items-center justify-center',
-                            'h-10 w-10',
-                            'rounded-full transition-colors',
-                            item.active
-                                ? 'text-primary'
-                                : 'text-base-content/60 hover:text-base-content'
-                        )}
-                    >
-                        {/* active background */}
-                        {item.active && (
-                            <motion.span
-                                layoutId="floating-menu-active"
-                                className="absolute inset-0 rounded-full bg-primary/10"
-                                transition={{type: 'spring', stiffness: 400, damping: 30}}
-                            />
-                        )}
+                {items.map(({path, icon}) => {
+                    const isActive = path === pathname;
 
-                        <motion.span
-                            animate={{scale: item.active ? 1.15 : 1}}
-                            transition={{type: 'spring', stiffness: 400, damping: 20}}
-                            className="relative z-10"
+                    return (
+                        <button
+                            key={path}
+                            className={cn(
+                                'relative flex items-center justify-center',
+                                'h-10 w-10',
+                                'rounded-full transition-colors',
+                                isActive
+                                    ? 'text-primary'
+                                    : 'text-base-content/60 hover:text-base-content'
+                            )}
+                            onClick={handleClick(path)}
                         >
-                            {item.icon}
-                        </motion.span>
-                    </button>
-                ))}
+                            {isActive && (
+                                <motion.span
+                                    layoutId="floating-menu-active"
+                                    className="absolute inset-0 rounded-full bg-primary/10"
+                                    transition={{type: 'spring', stiffness: 400, damping: 30}}
+                                />
+                            )}
+
+                            <motion.span
+                                animate={{scale: isActive ? 1.15 : 1}}
+                                transition={{type: 'spring', stiffness: 400, damping: 20}}
+                                className="relative z-10"
+                            >
+                                {icon}
+                            </motion.span>
+                        </button>)
+                })}
             </div>
         </motion.div>
     );
