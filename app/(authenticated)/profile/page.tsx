@@ -1,9 +1,19 @@
 'use client';
 
-import {useUserStore} from '@/store/user-store';
+import {useGetProfile} from "./hooks/use-get-profile";
+import {format} from "date-fns";
+import {ru} from "date-fns/locale";
 
 export default function ProfilePage() {
-    const user = useUserStore(s => s.user);
+    const {data: user} = useGetProfile();
+
+    const formatRegistrationDate = (date: string) => {
+        try {
+            return format(date, 'dd.MM.yyyy', {locale: ru});
+        } catch {
+            return 'Неизвестно';
+        }
+    };
 
     return (
         <div className="max-w-md mx-auto">
@@ -27,6 +37,15 @@ export default function ProfilePage() {
                 <div className="flex justify-between items-center">
                     <span className="font-medium text-base-content/60">Отчество:</span>
                     <span className="text-base-content">{user?.patronymic || 'Не указано'}</span>
+                </div>
+                <div className="divider my-0"></div>
+
+                {/* Добавляем дату регистрации */}
+                <div className="flex justify-between items-center">
+                    <span className="font-medium text-base-content/60">Дата регистрации:</span>
+                    <span className="text-base-content">
+                        {user?.createdAt ? formatRegistrationDate(user.createdAt) : 'Не указано'}
+                    </span>
                 </div>
 
                 <div className="mt-6 text-sm text-base-content/50 hyphens-auto">
