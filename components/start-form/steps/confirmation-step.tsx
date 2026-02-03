@@ -17,18 +17,12 @@ export const ConfirmationStep = ({
     } = useFormContext<FormData>();
 
     const {mutateAsync: createUser} = useCreateUser();
-    const setUser = useUserStore(s => s.setUser);
     const router = useRouter();
 
     const handleClick = handleSubmit(async (data) => {
-        const user = await createUser({
+        await createUser({
             ...data,
             patronymic: data.patronymic || undefined,
-        });
-
-        setUser({
-            name: user.name,
-            surname: user.surname,
         });
 
         router.replace(URLS.root);

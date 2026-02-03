@@ -1,25 +1,31 @@
-import { useMutation } from '@tanstack/react-query';
-import { api } from '@/lib/axios';
+import {useMutation} from '@tanstack/react-query';
+import {api} from '@/lib/axios';
 import {useUserStore} from "@/store/user-store";
 
-interface CreateUserData {
+type CreateUserRequest = {
     surname: string;
     name: string;
     patronymic?: string;
 }
 
+type CreateUserResponse = CreateUserRequest & {
+    createdAt: string;
+}
+
 export const useCreateUser = () => {
     const setUser = useUserStore((s) => s.setUser);
 
-    return useMutation<CreateUserData, Error, CreateUserData>({
+    return useMutation<CreateUserResponse, Error, CreateUserRequest>({
         mutationFn: async (userData) => {
-            const { data } = await api.post('/api/users', userData);
+            const {data} = await api.post('/api/users', userData);
             return data;
         },
-        onSuccess: async (data: CreateUserData) => {
+        onSuccess: async (data) => {
             setUser({
                 name: data.name,
-                surname: data.surname
+                surname: data.surname,
+                patronymic: data.patronymic,
+                createdAt: new Date(data.createdAt)
             });
         }
     });

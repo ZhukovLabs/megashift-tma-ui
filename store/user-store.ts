@@ -3,6 +3,8 @@ import {create} from 'zustand';
 export type User = {
     name: string;
     surname: string;
+    patronymic?: string;
+    createdAt: Date;
 }
 
 type UserState = {
