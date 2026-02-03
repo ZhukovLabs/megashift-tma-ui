@@ -1,10 +1,9 @@
 'use client';
 
-import { createContext, useContext, useState, ReactNode, useRef, useLayoutEffect } from "react";
-import { addMonths, subMonths } from "date-fns";
-import { CELL_ROWS } from "./config";
+import {createContext, useContext, ReactNode, useRef, useLayoutEffect, useState} from "react";
+import {addMonths, subMonths} from "date-fns";
+import {CELL_ROWS} from "./config";
 
-// Тип события
 export type CalendarEvent = {
     id: string;
     date: Date;
@@ -22,23 +21,19 @@ type ScheduleContextType = {
     monthHeight: number;
     cellHeight: number;
     events: CalendarEvent[];
-    addEvent: (event: CalendarEvent) => void;
-    removeEvent: (id: string) => void;
-    setEvents: (events: CalendarEvent[]) => void;
 };
 
 const ScheduleContext = createContext<ScheduleContextType | undefined>(undefined);
 
 type ScheduleProviderProps = {
     children: ReactNode;
-    initialEvents?: CalendarEvent[];
+    events?: CalendarEvent[];
 };
 
-export const ScheduleProvider = ({ children, initialEvents = [] }: ScheduleProviderProps) => {
+export const ScheduleProvider = ({children, events=[]}: ScheduleProviderProps) => {
     const [currentDate, setCurrentDate] = useState(new Date());
     const [monthHeight, setMonthHeight] = useState(0);
     const [cellHeight, setCellHeight] = useState(0);
-    const [events, setEvents] = useState<CalendarEvent[]>(initialEvents);
     const viewportRef = useRef<HTMLDivElement>(null);
 
     const nextMonth = () => setCurrentDate(d => addMonths(d, 1));
@@ -46,9 +41,6 @@ export const ScheduleProvider = ({ children, initialEvents = [] }: ScheduleProvi
 
     const prevDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
     const nextDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1);
-
-    const addEvent = (event: CalendarEvent) => setEvents(prev => [...prev, event]);
-    const removeEvent = (id: string) => setEvents(prev => prev.filter(e => e.id !== id));
 
     useLayoutEffect(() => {
         const measure = () => {
@@ -82,9 +74,6 @@ export const ScheduleProvider = ({ children, initialEvents = [] }: ScheduleProvi
                 monthHeight,
                 cellHeight,
                 events,
-                addEvent,
-                removeEvent,
-                setEvents,
             }}
         >
             <div ref={viewportRef} className="flex-1">{children}</div>
