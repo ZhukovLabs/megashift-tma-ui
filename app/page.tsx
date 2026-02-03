@@ -4,7 +4,7 @@ import {useEffect} from 'react';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {useUserStore} from '@/store/user-store';
 import {useSyncRegisteredUser} from '@/components/start-form/hooks/use-sync-registered-user';
-import {Routes} from '@/constants/routes';
+import {ROUTES} from '@/constants/routes';
 
 const RootPage = () => {
     const router = useRouter();
@@ -18,9 +18,9 @@ const RootPage = () => {
         if (isLoading) return;
 
         if (user) {
-            router.replace(redirect || Routes.schedule);
+            router.replace(redirect || ROUTES.schedule);
         } else {
-            router.replace(Routes.onboarding);
+            router.replace(ROUTES.onboarding);
         }
     }, [user, isLoading, redirect, router]);
 
