@@ -32,8 +32,7 @@ export const DayCell = ({ day, monthDate }: DayCellProps) => {
         "flex items-center justify-center rounded-full w-8 h-8 text-sm font-semibold transition-all",
         {
             "text-base-content/25": !isCurrentMonth,
-            "text-base-content": isCurrentMonth,
-            "bg-primary text-primary-content shadow-sm": isCurrentDay,
+            "text-base-content": isCurrentMonth
         }
     );
 
@@ -43,10 +42,8 @@ export const DayCell = ({ day, monthDate }: DayCellProps) => {
             className={dayBlockClasses}
             aria-label={`День ${format(day, "d MMMM yyyy")}, событий: ${dayEvents.length}`}
         >
-            {/* Число дня */}
             <div className={dayTextClasses}>{format(day, "d")}</div>
 
-            {/* События — компактные, прижаты к низу */}
             <div className="flex flex-col gap-0.5 mt-auto">
                 {visibleEvents.map(ev => (
                     <div
