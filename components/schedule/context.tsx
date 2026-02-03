@@ -21,16 +21,22 @@ type ScheduleContextType = {
     monthHeight: number;
     cellHeight: number;
     events: CalendarEvent[];
+    onEventClick?: (event: CalendarEvent) => void;
 };
-
-const ScheduleContext = createContext<ScheduleContextType | undefined>(undefined);
 
 type ScheduleProviderProps = {
     children: ReactNode;
     events?: CalendarEvent[];
+    onEventClick?: (event: CalendarEvent) => void;
 };
 
-export const ScheduleProvider = ({children, events=[]}: ScheduleProviderProps) => {
+const ScheduleContext = createContext<ScheduleContextType | undefined>(undefined);
+
+export const ScheduleProvider = ({
+                                     children,
+                                     events = [],
+                                     onEventClick,
+                                 }: ScheduleProviderProps) => {
     const [currentDate, setCurrentDate] = useState(new Date());
     const [monthHeight, setMonthHeight] = useState(0);
     const [cellHeight, setCellHeight] = useState(0);
@@ -45,13 +51,11 @@ export const ScheduleProvider = ({children, events=[]}: ScheduleProviderProps) =
     useLayoutEffect(() => {
         const measure = () => {
             if (!viewportRef.current) return;
-
             const style = getComputedStyle(viewportRef.current);
             const paddingTop = parseInt(style.paddingTop) || 0;
             const paddingBottom = parseInt(style.paddingBottom) || 0;
             const gap = 36;
             const totalGap = gap * (CELL_ROWS - 1);
-
             const totalHeight = viewportRef.current.clientHeight - paddingTop - paddingBottom - totalGap;
 
             setMonthHeight(viewportRef.current.clientHeight);
@@ -74,6 +78,7 @@ export const ScheduleProvider = ({children, events=[]}: ScheduleProviderProps) =
                 monthHeight,
                 cellHeight,
                 events,
+                onEventClick,
             }}
         >
             <div ref={viewportRef} className="flex-1">{children}</div>

@@ -1,7 +1,9 @@
+'use client';
+
 import {Schedule} from "@/components/schedule";
 import {ScheduleProvider} from "@/components/schedule/context";
 
-import { CalendarEvent } from "@/components/schedule/context";
+import {CalendarEvent} from "@/components/schedule/context";
 
 const februaryEvents: CalendarEvent[] = [
     {
@@ -9,6 +11,18 @@ const februaryEvents: CalendarEvent[] = [
         date: new Date(2026, 1, 3),
         title: "Встреча с командой",
         color: "#3b82f6",
+    },
+    {
+        id: "92",
+        date: new Date(2026, 1, 3),
+        title: "Встреча с командой",
+        color: "#8382f6",
+    },
+    {
+        id: "93",
+        date: new Date(2026, 1, 3),
+        title: "Встреча с командой",
+        color: "#3122f6",
     },
     {
         id: "2",
@@ -56,7 +70,9 @@ const februaryEvents: CalendarEvent[] = [
 
 
 const SchedulePage = () => {
-    return <ScheduleProvider events={februaryEvents}>
+    return <ScheduleProvider events={februaryEvents} onEventClick={(e) => {
+        alert(e.title)
+    }}>
         <Schedule/>
     </ScheduleProvider>;
 }
