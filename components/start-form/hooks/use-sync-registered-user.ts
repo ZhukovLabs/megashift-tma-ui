@@ -9,8 +9,8 @@ export const useSyncRegisteredUser = () => {
     useEffect(() => {
         if (!data?.user) return;
 
-        const {name, surname} = data.user;
-        setUser({name, surname});
+        const {name, surname, patronymic} = data.user;
+        setUser({name, surname, patronymic, createdAt: new Date()});
     }, [data, setUser]);
 
     return {

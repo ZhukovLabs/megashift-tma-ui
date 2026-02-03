@@ -1,31 +1,24 @@
-import {addDays} from "date-fns";
 import React from "react";
+import {addDays} from "date-fns";
 import {getMonthDates} from "../utils";
 import {WeekRow} from "./week-row";
+import {useSchedule} from "@/components/schedule/context";
 
+type MonthType = "prev" | "current" | "next";
 
-export const MonthGrid = ({
-                              date,
-                              cellHeight,
-                          }: {
-    date: Date;
-    cellHeight: number;
-}) => {
-    const {startDate} = getMonthDates(date);
+export const MonthGrid = ({monthType}: { monthType: MonthType }) => {
+    const {currentDate, prevDate, nextDate} = useSchedule();
 
-    const rows = [];
+    const monthDate = monthType === "prev" ? prevDate : monthType === "next" ? nextDate : currentDate;
 
-    for (let w = 0; w < 6; w++) {
-        const weekStart = addDays(startDate, w * 7);
-        rows.push(
-            <WeekRow
-                key={w}
-                date={date}
-                weekStart={weekStart}
-                cellHeight={cellHeight}
-            />
-        );
-    }
+    const {startDate} = getMonthDates(monthDate);
 
-    return <div className="space-y-1.5">{rows}</div>;
-}
+    return (
+        <div className="space-y-1.5">
+            {Array.from({length: 6}, (_, w) => {
+                const weekStart = addDays(startDate, w * 7);
+                return <WeekRow key={w} weekStart={weekStart} monthDate={monthDate}/>;
+            })}
+        </div>
+    );
+};

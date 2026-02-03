@@ -1,13 +1,13 @@
-import {format, isSameMonth, isToday} from "date-fns";
+import { format, isSameMonth, isToday } from "date-fns";
 import cn from "classnames";
 
 type DayCellProps = {
-    day: Date
-    date: Date
-}
+    day: Date;
+    monthDate: Date;
+};
 
-export const DayCell = ({day, date}: DayCellProps) => {
-    const isCurrentMonth = isSameMonth(day, date);
+export const DayCell = ({ day, monthDate }: DayCellProps) => {
+    const isCurrentMonth = isSameMonth(day, monthDate);
     const isCurrentDay = isToday(day);
 
     const dayClasses = cn(
@@ -21,4 +21,4 @@ export const DayCell = ({day, date}: DayCellProps) => {
     );
 
     return <div className={dayClasses}>{format(day, "d")}</div>;
-}
+};
