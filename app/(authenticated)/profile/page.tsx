@@ -6,9 +6,9 @@ export default function ProfilePage() {
     const user = useUserStore(s => s.user);
 
     return (
-        <div className="max-w-md mx-auto p-6">
-            <h1 className="text-2xl font-bold mb-6 text-center text-base-content">
-                Настройки профиля
+        <div className="max-w-md mx-auto">
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-center mb-3 whitespace-pre-line">
+                Настройки{'\n'}профиля
             </h1>
 
             <div className="bg-base-200 dark:bg-base-300 rounded-xl p-6 space-y-4 shadow-md">
