@@ -20,6 +20,7 @@ export const MonthGrid = ({
         rows.push(
             <WeekRow
                 key={w}
+                date={date}
                 weekStart={weekStart}
                 cellHeight={cellHeight}
             />

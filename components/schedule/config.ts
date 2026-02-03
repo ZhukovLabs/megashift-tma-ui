@@ -6,7 +6,7 @@ export const CELL_ROWS = 6;
 
 export const DRAG_ELASTIC = 0.07;
 export const DRAG_CONSTRAINTS_MULTIPLIER = 1.5;
-export const THRESHOLD_FACTOR = 0.18;
+export const THRESHOLD_FACTOR = 0.15;
 
 
 export const SPRING_MAIN = {

@@ -1,10 +1,10 @@
 "use client";
 
-import React, {useLayoutEffect, useRef, useState, useEffect} from "react";
-import {addMonths, subMonths} from "date-fns";
-import {motion, useMotionValue, animate, useAnimate, PanInfo} from "framer-motion";
-import {Direction} from "./types";
-import {CalendarHeader, WeekdaysHeader, MonthGrid} from "./subcomponents";
+import React, { useLayoutEffect, useRef, useState, useEffect } from "react";
+import { motion, useMotionValue, animate, useAnimate, PanInfo } from "framer-motion";
+import { CalendarHeader, WeekdaysHeader, MonthGrid } from "./subcomponents";
+import { Direction } from "./types";
+import { useSchedule } from "./context";
 
 import {
     CELL_ROWS,
@@ -16,10 +16,11 @@ import {
     DEFAULT_MONTH_HEIGHT,
 } from "./config";
 
-export function Calendar() {
+export const Schedule = () => {
     const viewportRef = useRef<HTMLDivElement>(null);
 
-    const [currentDate, setCurrentDate] = useState(new Date());
+    const { currentDate, nextMonth, prevMonth } = useSchedule();
+
     const [monthHeight, setMonthHeight] = useState(DEFAULT_MONTH_HEIGHT);
     const [gapAndPadding, setGapAndPadding] = useState(0);
     const [isAnimating, setIsAnimating] = useState(false);
@@ -48,11 +49,10 @@ export function Calendar() {
         y.set(-monthHeight);
     }, [currentDate, monthHeight, y]);
 
-    // Высота ячейки теперь зависит от динамического GAP_AND_PADDING
     const cellHeight = Math.floor((monthHeight - gapAndPadding) / CELL_ROWS);
 
-    const prevMonth = subMonths(currentDate, 1);
-    const nextMonth = addMonths(currentDate, 1);
+    const prevMonthDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
+    const nextMonthDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1);
 
     const changeMonth = async (direction: Direction) => {
         if (isAnimating) return;
@@ -62,9 +62,8 @@ export function Calendar() {
 
         await animateFn(y, targetY, SPRING_MAIN);
 
-        setCurrentDate((d) =>
-            direction === "prev" ? subMonths(d, 1) : addMonths(d, 1)
-        );
+        if (direction === "prev") prevMonth();
+        else nextMonth();
 
         y.set(-monthHeight);
         setIsAnimating(false);
@@ -86,9 +85,8 @@ export function Calendar() {
 
     return (
         <div className="h-dvh bg-base-100 flex flex-col select-none touch-none">
-            <CalendarHeader currentDate={currentDate}/>
-
-            <WeekdaysHeader/>
+            <CalendarHeader currentDate={currentDate} />
+            <WeekdaysHeader />
 
             <div
                 ref={viewportRef}
@@ -99,24 +97,24 @@ export function Calendar() {
                     drag={!isAnimating ? "y" : false}
                     dragElastic={DRAG_ELASTIC}
                     dragMomentum={false}
-                    dragConstraints={{top: -monthHeight * DRAG_CONSTRAINTS_MULTIPLIER, bottom: 0}}
+                    dragConstraints={{ top: -monthHeight * DRAG_CONSTRAINTS_MULTIPLIER, bottom: 0 }}
                     onDragEnd={handleDragEnd}
-                    style={{y}}
+                    style={{ y }}
                     className="absolute inset-0 will-change-transform"
                 >
-                    <div style={{height: monthHeight}} className="pt-2 pb-2 px-2">
-                        <MonthGrid date={prevMonth} cellHeight={cellHeight}/>
+                    <div style={{ height: monthHeight }} className="pt-2 pb-2 px-2">
+                        <MonthGrid date={prevMonthDate} cellHeight={cellHeight} />
                     </div>
 
-                    <div style={{height: monthHeight}} className="pt-2 pb-2 px-2">
-                        <MonthGrid date={currentDate} cellHeight={cellHeight}/>
+                    <div style={{ height: monthHeight }} className="pt-2 pb-2 px-2">
+                        <MonthGrid date={currentDate} cellHeight={cellHeight} />
                     </div>
 
-                    <div style={{height: monthHeight}} className="pt-2 pb-2 px-2">
-                        <MonthGrid date={nextMonth} cellHeight={cellHeight}/>
+                    <div style={{ height: monthHeight }} className="pt-2 pb-2 px-2">
+                        <MonthGrid date={nextMonthDate} cellHeight={cellHeight} />
                     </div>
                 </motion.div>
             </div>
         </div>
     );
-}
+};

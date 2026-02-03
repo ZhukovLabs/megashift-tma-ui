@@ -3,10 +3,11 @@ import cn from "classnames";
 
 type DayCellProps = {
     day: Date
+    date: Date
 }
 
-export const DayCell = ({day}: DayCellProps) => {
-    const isCurrentMonth = isSameMonth(day, new Date());
+export const DayCell = ({day, date}: DayCellProps) => {
+    const isCurrentMonth = isSameMonth(day, date);
     const isCurrentDay = isToday(day);
 
     const dayClasses = cn(

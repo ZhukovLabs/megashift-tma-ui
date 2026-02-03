@@ -4,23 +4,23 @@ import cn from 'classnames';
 
 type WeekRowProps = {
     weekStart: Date;
+    date: Date;
     cellHeight: number;
 };
 
 export const WeekRow = ({
                             weekStart,
                             cellHeight,
+    date,
                         }: WeekRowProps) => {
     const cells = [];
 
     for (let i = 0; i < 7; i++) {
         const day = addDays(weekStart, i);
-        const isCurrentMonth = isSameMonth(day, weekStart);
 
         const cellClasses = cn(
             "flex justify-center rounded-lg transition-colors",
-            isCurrentMonth && "hover:bg-base-200/70 cursor-pointer",
-            !isCurrentMonth && "pointer-events-none"
+            "hover:bg-base-200/70 cursor-pointer"
         )
 
         cells.push(
@@ -29,7 +29,7 @@ export const WeekRow = ({
                 style={{height: cellHeight}}
                 className={cellClasses}
             >
-                <DayCell day={day}/>
+                <DayCell day={day} date={date}/>
             </div>
         );
     }

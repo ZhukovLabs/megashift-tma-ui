@@ -1,7 +1,10 @@
-import {Calendar} from "@/components/calendar";
+import {Schedule} from "@/components/schedule";
+import {ScheduleProvider} from "@/components/schedule/context";
 
-const CalendarPage = () => {
-    return <Calendar/>;
+const SchedulePage = () => {
+    return <ScheduleProvider>
+        <Schedule/>
+    </ScheduleProvider>;
 }
 
-export default CalendarPage;
+export default SchedulePage;
