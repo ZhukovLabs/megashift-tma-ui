@@ -1,10 +1,10 @@
 "use client";
 
-import React, {useRef} from "react";
-import {motion, PanInfo, MotionValue} from "framer-motion";
-import {MonthGrid} from "./month-grid";
-import {useSchedule} from "../context";
-import {DRAG_CONSTRAINTS_MULTIPLIER, DRAG_ELASTIC} from "../config";
+import React, { useRef } from "react";
+import { motion, MotionValue, PanInfo } from "framer-motion";
+import { MonthGrid } from "./month-grid";
+import { useSchedule } from "../context";
+import { DRAG_CONSTRAINTS_MULTIPLIER, DRAG_ELASTIC } from "../config";
 
 type DragProps = {
     y: MotionValue<number>;
@@ -16,8 +16,8 @@ type MonthStackProps = {
     dragProps: DragProps;
 };
 
-export const MonthStack = ({dragProps}: MonthStackProps) => {
-    const {monthHeight} = useSchedule();
+export const MonthStack = ({ dragProps }: MonthStackProps) => {
+    const { monthHeight } = useSchedule();
     const motionRef = useRef<HTMLDivElement>(null);
 
     const monthTypes = ["prev", "current", "next"] as const;
@@ -34,12 +34,16 @@ export const MonthStack = ({dragProps}: MonthStackProps) => {
                     bottom: 0,
                 }}
                 onDragEnd={dragProps.handleDragEnd}
-                style={{y: dragProps.y}}
+                style={{ y: dragProps.y }}
                 className="absolute inset-0 will-change-transform"
             >
                 {monthTypes.map((type, index) => (
-                    <div key={index} style={{height: monthHeight}} className="pt-2 pb-2 px-2">
-                        <MonthGrid monthType={type}/>
+                    <div
+                        key={index}
+                        style={{ height: monthHeight, padding: '0.5rem' }}
+                        className="flex flex-col gap-1.5"
+                    >
+                        <MonthGrid monthType={type} />
                     </div>
                 ))}
             </motion.div>

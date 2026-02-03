@@ -44,14 +44,7 @@ export const Schedule = () => {
         <div className="h-dvh bg-base-100 flex flex-col select-none touch-none">
             <CalendarHeader currentDate={currentDate} />
             <WeekdaysHeader />
-
-            <MonthStack
-                dragProps={{
-                    y,
-                    isAnimating,
-                    handleDragEnd,
-                }}
-            />
+            <MonthStack dragProps={{ y, isAnimating, handleDragEnd }} />
         </div>
     );
 };

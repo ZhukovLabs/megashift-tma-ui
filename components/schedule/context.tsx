@@ -1,7 +1,8 @@
 'use client';
 
-import {createContext, useContext, useState, ReactNode, useRef, useLayoutEffect} from "react";
-import {addMonths, subMonths} from "date-fns";
+import { createContext, useContext, useState, ReactNode, useRef, useLayoutEffect } from "react";
+import { addMonths, subMonths } from "date-fns";
+import { CELL_ROWS } from "./config";
 
 type ScheduleContextType = {
     currentDate: Date;
@@ -14,7 +15,8 @@ type ScheduleContextType = {
 };
 
 const ScheduleContext = createContext<ScheduleContextType | undefined>(undefined);
-export const ScheduleProvider = ({children}: { children: ReactNode }) => {
+
+export const ScheduleProvider = ({ children }: { children: ReactNode }) => {
     const [currentDate, setCurrentDate] = useState(new Date());
     const [monthHeight, setMonthHeight] = useState(0);
     const [cellHeight, setCellHeight] = useState(0);
@@ -28,16 +30,18 @@ export const ScheduleProvider = ({children}: { children: ReactNode }) => {
 
     useLayoutEffect(() => {
         const measure = () => {
-            if (viewportRef.current) {
-                const style = getComputedStyle(viewportRef.current);
-                const paddingTop = parseInt(style.paddingTop) || 0;
-                const paddingBottom = parseInt(style.paddingBottom) || 0;
-                const totalHeight = viewportRef.current.clientHeight;
-                const gapAndPadding = paddingTop + paddingBottom + 44 * 4;
+            if (!viewportRef.current) return;
 
-                setMonthHeight(totalHeight);
-                setCellHeight(Math.floor((totalHeight - gapAndPadding) / 6));
-            }
+            const style = getComputedStyle(viewportRef.current);
+            const paddingTop = parseInt(style.paddingTop) || 0;
+            const paddingBottom = parseInt(style.paddingBottom) || 0;
+            const gap = 36;
+            const totalGap = gap * (CELL_ROWS - 1);
+
+            const totalHeight = viewportRef.current.clientHeight - paddingTop - paddingBottom - totalGap;
+
+            setMonthHeight(viewportRef.current.clientHeight);
+            setCellHeight(Math.floor(totalHeight / CELL_ROWS));
         };
 
         measure();
@@ -46,14 +50,11 @@ export const ScheduleProvider = ({children}: { children: ReactNode }) => {
     }, []);
 
     return (
-        <ScheduleContext.Provider
-            value={{currentDate, prevDate, nextDate, nextMonth, prevMonth, monthHeight, cellHeight}}
-        >
+        <ScheduleContext.Provider value={{ currentDate, prevDate, nextDate, nextMonth, prevMonth, monthHeight, cellHeight }}>
             <div ref={viewportRef} className="flex-1">{children}</div>
         </ScheduleContext.Provider>
     );
 };
-
 
 export const useSchedule = () => {
     const context = useContext(ScheduleContext);

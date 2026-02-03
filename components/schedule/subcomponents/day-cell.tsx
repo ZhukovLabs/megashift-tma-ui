@@ -1,18 +1,22 @@
-import { format, isSameMonth, isToday } from "date-fns";
+import {format, isSameMonth, isToday} from "date-fns";
 import cn from "classnames";
+import {useSchedule} from "@/components/schedule/context";
 
 type DayCellProps = {
     day: Date;
     monthDate: Date;
 };
 
-export const DayCell = ({ day, monthDate }: DayCellProps) => {
+export const DayCell = ({day, monthDate}: DayCellProps) => {
+   const {cellHeight}= useSchedule();
     const isCurrentMonth = isSameMonth(day, monthDate);
     const isCurrentDay = isToday(day);
 
-    const dayClasses = cn(
-        "w-9 h-9 flex items-center justify-center rounded-full",
-        "text-sm font-medium transition-all",
+    const dayBlockClasses = 'flex justify-center rounded-lg hover:bg-base-200/70 cursor-pointer transition-colors';
+
+    const dayTextClasses = cn(
+        "flex items-center justify-center rounded-full transition-all w-10 h-10",
+        "text-sm font-medium",
         {
             "text-base-content/25": !isCurrentMonth,
             "text-base-content": isCurrentMonth,
@@ -20,5 +24,15 @@ export const DayCell = ({ day, monthDate }: DayCellProps) => {
         }
     );
 
-    return <div className={dayClasses}>{format(day, "d")}</div>;
+    return (
+        <div
+            key={day.getTime()}
+            style={{height: cellHeight}}
+            className={dayBlockClasses}
+        >
+            <div className={dayTextClasses}>
+                {format(day, "d")}
+            </div>
+        </div>
+    );
 };
