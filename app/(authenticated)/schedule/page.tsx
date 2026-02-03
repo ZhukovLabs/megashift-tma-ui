@@ -4,6 +4,9 @@ import {Schedule} from "@/components/schedule";
 import {ScheduleProvider} from "@/components/schedule/context";
 
 import {CalendarEvent} from "@/components/schedule/context";
+import {ReactNode} from "react";
+import {AdvencedBottomMenu} from "@/components/advenced-bottom-menu";
+import {Edit2, X} from "lucide-react";
 
 const februaryEvents: CalendarEvent[] = [
     {
@@ -68,13 +71,47 @@ const februaryEvents: CalendarEvent[] = [
     },
 ];
 
+const advancedMenuItems: { path: string; icon: ReactNode }[] = [
+    {
+        path: '#',
+        icon: <div
+            className="h-10 w-10 flex items-center justify-center rounded bg-primary text-white text-xl font-bold">+</div>
+    },
+    {
+        path: '#',
+        icon: <div
+            className="h-10 w-10 flex items-center justify-center rounded bg-primary text-white text-xl font-bold">+</div>
+    },
+    {
+        path: '#',
+        icon: <div
+            className="h-10 w-10 flex items-center justify-center rounded bg-primary text-white text-xl font-bold">+</div>
+    },
+    {
+        path: '#',
+        icon: <div
+            className="h-10 w-10 flex items-center justify-center rounded bg-primary text-white text-xl font-bold">+</div>
+    },
+    {
+        path: '#',
+        icon: <div
+            className="h-10 w-10 flex items-center justify-center rounded bg-primary text-white text-xl font-bold">+</div>
+    },
+];
 
 const SchedulePage = () => {
-    return <ScheduleProvider events={februaryEvents} onEventClick={(e) => {
-        alert(e.title)
-    }}>
-        <Schedule/>
-    </ScheduleProvider>;
+    return <>
+        <ScheduleProvider events={februaryEvents} onEventClick={(e) => {
+            alert(e.title)
+        }}>
+            <Schedule/>
+        </ScheduleProvider>
+        <AdvencedBottomMenu
+            items={advancedMenuItems}
+            openIcon={<Edit2 size={24}/>}
+            closeIcon={<X size={24}/>}
+        />
+    </>;
 }
 
 export default SchedulePage;
