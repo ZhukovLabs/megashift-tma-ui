@@ -6,7 +6,7 @@ import {useUserStore} from '@/store/user-store';
 import {useSyncRegisteredUser} from '@/components/start-form/hooks/use-sync-registered-user';
 import {URLS} from '@/constants/urls';
 
-export default function RootPage() {
+const RootPage = () => {
     const router = useRouter();
     const searchParams = useSearchParams();
     const user = useUserStore(s => s.user);
@@ -30,3 +30,5 @@ export default function RootPage() {
         </div>
     );
 }
+
+export default RootPage;
