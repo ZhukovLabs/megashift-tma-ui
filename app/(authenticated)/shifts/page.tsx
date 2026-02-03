@@ -59,11 +59,16 @@ export default function ShiftsPage() {
                     </p>
 
                     <button
-                        onClick={(e) => {
+                        onClick={async () => {
                             popup.show({
-                                title: "Пока нельзя",
-                                message: 'Но скоро можно будет'
-                            })
+                                title: 'К сожалению, пока не работает',
+                                message: 'НО скоро будет',
+                                buttons: [
+                                    {id: '1', type: 'ok'},
+                                    {id: '2', type: 'destructive', text: 'Жду'},
+                                    {id: '3', type: 'cancel'}
+                                ],
+                            });
                         }}
                         className="flex items-center justify-center w-16 h-16 bg-primary text-primary-content rounded-full shadow-md hover:shadow-lg hover:bg-primary/90 transition-all"
                         aria-label="Добавить смену"
