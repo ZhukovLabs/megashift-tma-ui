@@ -3,9 +3,29 @@
 import {useEffect} from 'react';
 import {useRouter, usePathname, useSearchParams} from 'next/navigation';
 import {BottomMenu} from '@/components/bottom-menu';
-import {Calendar, User} from 'lucide-react';
+import {Calendar, User, Settings2, ClipboardClock} from 'lucide-react';
+
 import {useUserStore} from '@/store/user-store';
 import {ROUTES} from '@/constants/routes';
+
+const bottomMenuItems = [
+    {
+        path: ROUTES.schedule,
+        icon: <Calendar size={24}/>,
+    },
+    {
+        path: ROUTES.shifts,
+        icon: <ClipboardClock size={24}/>,
+    },
+    {
+        path: ROUTES.profile,
+        icon: <User size={24}/>,
+    },
+    {
+        path: ROUTES.settings,
+        icon: <Settings2 size={24}/>,
+    },
+];
 
 export default function Layout({children}: { children: React.ReactNode }) {
     const user = useUserStore(s => s.user);
@@ -32,18 +52,7 @@ export default function Layout({children}: { children: React.ReactNode }) {
     return (
         <>
             {children}
-            <BottomMenu
-                items={[
-                    {
-                        path: ROUTES.schedule,
-                        icon: <Calendar size={24}/>,
-                    },
-                    {
-                        path: ROUTES.profile,
-                        icon: <User size={24}/>,
-                    },
-                ]}
-            />
+            <BottomMenu items={bottomMenuItems}/>
         </>
     );
 }

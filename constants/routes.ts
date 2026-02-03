@@ -3,4 +3,6 @@ export const ROUTES = {
     onboarding: '/onboarding',
     schedule: '/schedule',
     profile: '/profile',
+    shifts: '/shifts',
+    settings: '/settings',
 } as const;
