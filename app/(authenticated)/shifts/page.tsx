@@ -1,10 +1,9 @@
 // app/shifts/page.tsx
 "use client";
 
-import React, {useEffect, useState} from "react";
-import Link from "next/link";
-import {Plus} from "lucide-react";
-import {Popup, popup} from "@tma.js/sdk";
+import React, { useEffect, useState } from "react";
+import { Plus } from "lucide-react";
+import { popup } from "@tma.js/sdk";
 
 type Shift = {
     id: string;
@@ -24,20 +23,18 @@ export default function ShiftsPage() {
         return () => clearTimeout(timer);
     }, []);
 
-    return (
-        <div
-            className="min-h-screen flex flex-col items-center bg-gradient-to-b from-base-100 via-base-200 to-base-100">
-            {/* Заголовок */}
-            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight mb-8 text-center text-base-content">
-                Смены
-            </h1>
-
-            {shifts === null ? (
+    const renderContent = () => {
+        if (shifts === null) {
+            return (
                 <div className="flex flex-col items-center mt-12">
                     <div className="w-12 h-12 rounded-full bg-primary/20 animate-pulse mb-4"></div>
                     <p className="text-base-content/60 text-center">Загрузка смен...</p>
                 </div>
-            ) : shifts.length > 0 ? (
+            );
+        }
+
+        if (shifts.length > 0) {
+            return (
                 <div className="w-full max-w-md flex flex-col gap-4">
                     {shifts.map((shift) => (
                         <div
@@ -46,37 +43,48 @@ export default function ShiftsPage() {
                         >
                             <h2 className="font-semibold text-base-content mb-1">{shift.title}</h2>
                             <p className="text-sm text-base-content/70">
-                                {shift.start.toLocaleTimeString([], {hour: "2-digit", minute: "2-digit"})} —{" "}
-                                {shift.end.toLocaleTimeString([], {hour: "2-digit", minute: "2-digit"})}
+                                {shift.start.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })} —{" "}
+                                {shift.end.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                             </p>
                         </div>
                     ))}
                 </div>
-            ) : (
-                <div className="flex flex-col items-center mt-16 gap-6">
-                    <p className="text-base-content/60 text-center text-lg max-w-xs">
-                        Сейчас смен нет — добавьте первую смену!
-                    </p>
+            );
+        }
 
-                    <button
-                        onClick={async () => {
-                            popup.show({
-                                title: 'К сожалению, пока не работает',
-                                message: 'НО скоро будет',
-                                buttons: [
-                                    {id: '1', type: 'ok'},
-                                    {id: '2', type: 'destructive', text: 'Жду'},
-                                    {id: '3', type: 'cancel'}
-                                ],
-                            });
-                        }}
-                        className="flex items-center justify-center w-16 h-16 bg-primary text-primary-content rounded-full shadow-md hover:shadow-lg hover:bg-primary/90 transition-all"
-                        aria-label="Добавить смену"
-                    >
-                        <Plus strokeWidth={2.5} size={28}/>
-                    </button>
-                </div>
-            )}
+        return (
+            <div className="flex flex-col items-center mt-16 gap-6">
+                <p className="text-base-content/60 text-center text-lg max-w-xs">
+                    Сейчас смен нет — добавьте первую смену!
+                </p>
+
+                <button
+                    onClick={() => {
+                        popup.show({
+                            title: "К сожалению, пока не работает",
+                            message: "НО скоро будет",
+                            buttons: [
+                                { id: "1", type: "ok" },
+                                { id: "2", type: "destructive", text: "Жду" },
+                                { id: "3", type: "cancel" },
+                            ],
+                        });
+                    }}
+                    className="flex items-center justify-center w-16 h-16 bg-primary text-primary-content rounded-full shadow-md hover:shadow-lg hover:bg-primary/90 transition-all"
+                    aria-label="Добавить смену"
+                >
+                    <Plus strokeWidth={2.5} size={28} />
+                </button>
+            </div>
+        );
+    };
+
+    return (
+        <div className="min-h-screen flex flex-col items-center bg-gradient-to-b from-base-100 via-base-200 to-base-100">
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight mb-8 text-center text-base-content">
+                Смены
+            </h1>
+            {renderContent()}
         </div>
     );
 }
