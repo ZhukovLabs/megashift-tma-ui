@@ -1,11 +1,7 @@
 import {FormProvider} from "react-hook-form";
 import {useStartForm} from "./use-start-form";
 import {ConfirmationStep, EnterUserInfoStep, WelcomeStep} from "./steps";
-import {useSyncRegisteredUser} from "@/components/start-form/hooks/use-sync-registered-user";
 import cn from 'classnames'
-import {useEffect} from "react";
-import {useRouter} from "next/navigation";
-import {useUserStore} from "@/store/user-store";
 
 export const StartForm = () => {
     const {
@@ -17,22 +13,6 @@ export const StartForm = () => {
         goToNext,
         goToBack,
     } = useStartForm();
-    const router = useRouter();
-
-    const {isLoading} = useSyncRegisteredUser();
-    const user = useUserStore(s => s.user);
-
-    useEffect(() => {
-        if (user) router.replace('/calendar');
-    }, [user]);
-
-    if (isLoading) {
-        return (
-            <div className="flex h-full items-center justify-center">
-                <span className="loading loading-spinner loading-xl"/>
-            </div>
-        );
-    }
 
     return (
         <FormProvider {...methods}>

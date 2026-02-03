@@ -1,12 +1,32 @@
-"use client";
+'use client';
 
-import dynamic from "next/dynamic";
+import {useEffect} from 'react';
+import {useRouter, useSearchParams} from 'next/navigation';
+import {useUserStore} from '@/store/user-store';
+import {useSyncRegisteredUser} from '@/components/start-form/hooks/use-sync-registered-user';
+import {URLS} from '@/constants/urls';
 
-const StartForm = dynamic(
-    () => import("@/components/start-form").then(m => m.StartForm),
-    { ssr: false }
-);
+export default function RootPage() {
+    const router = useRouter();
+    const searchParams = useSearchParams();
+    const user = useUserStore(s => s.user);
+    const {isLoading} = useSyncRegisteredUser();
 
-export default function WelcomeClient() {
-    return <StartForm />;
+    const redirect = searchParams.get('redirect');
+
+    useEffect(() => {
+        if (isLoading) return;
+
+        if (user) {
+            router.replace(redirect || URLS.schedule);
+        } else {
+            router.replace(URLS.onboarding);
+        }
+    }, [user, isLoading, redirect, router]);
+
+    return (
+        <div className="flex h-screen items-center justify-center">
+            <span className="loading loading-spinner loading-xl"/>
+        </div>
+    );
 }

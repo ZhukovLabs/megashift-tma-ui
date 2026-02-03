@@ -1,19 +1,37 @@
-import {FormData, StepProps} from "../types";
-import {useCreateUser} from "@/components/start-form/hooks/use-create-user";
-import {useFormContext} from "react-hook-form";
+'use client';
 
-export const ConfirmationStep = ({onNext, onBack, values}: StepProps & {
-    values: FormData;
-}) => {
-    const {handleSubmit, formState: {isSubmitting}} = useFormContext<FormData>();
+import {FormData, StepProps} from '../types';
+import {useCreateUser} from '@/components/start-form/hooks/use-create-user';
+import {useFormContext} from 'react-hook-form';
+import {useUserStore} from '@/store/user-store';
+import {useRouter} from 'next/navigation';
+import {URLS} from '@/constants/urls';
+
+export const ConfirmationStep = ({
+                                     onBack,
+                                     values,
+                                 }: StepProps & { values: FormData }) => {
+    const {
+        handleSubmit,
+        formState: {isSubmitting},
+    } = useFormContext<FormData>();
+
     const {mutateAsync: createUser} = useCreateUser();
+    const setUser = useUserStore(s => s.setUser);
+    const router = useRouter();
 
     const handleClick = handleSubmit(async (data) => {
-        await createUser({
+        const user = await createUser({
             ...data,
-            ...{patronymic: data.patronymic ? data.patronymic : undefined}
+            patronymic: data.patronymic || undefined,
         });
-        onNext?.();
+
+        setUser({
+            name: user.name,
+            surname: user.surname,
+        });
+
+        router.replace(URLS.root);
     });
 
     return (
@@ -57,11 +75,7 @@ export const ConfirmationStep = ({onNext, onBack, values}: StepProps & {
     );
 };
 
-const DataRow = ({label, value}: { label: string; value?: string }) => (
-    <div className="flex justify-between">
-        <div className="text-tg-hint-color">{label}:</div>
-        <div className="text-tg-text-color font-medium">
-            {value || 'Не указано'}
-        </div>
-    </div>
-);
+const DataRow = ({label, value}: { label: string; value?: string }) => (<div className="flex justify-between">
+    <div className="text-tg-hint-color">{label}:</div>
+    <div className="text-tg-text-color font-medium"> {value || 'Не указано'} </div>
+</div>);
