@@ -3,7 +3,7 @@
 import {useUserStore} from '@/store/user-store';
 
 export default function ProfilePage() {
-    const user = useUserStore(s => s.user); // { name, surname, patronymic? }
+    const user = useUserStore(s => s.user);
 
     return (
         <div className="max-w-md mx-auto p-6">
