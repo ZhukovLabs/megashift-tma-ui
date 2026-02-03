@@ -5,7 +5,7 @@ import {useCreateUser} from '@/components/start-form/hooks/use-create-user';
 import {useFormContext} from 'react-hook-form';
 import {useUserStore} from '@/store/user-store';
 import {useRouter} from 'next/navigation';
-import {URLS} from '@/constants/urls';
+import {Routes} from '@/constants/routes';
 
 export const ConfirmationStep = ({
                                      onBack,
@@ -25,7 +25,7 @@ export const ConfirmationStep = ({
             patronymic: data.patronymic || undefined,
         });
 
-        router.replace(URLS.root);
+        router.replace(Routes.root);
     });
 
     return (

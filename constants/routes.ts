@@ -1,4 +1,4 @@
-export const URLS = {
+export const Routes = {
     root: '/',
     onboarding: '/onboarding',
     schedule: '/schedule',

@@ -5,7 +5,7 @@ import {useRouter, usePathname, useSearchParams} from 'next/navigation';
 import {BottomMenu} from '@/components/bottom-menu';
 import {Calendar, User} from 'lucide-react';
 import {useUserStore} from '@/store/user-store';
-import {URLS} from '@/constants/urls';
+import {Routes} from '@/constants/routes';
 
 export default function Layout({children}: { children: React.ReactNode }) {
     const user = useUserStore(s => s.user);
@@ -19,7 +19,7 @@ export default function Layout({children}: { children: React.ReactNode }) {
 
             const params = new URLSearchParams({redirect: currentUrl});
 
-            router.replace(`${URLS.root}?${params.toString()}`);
+            router.replace(`${Routes.root}?${params.toString()}`);
         }
     }, [user, router, pathname, searchParams]);
 
@@ -35,11 +35,11 @@ export default function Layout({children}: { children: React.ReactNode }) {
             <BottomMenu
                 items={[
                     {
-                        path: URLS.schedule,
+                        path: Routes.schedule,
                         icon: <Calendar size={24}/>,
                     },
                     {
-                        path: URLS.profile,
+                        path: Routes.profile,
                         icon: <User size={24}/>,
                     },
                 ]}
