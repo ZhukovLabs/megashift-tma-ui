@@ -63,7 +63,7 @@ export const DayCell = ({ day, monthDate }: DayCellProps) => {
 
                 {extraCount > 0 && (
                     <div
-                        className="text-[10px] rounded px-1 py-[1px] text-center bg-base-300/50 text-base-content/80 cursor-default"
+                        className="text-[10px] rounded px-1 py-[1px] text-center bg-base-300/50 text-base-content/80 cursor-default truncate"
                         title={`+${extraCount} дополнительных событий`}
                     >
                         +{extraCount} еще
