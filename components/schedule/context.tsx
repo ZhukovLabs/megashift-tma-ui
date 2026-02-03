@@ -4,6 +4,15 @@ import { createContext, useContext, useState, ReactNode, useRef, useLayoutEffect
 import { addMonths, subMonths } from "date-fns";
 import { CELL_ROWS } from "./config";
 
+// Тип события
+export type CalendarEvent = {
+    id: string;
+    date: Date;
+    title: string;
+    description?: string;
+    color?: string;
+};
+
 type ScheduleContextType = {
     currentDate: Date;
     prevDate: Date;
@@ -12,14 +21,24 @@ type ScheduleContextType = {
     prevMonth: VoidFunction;
     monthHeight: number;
     cellHeight: number;
+    events: CalendarEvent[];
+    addEvent: (event: CalendarEvent) => void;
+    removeEvent: (id: string) => void;
+    setEvents: (events: CalendarEvent[]) => void;
 };
 
 const ScheduleContext = createContext<ScheduleContextType | undefined>(undefined);
 
-export const ScheduleProvider = ({ children }: { children: ReactNode }) => {
+type ScheduleProviderProps = {
+    children: ReactNode;
+    initialEvents?: CalendarEvent[];
+};
+
+export const ScheduleProvider = ({ children, initialEvents = [] }: ScheduleProviderProps) => {
     const [currentDate, setCurrentDate] = useState(new Date());
     const [monthHeight, setMonthHeight] = useState(0);
     const [cellHeight, setCellHeight] = useState(0);
+    const [events, setEvents] = useState<CalendarEvent[]>(initialEvents);
     const viewportRef = useRef<HTMLDivElement>(null);
 
     const nextMonth = () => setCurrentDate(d => addMonths(d, 1));
@@ -27,6 +46,9 @@ export const ScheduleProvider = ({ children }: { children: ReactNode }) => {
 
     const prevDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
     const nextDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1);
+
+    const addEvent = (event: CalendarEvent) => setEvents(prev => [...prev, event]);
+    const removeEvent = (id: string) => setEvents(prev => prev.filter(e => e.id !== id));
 
     useLayoutEffect(() => {
         const measure = () => {
@@ -50,7 +72,21 @@ export const ScheduleProvider = ({ children }: { children: ReactNode }) => {
     }, []);
 
     return (
-        <ScheduleContext.Provider value={{ currentDate, prevDate, nextDate, nextMonth, prevMonth, monthHeight, cellHeight }}>
+        <ScheduleContext.Provider
+            value={{
+                currentDate,
+                prevDate,
+                nextDate,
+                nextMonth,
+                prevMonth,
+                monthHeight,
+                cellHeight,
+                events,
+                addEvent,
+                removeEvent,
+                setEvents,
+            }}
+        >
             <div ref={viewportRef} className="flex-1">{children}</div>
         </ScheduleContext.Provider>
     );

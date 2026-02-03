@@ -3,18 +3,18 @@ import {useCheckRegistration} from './use-check-registration';
 import {useUserStore} from '@/store/user-store';
 
 export const useSyncRegisteredUser = () => {
-    const {data, isLoading} = useCheckRegistration();
+    const {data: user, isLoading} = useCheckRegistration();
     const setUser = useUserStore((s) => s.setUser);
 
     useEffect(() => {
-        if (!data?.user) return;
+        if (!user) return;
 
-        const {name, surname, patronymic} = data.user;
-        setUser({name, surname, patronymic, createdAt: new Date()});
-    }, [data, setUser]);
+        const {name, surname, patronymic, createdAt} = user;
+        setUser({name, surname, patronymic, createdAt: new Date(createdAt)});
+    }, [user, setUser]);
 
     return {
-        user: data?.user ?? null,
+        user,
         isLoading,
     };
 };
