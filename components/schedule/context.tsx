@@ -54,7 +54,7 @@ export const ScheduleProvider = ({
             const style = getComputedStyle(viewportRef.current);
             const paddingTop = parseInt(style.paddingTop) || 0;
             const paddingBottom = parseInt(style.paddingBottom) || 0;
-            const gap = 36;
+            const gap = 37;
             const totalGap = gap * (CELL_ROWS - 1);
             const totalHeight = viewportRef.current.clientHeight - paddingTop - paddingBottom - totalGap;
 
