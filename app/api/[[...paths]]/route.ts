@@ -109,6 +109,7 @@ async function proxyRequest(request: NextRequest, paths: string[]): Promise<Next
             headers: responseHeaders,
         });
     } catch (err) {
+        console.log(err)
         return NextResponse.json(
             {
                 error: 'Failed to proxy request',
