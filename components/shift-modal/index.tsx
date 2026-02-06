@@ -9,6 +9,7 @@ import {useCreateShiftTemplate} from "@/app/(authenticated)/shifts/hooks/use-cre
 import {useUpdateShiftTemplate} from "./hooks/use-update-shift-template";
 import {useGetShiftTemplate} from "./hooks/use-get-shift-template";
 import {useUserStore} from "@/store/user-store";
+import {formatInTimeZone} from "date-fns-tz";
 
 type FormValues = {
     label: string;
@@ -20,7 +21,7 @@ type FormValues = {
 export default function ShiftModal() {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const timezone = useUserStore(s => s.user?.timezone)
+    const tz = useUserStore(s => s.user?.timezone ?? 'UTC');
 
     const shiftId = searchParams.get("shiftId");
     const isOpen = Boolean(shiftId);
@@ -49,11 +50,11 @@ export default function ShiftModal() {
             reset({
                 label: shift.label,
                 color: shift.color ?? "#3b82f6",
-                startTime: shift.startTime,
-                endTime: shift.endTime,
+                startTime: formatInTimeZone(shift.startTime, tz, 'HH:mm'),
+                endTime: formatInTimeZone(shift.startTime, tz, 'HH:mm'),
             });
         }
-    }, [shift, reset]);
+    }, [shift, reset, tz]);
 
     const closeModal = () => {
         reset();
