@@ -1,32 +1,60 @@
 "use client";
 
-import { FormEvent } from "react";
 import { X } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useForm } from "react-hook-form";
+import {useCreateShiftTemplate} from "@/app/(authenticated)/shifts/hooks/use-create-shift-template";
 
-interface ShiftModalProps {
-    isOpen: boolean;
-    onClose: () => void;
-    onSubmit: (label: string, color: string, startTime: string, endTime: string) => void;
-    isCreating?: boolean;
+type FormValues = {
     label: string;
-    setLabel: (val: string) => void;
     color: string;
-    setColor: (val: string) => void;
     startTime: string;
-    setStartTime: (val: string) => void;
     endTime: string;
-    setEndTime: (val: string) => void;
-}
+};
 
-export default function ShiftModal({
-                                       isOpen, onClose, onSubmit, isCreating,
-                                       label, setLabel, color, setColor, startTime, setStartTime, endTime, setEndTime
-                                   }: ShiftModalProps) {
+export default function ShiftModal() {
+    const router = useRouter();
+    const searchParams = useSearchParams();
 
-    const handleSubmit = (e: FormEvent) => {
-        e.preventDefault();
-        onSubmit(label, color, startTime, endTime);
+    const shiftId = searchParams.get("shiftId");
+    const isOpen = Boolean(shiftId);
+
+    const isCreating = shiftId === "new";
+
+    const { mutateAsync, isPending } = useCreateShiftTemplate();
+
+    const {
+        register,
+        handleSubmit,
+        reset,
+    } = useForm<FormValues>({
+        defaultValues: {
+            label: "",
+            color: "#3b82f6",
+            startTime: "09:00",
+            endTime: "18:00",
+        },
+    });
+
+    const closeModal = () => {
+        reset();
+        const params = new URLSearchParams(searchParams);
+        params.delete("shiftId");
+        router.replace(`?${params.toString()}`);
+    };
+
+    const onSubmit = async (data: FormValues) => {
+        if (!isCreating) return;
+
+        await mutateAsync({
+            label: data.label,
+            color: data.color,
+            startTime: data.startTime,
+            endTime: data.endTime,
+        });
+
+        closeModal();
     };
 
     return (
@@ -39,55 +67,57 @@ export default function ShiftModal({
                     exit={{ opacity: 0 }}
                 >
                     <motion.div
-                        className="bg-base-100 rounded-xl p-6 w-full max-w-sm shadow-lg relative"
-                        initial={{ scale: 0.9 }}
+                        className="relative w-full max-w-sm rounded-xl bg-base-100 p-6 shadow-lg"
+                        initial={{ scale: 0.95 }}
                         animate={{ scale: 1 }}
-                        exit={{ scale: 0.9 }}
+                        exit={{ scale: 0.95 }}
                     >
                         <button
-                            onClick={onClose}
-                            className="absolute top-4 right-4 text-base-content hover:text-primary transition-colors"
+                            onClick={closeModal}
+                            className="absolute right-4 top-4 text-base-content transition-colors hover:text-primary"
                         >
                             <X size={20} />
                         </button>
-                        <h2 className="text-xl font-semibold mb-4 text-center">Создать смену</h2>
-                        <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+
+                        <h2 className="mb-4 text-center text-xl font-semibold">
+                            Создать смену
+                        </h2>
+
+                        <form
+                            onSubmit={handleSubmit(onSubmit)}
+                            className="flex flex-col gap-4"
+                        >
                             <input
-                                type="text"
+                                {...register("label", { required: true })}
                                 placeholder="Название смены"
-                                value={label}
-                                onChange={(e) => setLabel(e.target.value)}
                                 className="input input-bordered w-full"
-                                required
                             />
+
                             <input
                                 type="color"
-                                value={color}
-                                onChange={(e) => setColor(e.target.value)}
-                                className="w-full h-10 p-0 border-none rounded"
+                                {...register("color")}
+                                className="h-10 w-full rounded border-none p-0"
                             />
+
                             <div className="flex gap-2">
                                 <input
                                     type="time"
-                                    value={startTime}
-                                    onChange={(e) => setStartTime(e.target.value)}
+                                    {...register("startTime", { required: true })}
                                     className="input input-bordered w-full"
-                                    required
                                 />
                                 <input
                                     type="time"
-                                    value={endTime}
-                                    onChange={(e) => setEndTime(e.target.value)}
+                                    {...register("endTime", { required: true })}
                                     className="input input-bordered w-full"
-                                    required
                                 />
                             </div>
+
                             <button
                                 type="submit"
-                                disabled={isCreating}
+                                disabled={isPending}
                                 className="btn btn-primary mt-2"
                             >
-                                {isCreating ? "Сохраняем..." : "Создать"}
+                                {isPending ? "Сохраняем..." : "Создать"}
                             </button>
                         </form>
                     </motion.div>

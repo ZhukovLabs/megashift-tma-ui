@@ -1,74 +1,66 @@
 "use client";
 
-import { useState } from "react";
-import { Plus } from "lucide-react";
-import { useGetShiftTemplates } from "./hooks/use-get-shift-templates";
-import { useCreateShiftTemplate } from "@/app/(authenticated)/shifts/hooks/use-create-shift-template";
-import { useRemoveShiftTemplate } from "./hooks/use-remove-shift-template";
-import ShiftModal from "@/components/shift-modal";
+import {Plus} from "lucide-react";
+import {useRouter} from "next/navigation";
 import ShiftsList from "@/components/shifts-list";
+import ShiftModal from "@/components/shift-modal";
+import {useGetShiftTemplates} from "./hooks/use-get-shift-templates";
+import {useRemoveShiftTemplate} from "./hooks/use-remove-shift-template";
+import {popup} from "@tma.js/sdk";
 
 export default function ShiftsPage() {
-    const { data: shifts, isLoading } = useGetShiftTemplates();
-    const { mutateAsync: createShift, isPending: isCreating } = useCreateShiftTemplate();
-    const { mutateAsync: removeShift } = useRemoveShiftTemplate();
+    const router = useRouter();
 
-    const [isOpen, setIsOpen] = useState(false);
-    const [label, setLabel] = useState("");
-    const [color, setColor] = useState("#ff0");
-    const [startTime, setStartTime] = useState("09:00");
-    const [endTime, setEndTime] = useState("17:00");
+    const {data: shifts, isLoading} = useGetShiftTemplates();
+    const {mutateAsync: removeShift} = useRemoveShiftTemplate();
 
-    const handleSubmit = async (label: string, color: string, startTime: string, endTime: string) => {
-        await createShift({ label, color, startTime, endTime });
-        setIsOpen(false);
-        setLabel(""); setColor("#ff0"); setStartTime("09:00"); setEndTime("17:00");
-    };
+    const openCreateModal = () => router.push("?shiftId=new");
+    const openEditModal = (id: string) => router.push(`?shiftId=${id}`);
 
-    const handleDelete = async (shiftId: string, shiftLabel: string) => {
-        const confirmed = confirm(`Удалить смену "${shiftLabel}"?`);
-        if (!confirmed) return;
+    const handleDelete = async (id: string, label: string) => {
+        const confirmed = await popup.show({
+            title: 'Удалить?',
+            message: `Удалить смену ${label}?`,
+            buttons: [
+                { id: 'no', type: 'cancel' },
+                { id: 'yes', type: 'destructive', text: 'Да' }
+            ],
+        });
+        if (confirmed !== 'yes') return;
+
         try {
-            await removeShift(shiftId);
-        } catch (error) {
-            console.error("Ошибка при удалении смены:", error);
+            await removeShift(id);
+        } catch {
+            popup.show({
+                title: "Ошибка",
+                message: "Ошибка при удалении смены"
+            });
         }
     };
 
     return (
-        <div className="min-h-screen flex flex-col items-center bg-gradient-to-b from-base-100 via-base-200 to-base-100 px-4 pt-8">
-            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight mb-8 text-center text-base-content">
+        <div
+            className="flex min-h-screen flex-col items-center bg-gradient-to-b from-base-100 via-base-200 to-base-100 px-4 pt-8">
+            <h1 className="mb-8 text-center text-2xl font-bold tracking-tight text-base-content sm:text-3xl">
                 Смены
             </h1>
 
             <ShiftsList
-                shifts={shifts}
+                shifts={shifts ?? []}
                 isLoading={isLoading}
-                onCreateClick={() => setIsOpen(true)}
-                onOpenShift={() => setIsOpen(true)}
+                onCreateClick={openCreateModal}
+                onOpenShift={(shift) => openEditModal(shift.id)}
                 onDeleteShift={(shift) => handleDelete(shift.id, shift.label)}
             />
 
-            <ShiftModal
-                isOpen={isOpen}
-                onClose={() => setIsOpen(false)}
-                onSubmit={handleSubmit}
-                isCreating={isCreating}
-                label={label}
-                setLabel={setLabel}
-                color={color}
-                setColor={setColor}
-                startTime={startTime}
-                setStartTime={setStartTime}
-                endTime={endTime}
-                setEndTime={setEndTime}
-            />
+            <ShiftModal/>
 
             <button
-                onClick={() => setIsOpen(true)}
-                className="fixed bottom-8 right-8 w-16 h-16 bg-primary text-primary-content rounded-full shadow-lg flex items-center justify-center hover:shadow-xl hover:bg-primary/90 transition-all duration-300"
+                onClick={openCreateModal}
+                className="fixed bottom-8 right-8 flex h-16 w-16 items-center justify-center rounded-full bg-primary text-primary-content shadow-lg transition-all duration-300 hover:bg-primary/90 hover:shadow-xl"
+                aria-label="Добавить смену"
             >
-                <Plus strokeWidth={2.5} size={28} />
+                <Plus size={28} strokeWidth={2.5}/>
             </button>
         </div>
     );
