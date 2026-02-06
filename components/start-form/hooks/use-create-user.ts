@@ -6,6 +6,7 @@ type CreateUserRequest = {
     surname: string;
     name: string;
     patronymic?: string;
+    timezone: string;
 }
 
 type CreateUserResponse = CreateUserRequest & {
@@ -25,7 +26,7 @@ export const useCreateUser = () => {
                 name: data.name,
                 surname: data.surname,
                 patronymic: data.patronymic,
-                createdAt: new Date(data.createdAt)
+                timezone: data.timezone
             });
         }
     });
