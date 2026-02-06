@@ -6,6 +6,7 @@ interface CheckRegistrationResponse {
     name: string;
     patronymic?: string;
     createdAt: string;
+    timezone: string;
 }
 
 export const useCheckRegistration = () => {

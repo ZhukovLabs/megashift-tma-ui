@@ -4,7 +4,7 @@ export type User = {
     name: string;
     surname: string;
     patronymic?: string;
-    createdAt: Date;
+    timezone: string;
 }
 
 type UserState = {

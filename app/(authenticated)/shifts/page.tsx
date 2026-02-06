@@ -7,6 +7,7 @@ import ShiftModal from "@/components/shift-modal";
 import {useGetShiftTemplates} from "./hooks/use-get-shift-templates";
 import {useRemoveShiftTemplate} from "./hooks/use-remove-shift-template";
 import {popup} from "@tma.js/sdk";
+import {useUserStore} from "@/store/user-store";
 
 export default function ShiftsPage() {
     const router = useRouter();
@@ -22,8 +23,8 @@ export default function ShiftsPage() {
             title: 'Удалить?',
             message: `Удалить смену ${label}?`,
             buttons: [
+                { id: 'yes', type: 'destructive', text: 'Да' },
                 { id: 'no', type: 'cancel' },
-                { id: 'yes', type: 'destructive', text: 'Да' }
             ],
         });
         if (confirmed !== 'yes') return;

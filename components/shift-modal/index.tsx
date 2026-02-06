@@ -8,6 +8,7 @@ import {useForm} from "react-hook-form";
 import {useCreateShiftTemplate} from "@/app/(authenticated)/shifts/hooks/use-create-shift-template";
 import {useUpdateShiftTemplate} from "./hooks/use-update-shift-template";
 import {useGetShiftTemplate} from "./hooks/use-get-shift-template";
+import {useUserStore} from "@/store/user-store";
 
 type FormValues = {
     label: string;
@@ -19,6 +20,7 @@ type FormValues = {
 export default function ShiftModal() {
     const router = useRouter();
     const searchParams = useSearchParams();
+    const timezone = useUserStore(s => s.user?.timezone)
 
     const shiftId = searchParams.get("shiftId");
     const isOpen = Boolean(shiftId);
@@ -61,7 +63,6 @@ export default function ShiftModal() {
     };
 
     const onSubmit = async (data: FormValues) => {
-        console.log(data);
         if (isCreateMode) {
             await createShift(data);
         }

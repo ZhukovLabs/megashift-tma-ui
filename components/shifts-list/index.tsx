@@ -3,7 +3,8 @@
 import ShiftCard from "@/components/shift-card";
 import {ShiftsListSkeleton} from "./skeleton";
 import {EmptyState} from "./empty-list";
-import {format} from "date-fns";
+import {formatInTimeZone} from "date-fns-tz";
+import {useUserStore} from "@/store/user-store";
 
 type Shift = {
     id: string;
@@ -28,6 +29,7 @@ export default function ShiftsList({
                                        onOpenShift,
                                        onDeleteShift,
                                    }: Props) {
+    const tz = useUserStore(s => s.user?.timezone ?? 'UTC');
     const isEmpty = !isLoading && shifts.length === 0;
 
     return (
@@ -45,8 +47,8 @@ export default function ShiftsList({
                             <ShiftCard
                                 key={shift.id}
                                 label={shift.label}
-                                startTime={format(shift.startTime, 'HH:mm')}
-                                endTime={format(shift.endTime, 'HH:mm')}
+                                startTime={formatInTimeZone(shift.startTime, tz, 'HH:mm')}
+                                endTime={formatInTimeZone(shift.endTime, tz, 'HH:mm')}
                                 color={shift.color}
                                 onClick={() => onOpenShift?.(shift)}
                                 onDelete={() => onDeleteShift?.(shift)}
