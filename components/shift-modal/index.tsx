@@ -51,7 +51,7 @@ export default function ShiftModal() {
                 label: shift.label,
                 color: shift.color ?? "#3b82f6",
                 startTime: formatInTimeZone(shift.startTime, tz, 'HH:mm'),
-                endTime: formatInTimeZone(shift.startTime, tz, 'HH:mm'),
+                endTime: formatInTimeZone(shift.endTime, tz, 'HH:mm'),
             });
         }
     }, [shift, reset, tz]);
