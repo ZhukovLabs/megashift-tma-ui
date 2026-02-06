@@ -38,7 +38,7 @@ export const init = (options: InitOptions = {}) => {
         } catch (err) {
             console.warn('[TMA] delayed expand & fullscreen failed', err);
         }
-    }, 320);
+    }, 300);
 
     mountSafely(swipeBehavior, 'swipeBehavior.mount', () => {
         swipeBehavior.disableVertical();

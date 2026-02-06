@@ -1,8 +1,8 @@
 "use client";
 
-import React from "react";
 import ShiftCard from "@/components/shift-card";
-import { Plus } from "lucide-react";
+import {ShiftsListSkeleton} from "./skeleton";
+import {EmptyState} from "./empty-list";
 
 type Shift = {
     id: string;
@@ -13,12 +13,19 @@ type Shift = {
 };
 
 type Props = {
-    shifts?: Shift[] | null;
-    isLoading?: boolean;
-    onCreateClick?: () => void;
+    shifts: Shift[];
+    isLoading: boolean;
+    onCreateClick?: VoidFunction;
     onOpenShift?: (shift: Shift) => void;
     onDeleteShift?: (shift: Shift) => void;
 };
+
+function formatTimeRange(shift: Shift) {
+    return {
+        start: shift.startTime.slice(11, 16),
+        end: shift.endTime.slice(11, 16),
+    };
+}
 
 export default function ShiftsList({
                                        shifts,
@@ -27,57 +34,51 @@ export default function ShiftsList({
                                        onOpenShift,
                                        onDeleteShift,
                                    }: Props) {
+    const isEmpty = !isLoading && shifts.length === 0;
+
     return (
-        <div className="relative w-full max-w-xl rounded-2xl">
-            <div className="overflow-auto h-[80vh] max-h-[80vh] p-6 relative" style={{ WebkitOverflowScrolling: "touch" }}>
-                {isLoading ? (
-                    <div className="flex flex-col gap-4">
-                        {[1, 2, 3].map((i) => (
-                            <div key={i} className="animate-pulse p-5 bg-base-100 rounded-lg shadow-sm" />
-                        ))}
-                    </div>
-                ) : shifts && shifts.length > 0 ? (
-                    <ul className="flex flex-col gap-4" role="list">
+        <div className="relative w-full max-w-xl rounded-2xl overflow-hidden">
+            <div
+                className="relative h-[80vh] max-h-[80vh] overflow-auto p-2 pr-4"
+                style={{WebkitOverflowScrolling: "touch"}}
+            >
+                {isLoading && <ShiftsListSkeleton/>}
+                {isEmpty && <EmptyState onCreateClick={onCreateClick}/>}
+
+                {!isLoading && !isEmpty && (
+                    <ul className="flex flex-col gap-4 pb-8" role="list">
                         {shifts.map((shift) => {
-                            const start = shift.startTime.slice(11, 16);
-                            const end = shift.endTime.slice(11, 16);
+                            const {start, end} = formatTimeRange(shift);
 
                             return (
-                                <li key={shift.id}>
-                                    <ShiftCard
-                                        label={shift.label}
-                                        startTime={start}
-                                        endTime={end}
-                                        color={shift.color}
-                                        onClick={() => onOpenShift?.(shift)}
-                                        onDelete={() => onDeleteShift?.(shift)}
-                                    />
-                                </li>
+                                <ShiftCard
+                                    key={shift.id}
+                                    label={shift.label}
+                                    startTime={start}
+                                    endTime={end}
+                                    color={shift.color}
+                                    onClick={() => onOpenShift?.(shift)}
+                                    onDelete={() => onDeleteShift?.(shift)}
+                                />
                             );
                         })}
                     </ul>
-                ) : (
-                    <div className="flex flex-col items-center gap-4 py-10">
-                        <p className="text-base-content/60 text-center px-4">
-                            Сейчас смен нет — добавьте первую смену!
-                        </p>
-                        <button
-                            onClick={onCreateClick}
-                            className="flex items-center justify-center w-16 h-16 bg-primary text-primary-content rounded-full shadow-md hover:shadow-lg transition"
-                            aria-label="Добавить смену"
-                        >
-                            <Plus strokeWidth={2.5} size={24} />
-                        </button>
-                    </div>
                 )}
-
-                <div className="h-8" />
             </div>
 
-            {/* плавный переход сверху */}
-            <div className="pointer-events-none absolute top-0 left-0 right-0 h-8 bg-gradient-to-b from-base-100 via-base-100/50 to-transparent rounded-t-2xl" />
-            {/* плавный переход снизу */}
-            <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-base-100 via-base-100/50 to-transparent rounded-b-2xl" />
+            <TopFade/>
+            <BottomFade/>
         </div>
     );
 }
+
+
+const TopFade = () => (
+    <div
+        className="pointer-events-none absolute left-0 right-0 top-0 h-8 rounded-t-2xl bg-gradient-to-b from-base-100 via-base-100/50 to-transparent"/>
+)
+
+const BottomFade = () => (
+    <div
+        className="pointer-events-none absolute bottom-0 left-0 right-0 h-20 rounded-b-2xl bg-gradient-to-t from-base-100 via-base-100/50 to-transparent"/>
+)
