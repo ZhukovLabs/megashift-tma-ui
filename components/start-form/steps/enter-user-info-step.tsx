@@ -2,31 +2,7 @@ import React, {useEffect, useState} from "react";
 import {StepProps, FormData} from "../types";
 import {useTranslations} from "next-intl";
 import {useFormContext, useWatch} from "react-hook-form";
-import {TIMEZONES} from "../config";
-
-const getOffset = (tz: string) => {
-    const now = new Date();
-    const tzDate = new Intl.DateTimeFormat("en-US", {
-        timeZone: tz,
-        hour12: false,
-        hour: "2-digit",
-        minute: "2-digit",
-    }).formatToParts(now);
-    const hour = Number(tzDate.find((p) => p.type === "hour")?.value ?? 0);
-    const utcHour = now.getUTCHours();
-    const offset = hour - utcHour;
-    return offset >= 0 ? `+${offset}` : `${offset}`;
-};
-
-const getCurrentTimeInTZ = (tz: string) => {
-    const now = new Date();
-    return new Intl.DateTimeFormat("ru-RU", {
-        timeZone: tz,
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-    }).format(now);
-};
+import {getCurrentTimeInTZ, getOffset, TIMEZONES} from "../config";
 
 type EnterUserInfoStepProps = StepProps & { isValid: boolean };
 

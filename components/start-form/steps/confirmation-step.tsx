@@ -6,33 +6,7 @@ import {useCreateUser} from '@/components/start-form/hooks/use-create-user';
 import {useFormContext} from 'react-hook-form';
 import {useRouter} from 'next/navigation';
 import {ROUTES} from '@/constants/routes';
-import {TIMEZONES} from "../config";
-
-const getOffset = (tz: string) => {
-    const now = new Date();
-    const tzDate = new Intl.DateTimeFormat('en-US', {
-        timeZone: tz,
-        hour12: false,
-        hour: '2-digit',
-        minute: '2-digit',
-    }).formatToParts(now);
-
-    const hour = Number(tzDate.find((p) => p.type === 'hour')?.value ?? 0);
-    const utcHour = now.getUTCHours();
-    const offset = hour - utcHour;
-    return offset >= 0 ? `+${offset}` : `${offset}`;
-};
-
-// Текущее время в выбранной TZ
-const getCurrentTimeInTZ = (tz?: string) => {
-    if (!tz) return '';
-    return new Intl.DateTimeFormat('ru-RU', {
-        timeZone: tz,
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-    }).format(new Date());
-};
+import {getOffset, getCurrentTimeInTZ, TIMEZONES} from "../config";
 
 export const ConfirmationStep = ({
                                      onBack,
