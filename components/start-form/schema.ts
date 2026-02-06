@@ -21,4 +21,8 @@ export const formSchema = z.object({
         })
         .optional()
         .or(z.literal('')),
+    timezone: z.string()
+        .regex(/(^[a-zA-Z]+\/[a-zA-Z_]+|(UTC))$/, {
+            message: 'Timezone must be a valid IANA string, e.g. "Europe/Moscow"',
+        }),
 });

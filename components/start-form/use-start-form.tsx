@@ -14,6 +14,7 @@ export const useStartForm = () => {
             name: '',
             surname: '',
             patronymic: '',
+            timezone: 'UTC'
         },
         mode: 'onTouched',
     });

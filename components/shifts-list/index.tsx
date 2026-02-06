@@ -3,6 +3,7 @@
 import ShiftCard from "@/components/shift-card";
 import {ShiftsListSkeleton} from "./skeleton";
 import {EmptyState} from "./empty-list";
+import {format} from "date-fns";
 
 type Shift = {
     id: string;
@@ -19,13 +20,6 @@ type Props = {
     onOpenShift?: (shift: Shift) => void;
     onDeleteShift?: (shift: Shift) => void;
 };
-
-function formatTimeRange(shift: Shift) {
-    return {
-        start: shift.startTime.slice(11, 16),
-        end: shift.endTime.slice(11, 16),
-    };
-}
 
 export default function ShiftsList({
                                        shifts,
@@ -47,21 +41,17 @@ export default function ShiftsList({
 
                 {!isLoading && !isEmpty && (
                     <ul className="flex flex-col gap-4 pb-8" role="list">
-                        {shifts.map((shift) => {
-                            const {start, end} = formatTimeRange(shift);
-
-                            return (
-                                <ShiftCard
-                                    key={shift.id}
-                                    label={shift.label}
-                                    startTime={start}
-                                    endTime={end}
-                                    color={shift.color}
-                                    onClick={() => onOpenShift?.(shift)}
-                                    onDelete={() => onDeleteShift?.(shift)}
-                                />
-                            );
-                        })}
+                        {shifts.map((shift) => (
+                            <ShiftCard
+                                key={shift.id}
+                                label={shift.label}
+                                startTime={format(shift.startTime, 'HH:mm')}
+                                endTime={format(shift.endTime, 'HH:mm')}
+                                color={shift.color}
+                                onClick={() => onOpenShift?.(shift)}
+                                onDelete={() => onDeleteShift?.(shift)}
+                            />
+                        ))}
                     </ul>
                 )}
             </div>

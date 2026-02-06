@@ -1,19 +1,55 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {StepProps, FormData} from "../types";
 import {useTranslations} from "next-intl";
-import {useFormContext} from "react-hook-form";
+import {useFormContext, useWatch} from "react-hook-form";
+import {TIMEZONES} from "../config";
+
+const getOffset = (tz: string) => {
+    const now = new Date();
+    const tzDate = new Intl.DateTimeFormat("en-US", {
+        timeZone: tz,
+        hour12: false,
+        hour: "2-digit",
+        minute: "2-digit",
+    }).formatToParts(now);
+    const hour = Number(tzDate.find((p) => p.type === "hour")?.value ?? 0);
+    const utcHour = now.getUTCHours();
+    const offset = hour - utcHour;
+    return offset >= 0 ? `+${offset}` : `${offset}`;
+};
+
+const getCurrentTimeInTZ = (tz: string) => {
+    const now = new Date();
+    return new Intl.DateTimeFormat("ru-RU", {
+        timeZone: tz,
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+    }).format(now);
+};
 
 type EnterUserInfoStepProps = StepProps & { isValid: boolean };
 
 export const EnterUserInfoStep = ({onNext, onBack, isValid}: EnterUserInfoStepProps) => {
-    const {handleSubmit, formState:{errors}, register} = useFormContext<FormData>();
+    const {handleSubmit, formState: {errors}, register, control} = useFormContext<FormData>();
     const t = useTranslations('start-form.enter-user-info-step');
+
+    const selectedTimezone = useWatch({control, name: 'timezone'});
+    const [currentTime, setCurrentTime] = useState<string>(() => getCurrentTimeInTZ(selectedTimezone));
+
+    useEffect(() => {
+        if (!selectedTimezone) return;
+
+        const timer = setInterval(() => {
+            setCurrentTime(getCurrentTimeInTZ(selectedTimezone));
+        }, 1000);
+
+        return () => clearInterval(timer);
+    }, [selectedTimezone]);
 
     return (
         <div className="w-full mx-auto p-6 rounded-2xl">
-            <h2 className="mb-6">
-                {t("title")}
-            </h2>
+            <h2 className="mb-6">{t("title")}</h2>
 
             <form onSubmit={handleSubmit(onNext!)} className="w-full">
                 <div className="flex flex-col [&>span]:mb-5">
@@ -42,6 +78,24 @@ export const EnterUserInfoStep = ({onNext, onBack, isValid}: EnterUserInfoStepPr
                         autoComplete="additional-name"
                     />
                     <span className="text-red-500 text-sm">{errors.patronymic?.message}</span>
+
+                    <label className="mt-4 mb-1 font-medium">Часовой пояс</label>
+                    <select
+                        {...register('timezone', {required: true})}
+                        className="input w-full"
+                        defaultValue="UTC"
+                    >
+                        {TIMEZONES.map(({tz, label}) => (
+                            <option key={tz} value={tz}>
+                                {label} ({getOffset(tz)})
+                            </option>
+                        ))}
+                    </select>
+                    <span className="text-red-500 text-sm">{errors.timezone?.message}</span>
+
+                    <p className="text-sm text-gray-500 mt-2">
+                        У вас сейчас: <strong>{currentTime}</strong> в выбранном часовом поясе
+                    </p>
                 </div>
 
                 <div className="flex gap-3 mt-8">
@@ -59,4 +113,4 @@ export const EnterUserInfoStep = ({onNext, onBack, isValid}: EnterUserInfoStepPr
             </form>
         </div>
     );
-}
+};
