@@ -9,14 +9,12 @@ export type ShiftDto = {
     shiftTemplateId: string | null;
 };
 
-
 type GetShiftsParams = {
     year: number;
     month: number;
 };
 
 type GetShiftsResponse = ShiftDto[];
-
 export const useGetShifts = ({year, month}: GetShiftsParams) => {
     return useQuery<GetShiftsResponse>({
         queryKey: ['shifts', year, month],
