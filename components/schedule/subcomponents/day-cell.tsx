@@ -1,17 +1,20 @@
-import { format, isSameMonth, isToday, isSameDay } from "date-fns";
+import {format, isSameMonth, isToday, isSameDay} from "date-fns";
 import cn from "classnames";
-import { useSchedule } from "@/components/schedule/context";
+import {useSchedule} from "@/components/schedule/context";
+import {useGetShiftTemplates} from "@/api-hooks/use-get-shift-templates";
 
 type DayCellProps = {
     day: Date;
     monthDate: Date;
 };
 
-const MAX_VISIBLE_EVENTS = 2; // максимум отображаемых событий
+const MAX_VISIBLE_EVENTS = 2;
 
-export const DayCell = ({ day, monthDate }: DayCellProps) => {
-    const { events, onEventClick, cellHeight } = useSchedule();
-    const dayEvents = events.filter(ev => isSameDay(ev.date, day));
+export const DayCell = ({day, monthDate}: DayCellProps) => {
+    const {shifts, onDayClick, cellHeight} = useSchedule();
+    const {data: shiftTemplates = []} = useGetShiftTemplates();
+
+    const dayEvents = shifts.filter(({date}) => isSameDay(date, day));
 
     const isCurrentMonth = isSameMonth(day, monthDate);
     const isCurrentDay = isToday(day);
@@ -38,28 +41,33 @@ export const DayCell = ({ day, monthDate }: DayCellProps) => {
 
     return (
         <div
-            style={{ height: cellHeight }}
+            style={{height: cellHeight}}
             className={dayBlockClasses}
             aria-label={`День ${format(day, "d MMMM yyyy")}, событий: ${dayEvents.length}`}
+            onClick={() => onDayClick?.(day)}
         >
             <div className={dayTextClasses}>{format(day, "d")}</div>
 
             <div className="flex flex-col gap-0.5 mt-auto">
-                {visibleEvents.map(ev => (
-                    <div
-                        key={ev.id}
-                        className="text-[10px] rounded px-1 py-[1px] truncate cursor-pointer"
-                        style={{
-                            backgroundColor: ev.color || "#3b82f6",
-                            color: "#fff",
-                            lineHeight: "1em",
-                        }}
-                        title={ev.title}
-                        onClick={() => onEventClick?.(ev)}
-                    >
-                        {ev.title}
-                    </div>
-                ))}
+                {visibleEvents.map(({id, shiftTemplateId}) => {
+                        const shiftTemplate = shiftTemplates.find(({id}) => id === shiftTemplateId)!;
+
+                        return (
+                            <div
+                                key={id}
+                                className="text-[10px] rounded px-1 py-[1px] truncate cursor-pointer"
+                                style={{
+                                    backgroundColor: shiftTemplate.color,
+                                    color: "#fff",
+                                    lineHeight: "1em",
+                                }}
+                                title={shiftTemplate.label}
+                            >
+                                {shiftTemplate.label}
+                            </div>
+                        )
+                    }
+                )}
 
                 {extraCount > 0 && (
                     <div
@@ -71,5 +79,6 @@ export const DayCell = ({ day, monthDate }: DayCellProps) => {
                 )}
             </div>
         </div>
-    );
+    )
+        ;
 };

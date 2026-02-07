@@ -3,14 +3,9 @@
 import {createContext, useContext, ReactNode, useRef, useLayoutEffect, useState} from "react";
 import {addMonths, subMonths} from "date-fns";
 import {CELL_ROWS} from "./config";
+import {ShiftDto} from "@/api-hooks/use-get-shifts";
 
-export type CalendarEvent = {
-    id: string;
-    date: Date;
-    title: string;
-    description?: string;
-    color?: string;
-};
+export type CalendarEvent = ShiftDto;
 
 type ScheduleContextType = {
     currentDate: Date;
@@ -20,22 +15,22 @@ type ScheduleContextType = {
     prevMonth: VoidFunction;
     monthHeight: number;
     cellHeight: number;
-    events: CalendarEvent[];
-    onEventClick?: (event: CalendarEvent) => void;
+    shifts: CalendarEvent[];
+    onDayClick?: (day: Date) => void;
 };
 
 type ScheduleProviderProps = {
     children: ReactNode;
-    events?: CalendarEvent[];
-    onEventClick?: (event: CalendarEvent) => void;
+    shifts?: CalendarEvent[];
+    onDayClick?: (day: Date) => void;
 };
 
 const ScheduleContext = createContext<ScheduleContextType | undefined>(undefined);
 
 export const ScheduleProvider = ({
                                      children,
-                                     events = [],
-                                     onEventClick,
+                                     shifts = [],
+                                     onDayClick,
                                  }: ScheduleProviderProps) => {
     const [currentDate, setCurrentDate] = useState(new Date());
     const [monthHeight, setMonthHeight] = useState(0);
@@ -77,8 +72,8 @@ export const ScheduleProvider = ({
                 prevMonth,
                 monthHeight,
                 cellHeight,
-                events,
-                onEventClick,
+                shifts,
+                onDayClick,
             }}
         >
             <div ref={viewportRef} className="flex-1">{children}</div>
