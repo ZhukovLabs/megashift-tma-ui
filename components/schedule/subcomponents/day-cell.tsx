@@ -2,6 +2,7 @@ import {format, isSameMonth, isToday, isSameDay} from "date-fns";
 import cn from "classnames";
 import {useSchedule} from "@/components/schedule/context";
 import {useGetShiftTemplates} from "@/api-hooks/use-get-shift-templates";
+import {} from 'date-fns-tz';
 
 type DayCellProps = {
     day: Date;
@@ -44,7 +45,7 @@ export const DayCell = ({day, monthDate}: DayCellProps) => {
             style={{height: cellHeight}}
             className={dayBlockClasses}
             aria-label={`День ${format(day, "d MMMM yyyy")}, событий: ${dayEvents.length}`}
-            onClick={() => onDayClick?.(day)}
+            onClick={() => onDayClick?.(day, dayEvents)}
         >
             <div className={dayTextClasses}>{format(day, "d")}</div>
 

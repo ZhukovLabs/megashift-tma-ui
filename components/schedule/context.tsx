@@ -16,13 +16,13 @@ type ScheduleContextType = {
     monthHeight: number;
     cellHeight: number;
     shifts: CalendarEvent[];
-    onDayClick?: (day: Date) => void;
+    onDayClick?: (day: Date, events: CalendarEvent[]) => void;
 };
 
 type ScheduleProviderProps = {
     children: ReactNode;
     shifts?: CalendarEvent[];
-    onDayClick?: (day: Date) => void;
+    onDayClick?: (day: Date, events: CalendarEvent[]) => void;
 };
 
 const ScheduleContext = createContext<ScheduleContextType | undefined>(undefined);
