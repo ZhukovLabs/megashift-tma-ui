@@ -51,7 +51,7 @@ export const DayCell = ({day, monthDate}: DayCellProps) => {
 
             <div className="flex flex-col gap-0.5 mt-auto">
                 {visibleEvents.map(({id, shiftTemplateId}) => {
-                        const shiftTemplate = shiftTemplates.find(({id}) => id === shiftTemplateId)!;
+                        const shiftTemplate = shiftTemplates.find(({id}) => id === shiftTemplateId)! ?? {};
 
                         return (
                             <div

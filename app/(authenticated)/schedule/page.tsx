@@ -15,7 +15,7 @@ const SchedulePage = () => {
     const [currentDate, setCurrentDate] = useState(new Date());
 
     const year = currentDate.getFullYear();
-    const month = currentDate.getMonth() + 1; // date-fns month индексируется с 0
+    const month = currentDate.getMonth() + 1;
 
     const {data: shifts = []} = useGetShifts({ year, month });
 
