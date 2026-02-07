@@ -23,7 +23,9 @@ const SchedulePage = () => {
     const handleCreateShift = async (day: Date, events: CalendarEvent[]) => {
         if (!selectedShiftId) return;
 
-        const exists = events.find(({shiftTemplateId}) => selectedShiftId === shiftTemplateId);
+        const exists = events.find(({shiftTemplateId, actualStartTime, actualEndTime}) => (
+            selectedShiftId === shiftTemplateId && !actualStartTime && !actualEndTime
+        ));
 
         if (exists) {
             await deleteShift(exists.id)
