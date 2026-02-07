@@ -33,7 +33,7 @@ export function BottomMenu({
             exit={{y: 40, opacity: 0, scale: 0.95}}
             transition={{type: 'spring', stiffness: 260, damping: 24}}
             className={cn(
-                'fixed bottom-4 left-1/2 -translate-x-1/2 z-50',
+                'fixed bottom-4 left-1/2 -translate-x-1/2 z-40',
                 'pb-[env(safe-area-inset-bottom)]',
                 className
             )}
