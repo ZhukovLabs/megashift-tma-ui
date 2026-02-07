@@ -1,3 +1,4 @@
+// components/schedule/context.tsx
 'use client';
 
 import {createContext, useContext, ReactNode, useRef, useLayoutEffect, useState} from "react";
@@ -21,6 +22,8 @@ type ScheduleContextType = {
 
 type ScheduleProviderProps = {
     children: ReactNode;
+    currentDate: Date;
+    onDateChange: (date: Date) => void;
     shifts?: CalendarEvent[];
     onDayClick?: (day: Date, events: CalendarEvent[]) => void;
 };
@@ -29,16 +32,17 @@ const ScheduleContext = createContext<ScheduleContextType | undefined>(undefined
 
 export const ScheduleProvider = ({
                                      children,
+                                     currentDate,
+                                     onDateChange,
                                      shifts = [],
                                      onDayClick,
                                  }: ScheduleProviderProps) => {
-    const [currentDate, setCurrentDate] = useState(new Date());
     const [monthHeight, setMonthHeight] = useState(0);
     const [cellHeight, setCellHeight] = useState(0);
     const viewportRef = useRef<HTMLDivElement>(null);
 
-    const nextMonth = () => setCurrentDate(d => addMonths(d, 1));
-    const prevMonth = () => setCurrentDate(d => subMonths(d, 1));
+    const nextMonth = () => onDateChange(addMonths(currentDate, 1));
+    const prevMonth = () => onDateChange(subMonths(currentDate, 1));
 
     const prevDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
     const nextDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1);
