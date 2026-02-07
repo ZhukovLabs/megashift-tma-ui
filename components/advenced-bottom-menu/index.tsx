@@ -58,9 +58,9 @@ export function AdvancedBottomMenu() {
             <AnimatePresence>
                 {isOpen && (
                     <motion.div
-                        initial={{y: 60, scale: 0.95}}
+                        initial={{y: 80, scale: 0.95}}
                         animate={{y: 0, scale: 1}}
-                        exit={{y: 60, scale: 0.95}}
+                        exit={{y: 80, scale: 0.95}}
                         transition={{type: 'spring', stiffness: 260, damping: 24}}
                         className={cn(
                             'fixed bottom-4 left-1/2 -translate-x-1/2 z-50',
