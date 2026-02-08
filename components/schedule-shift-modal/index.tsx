@@ -1,23 +1,28 @@
 'use client';
 
-import {useCallback, useMemo} from 'react';
-import {useRouter, useSearchParams, usePathname} from 'next/navigation';
-import {format} from 'date-fns';
-import {ru} from 'date-fns/locale';
-import {useGetShiftsByDate} from '@/api-hooks/use-get-shifts-by-date';
-import {useGetShiftTemplates} from '@/api-hooks/use-get-shift-templates';
-import {Trash2} from 'lucide-react';
+import { useCallback, useMemo } from 'react';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
+import { format } from 'date-fns';
+import { ru } from 'date-fns/locale';
+import { Trash2 } from 'lucide-react';
+import { formatInTimeZone } from 'date-fns-tz';
+
+import { useGetShiftsByDate } from '@/api-hooks/use-get-shifts-by-date';
+import { useGetShiftTemplates } from '@/api-hooks/use-get-shift-templates';
+import { useUserStore } from '@/store/user-store';
+
 type ShiftTemplate = {
     id: string;
-    name?: string;
+    label?: string;
     startTime?: string;
     endTime?: string;
 };
 
 type Shift = {
     id: string;
-    shiftTemplateId?: string;
+    shiftTemplateId?: string; // нормализуем null к undefined
     actualStartTime?: string;
+    actualEndTime?: string;
 };
 
 export const ShiftModal = () => {
@@ -25,37 +30,68 @@ export const ShiftModal = () => {
     const pathname = usePathname();
     const searchParams = useSearchParams();
     const selectedDay = searchParams.get('date');
+    const tz = useUserStore(s => s.user?.timezone ?? 'UTC');
 
-    const isOpen = !!selectedDay;
+    const isOpen = Boolean(selectedDay);
 
-    const { data: shiftTemplates = [] } = useGetShiftTemplates() as { data: ShiftTemplate[] };
-    const { data: dayShifts = [] } = useGetShiftsByDate({
-        date: selectedDay || '',
-    }) as { data: Shift[] };
+    const { data: shiftTemplates = [] } = useGetShiftTemplates() || { data: [] };
+    const { data: dayShifts = [] } = useGetShiftsByDate({ date: selectedDay || '' }) || { data: [] };
 
     const onClose = useCallback(() => {
         const params = new URLSearchParams(searchParams.toString());
         params.delete('date');
-        const qs = params.toString();
-        router.replace(pathname + (qs ? `?${qs}` : ''));
+        router.replace(pathname + (params.toString() ? `?${params.toString()}` : ''));
     }, [router, searchParams, pathname]);
 
-    const enhancedShifts = useMemo(() => {
-        return dayShifts.map((shift) => {
-            const template =
-                shiftTemplates.find((t) => t.id === shift.shiftTemplateId) || {} as ShiftTemplate;
-            return { shift, template };
-        });
-    }, [dayShifts, shiftTemplates]);
+    // Нормализуем shiftTemplateId: null -> undefined
+    const enhancedShifts = useMemo(
+        () =>
+            dayShifts.map(shift => {
+                const normalizedShift = {
+                    ...shift,
+                    shiftTemplateId: shift.shiftTemplateId ?? undefined,
+                } as Shift;
+                const template = shiftTemplates.find(t => t.id === normalizedShift.shiftTemplateId);
+                return { shift: normalizedShift, template };
+            }),
+        [dayShifts, shiftTemplates]
+    );
+
+    const formatTime = useCallback(
+        (time: string | undefined) => (time ? formatInTimeZone(time, tz, 'HH:mm') : '--:--'),
+        [tz]
+    );
+
+    const renderShift = ({ shift, template }: { shift: Shift; template?: ShiftTemplate }) => (
+        <div
+            key={shift.id}
+            className="flex items-center justify-between p-3 sm:p-4 bg-base-100 rounded-xl shadow hover:shadow-md transition cursor-default"
+        >
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                <span className="font-medium text-sm sm:text-base">{template?.label ?? 'Смена без названия'}</span>
+                <span className="text-xs sm:text-sm text-gray-500">
+          {formatTime(shift.actualStartTime ?? template?.startTime)} — {formatTime(shift.actualEndTime ?? template?.endTime)}
+        </span>
+            </div>
+
+            <button
+                aria-label="Удалить смену"
+                className="p-1 rounded-full hover:bg-red-100 transition"
+                onClick={() => {
+                    // TODO: Добавить удаление через useDeleteShift или другой мутационный хук
+                }}
+            >
+                <Trash2 className="w-4 h-4 text-red-500" />
+            </button>
+        </div>
+    );
 
     return (
         <>
             <input type="checkbox" id="shift-modal" className="modal-toggle" checked={isOpen} readOnly />
 
             <div
-                className={`modal modal-bottom sm:modal-middle ${
-                    isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
-                }`}
+                className={`modal modal-bottom sm:modal-middle ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
                 role="dialog"
                 aria-modal="true"
             >
@@ -66,10 +102,7 @@ export const ShiftModal = () => {
                 >
                     <div className="flex items-center justify-between mb-4">
                         <h3 className="text-xl sm:text-2xl font-bold text-primary">
-                            Смены на{' '}
-                            {selectedDay
-                                ? format(new Date(selectedDay), 'd MMMM yyyy', { locale: ru })
-                                : ''}
+                            Смены на {selectedDay ? format(new Date(selectedDay), 'd MMMM yyyy', { locale: ru }) : ''}
                         </h3>
                         <button
                             aria-label="Закрыть модалку"
@@ -85,37 +118,10 @@ export const ShiftModal = () => {
                     <div className="space-y-2 max-h-72 overflow-y-auto pr-1">
                         {enhancedShifts.length === 0 ? (
                             <div className="flex flex-col items-center justify-center py-10 text-center opacity-70">
-                                <p className="text-base sm:text-lg font-medium">
-                                    На этот день пока нет смен
-                                </p>
+                                <p className="text-base sm:text-lg font-medium">На этот день пока нет смен</p>
                             </div>
                         ) : (
-                            enhancedShifts.map(({ shift, template }) => (
-                                <div
-                                    key={shift.id}
-                                    className="flex items-center justify-between p-3 sm:p-4 bg-base-100 rounded-xl shadow hover:shadow-md transition cursor-default"
-                                >
-                                    <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                    <span className="font-medium text-sm sm:text-base">
-                      {template.name || 'Смена без названия'}
-                    </span>
-                                        {template.startTime && template.endTime && (
-                                            <span className="text-xs sm:text-sm text-gray-500">
-                        {template.startTime} — {template.endTime}
-                      </span>
-                                        )}
-                                    </div>
-
-                                    <button
-                                        aria-label="Удалить смену"
-                                        className="p-1 rounded-full hover:bg-red-100 transition"
-                                        onClick={() => {
-                                        }}
-                                    >
-                                        <Trash2 className="w-4 h-4 text-red-500" />
-                                    </button>
-                                </div>
-                            ))
+                            enhancedShifts.map(renderShift)
                         )}
                     </div>
 
