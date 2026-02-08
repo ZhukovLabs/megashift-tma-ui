@@ -1,8 +1,8 @@
-import {format, isSameMonth, isToday, isSameDay} from "date-fns";
+import { format, isSameDay, isSameMonth, isToday } from "date-fns";
 import cn from "classnames";
-import {useSchedule} from "@/components/schedule/context";
-import {useGetShiftTemplates} from "@/api-hooks/use-get-shift-templates";
-import {} from 'date-fns-tz';
+import { useMemo } from "react";
+import { useSchedule } from "@/components/schedule/context";
+import { useGetShiftTemplates } from "@/api-hooks/use-get-shift-templates";
 
 type DayCellProps = {
     day: Date;
@@ -11,75 +11,93 @@ type DayCellProps = {
 
 const MAX_VISIBLE_EVENTS = 2;
 
-export const DayCell = ({day, monthDate}: DayCellProps) => {
-    const {shifts, onDayClick, cellHeight} = useSchedule();
-    const {data: shiftTemplates = []} = useGetShiftTemplates();
+const DEFAULT_EVENT_COLOR = "#64748b";
+const DEFAULT_EVENT_LABEL = "(Без шаблона)";
+const TIME_FORMAT = "HH:mm";
 
-    const dayEvents = shifts.filter(({date}) => isSameDay(date, day));
+export const DayCell = ({ day, monthDate }: DayCellProps) => {
+    const { shifts, onDayClick, cellHeight } = useSchedule();
+    const { data: shiftTemplates = [] } = useGetShiftTemplates();
 
     const isCurrentMonth = isSameMonth(day, monthDate);
     const isCurrentDay = isToday(day);
 
+    const templateMap = useMemo<Record<string, typeof shiftTemplates[number]>>(
+        () => Object.fromEntries(shiftTemplates.map(t => [t.id, t])),
+        [shiftTemplates]
+    );
+
+    const dayEvents = useMemo(
+        () => shifts.filter(({ date }) => isSameDay(date, day)),
+        [shifts, day]
+    );
+
     const visibleEvents = dayEvents.slice(0, MAX_VISIBLE_EVENTS);
     const extraCount = dayEvents.length - visibleEvents.length;
 
-    const dayBlockClasses = cn(
-        "flex flex-col justify-between rounded-lg transition-colors p-1 cursor-pointer",
-        {
-            "bg-base-200 hover:bg-base-200/70": isCurrentMonth,
-            "bg-base-300/50 hover:bg-base-300/70": !isCurrentMonth,
-            "border-1 border-accent/50": isCurrentDay,
-        }
-    );
-
-    const dayTextClasses = cn(
-        "flex items-center justify-center rounded-full w-8 h-8 text-sm font-semibold transition-all",
-        {
-            "text-base-content/25": !isCurrentMonth,
-            "text-base-content": isCurrentMonth
-        }
-    );
-
     return (
         <div
-            style={{height: cellHeight}}
-            className={dayBlockClasses}
-            aria-label={`День ${format(day, "d MMMM yyyy")}, событий: ${dayEvents.length}`}
+            style={{ height: cellHeight }}
             onClick={() => onDayClick?.(day, dayEvents)}
+            className={cn(
+                "relative flex flex-col cursor-pointer select-none overflow-hidden transition-colors duration-150",
+                {
+                    "bg-base-100": isCurrentMonth,
+                    "bg-base-200/40 opacity-70": !isCurrentMonth,
+                    "ring-2 ring-primary/60 bg-primary/5": isCurrentDay,
+                }
+            )}
         >
-            <div className={dayTextClasses}>{format(day, "d")}</div>
+            <div className="flex justify-center pt-1">
+                <div
+                    className={cn("text-xs font-semibold", {
+                        "text-primary": isCurrentDay,
+                        "text-base-content": isCurrentMonth && !isCurrentDay,
+                        "text-base-content/50": !isCurrentMonth,
+                    })}
+                >
+                    {format(day, "d")}
+                </div>
+            </div>
 
-            <div className="flex flex-col gap-0.5 mt-auto">
-                {visibleEvents.map(({id, shiftTemplateId}) => {
-                        const shiftTemplate = shiftTemplates.find(({id}) => id === shiftTemplateId)! ?? {};
+            <div className="flex-1 px-1 pb-1 mt-0.5 flex flex-col gap-0.5 overflow-hidden">
+                {visibleEvents.map(event => {
+                    const template =
+                        event.shiftTemplateId
+                            ? templateMap[event.shiftTemplateId] ?? null
+                            : null;
 
-                        return (
-                            <div
-                                key={id}
-                                className="text-[10px] rounded px-1 py-[1px] truncate cursor-pointer"
-                                style={{
-                                    backgroundColor: shiftTemplate.color,
-                                    color: "#fff",
-                                    lineHeight: "1em",
-                                }}
-                                title={shiftTemplate.label}
-                            >
-                                {shiftTemplate.label}
+                    const label = template?.label ?? DEFAULT_EVENT_LABEL;
+                    const bgColor = template?.color ?? DEFAULT_EVENT_COLOR;
+
+                    const startTime =
+                        event.actualStartTime ?? template?.startTime;
+
+                    return (
+                        <div
+                            key={event.id}
+                            className="rounded-sm shadow-sm overflow-hidden text-center"
+                            style={{ backgroundColor: bgColor }}
+                        >
+                            <div className="px-1 py-0.5 text-[10px] font-medium text-white leading-none truncate">
+                                {label}
                             </div>
-                        )
-                    }
-                )}
+
+                            {startTime && (
+                                <div className="px-1 pb-0.5 text-[9px] text-white/90 bg-black/20 leading-none">
+                                    {format(new Date(startTime), TIME_FORMAT)}
+                                </div>
+                            )}
+                        </div>
+                    );
+                })}
 
                 {extraCount > 0 && (
-                    <div
-                        className="text-[10px] rounded px-1 py-[1px] text-center bg-base-300/50 text-base-content/80 cursor-default truncate"
-                        title={`+${extraCount} дополнительных событий`}
-                    >
-                        +{extraCount} еще
+                    <div className="mt-0.5 rounded-sm px-1 py-0.5 text-[10px] text-center text-base-content/70 bg-base-300/70 leading-none">
+                        +{extraCount} ещё
                     </div>
                 )}
             </div>
         </div>
-    )
-        ;
+    );
 };

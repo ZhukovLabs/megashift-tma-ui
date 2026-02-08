@@ -4,7 +4,7 @@ import {DayCell} from "./day-cell";
 
 export const WeekRow = ({weekStart, monthDate}: { weekStart: Date; monthDate: Date }) => {
     return (
-        <div className="grid grid-cols-7 gap-1.5">
+        <div className="grid grid-cols-7">
             {Array.from({length: 7}, (_, i) => {
                 const day = addDays(weekStart, i);
 

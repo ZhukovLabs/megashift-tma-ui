@@ -14,7 +14,7 @@ export const MonthGrid = ({ monthType }: { monthType: MonthType }) => {
     const { startDate } = getMonthDates(monthDate);
 
     return (
-        <div className="flex flex-col gap-1.5">
+        <div className="flex flex-col gap-1">
             {Array.from({ length: 6 }, (_, w) => {
                 const weekStart = addDays(startDate, w * 7);
                 return <WeekRow key={w} weekStart={weekStart} monthDate={monthDate} />;
