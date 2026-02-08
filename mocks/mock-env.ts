@@ -41,6 +41,26 @@ export async function mockEnv() {
                         if (e.name === 'web_app_request_safe_area') {
                             return emitEvent('safe_area_changed', noInsets);
                         }
+                        if (e.name === 'web_app_open_popup') {
+                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                            const params = e.params as any;
+
+                            const result = window.confirm(`${params.title ?? ''}\n\n${params.message ?? ''}`);
+
+                            const buttonId = result
+                                // @ts-expect-error - ok
+                                ? params.buttons?.find(b => b.type !== 'cancel')?.id
+                                // @ts-expect-error - ok
+                                : params.buttons?.find(b => b.type === 'cancel')?.id;
+
+                            emitEvent('popup_closed', {
+                                button_id: buttonId ?? null,
+                            });
+
+                            return;
+                        }
+
+
                         next();
                     },
                     launchParams: new URLSearchParams([
