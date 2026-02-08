@@ -1,3 +1,4 @@
+// components/ui/ModalSheet.tsx
 'use client';
 
 import { X } from 'lucide-react';
@@ -6,7 +7,7 @@ import { ReactNode } from 'react';
 
 type ModalSheetProps = {
     isOpen: boolean;
-    onClose: VoidFunction;
+    onClose: () => void;
     title?: string;
     children: ReactNode;
     footer?: ReactNode;
@@ -59,45 +60,43 @@ export default function ModalSheet({
                     />
 
                     <motion.div
-                        className={`relative w-full ${maxWidth} max-h-[92vh] sm:max-h-[90vh] overflow-hidden ${className}`}
+                        className={`relative w-full ${maxWidth} max-h-[80vh] sm:max-h-[80vh] ${className}`}
                         variants={sheetVariant}
                         initial="hidden"
                         animate="visible"
                         exit="exit"
                         transition={{ type: 'spring', stiffness: 280, damping: 30 }}
                     >
-                        <div className="flex flex-col h-full bg-base-100 rounded-t-2xl sm:rounded-2xl shadow-lg border border-base-300">
+                        <div className="flex flex-col h-full max-h-[80vh] bg-base-100 rounded-t-2xl sm:rounded-2xl shadow-lg border border-base-300 overflow-hidden">
                             {!noHeader && (
-                                <div className="px-4 pt-3 pb-2 sm:pt-4 sm:pb-4">
-                                    <div className="mx-auto w-10 h-1.5 rounded-full bg-base-300 sm:hidden" />
-                                    <div className="flex items-center justify-between mt-3 sm:mt-4">
-                                        {title ? (
-                                            <h2 className="text-lg sm:text-xl font-semibold text-primary truncate">
+                                <div className="px-5 pt-4 pb-3 sm:px-6 sm:pt-5 sm:pb-4 shrink-0">
+                                    <div className="mx-auto w-10 h-1.5 rounded-full bg-base-300 sm:hidden mb-3" />
+                                    <div className="flex items-center justify-between">
+                                        {title && (
+                                            <h2 className="text-lg sm:text-xl font-semibold text-primary truncate pr-4">
                                                 {title}
                                             </h2>
-                                        ) : (
-                                            <div />
                                         )}
                                         {!hideCloseButton && (
                                             <button
                                                 type="button"
                                                 onClick={onClose}
                                                 aria-label="Закрыть"
-                                                className="p-2 rounded-md hover:bg-base-200 transition"
+                                                className="p-2 -mr-2 rounded-full hover:bg-base-200 transition"
                                             >
-                                                <X size={18} />
+                                                <X size={20} />
                                             </button>
                                         )}
                                     </div>
                                 </div>
                             )}
 
-                            <div className="flex-1 overflow-y-auto px-4 pb-4 sm:px-6 sm:pb-6">
+                            <div className="flex-1 overflow-y-auto px-5 pb-6 sm:px-6 sm:pb-8 min-h-0">
                                 {children}
                             </div>
 
                             {footer && (
-                                <div className="px-4 pt-2 pb-4 sm:px-6 sm:pb-6 bg-base-100">
+                                <div className="px-5 py-4 sm:px-6 sm:py-5 bg-base-100 border-t border-base-200 shrink-0">
                                     {footer}
                                 </div>
                             )}
