@@ -64,7 +64,7 @@ export function AdvancedBottomMenu() {
                         transition={{type: 'spring', stiffness: 260, damping: 24}}
                         className={cn(
                             'fixed bottom-4 left-1/2 -translate-x-1/2 z-50',
-                            'max-w-lvw'
+                            'max-w-lvw min-w-56'
                         )}
                     >
                         <div

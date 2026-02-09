@@ -3,9 +3,10 @@
 import {useEffect} from 'react';
 import {useRouter, usePathname, useSearchParams} from 'next/navigation';
 import {BottomMenu} from '@/components/bottom-menu';
-import {Calendar, User, Settings2, ClipboardClock} from 'lucide-react';
+import {Calendar, User, Settings2, ClipboardClock, ChartNoAxesCombined} from 'lucide-react';
 import {useUserStore} from '@/store/user-store';
 import {ROUTES} from '@/constants/routes';
+
 
 const bottomMenuItems = [
     {
@@ -15,6 +16,10 @@ const bottomMenuItems = [
     {
         path: ROUTES.shifts,
         icon: <ClipboardClock size={24}/>,
+    },
+    {
+        path: ROUTES.statistics,
+        icon: <ChartNoAxesCombined size={24}/>,
     },
     {
         path: ROUTES.profile,
