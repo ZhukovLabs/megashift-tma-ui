@@ -27,7 +27,9 @@ export default function StatisticsPage() {
 
     return (
         <div className="min-h-screen flex flex-col items-center bg-base-100 p-6">
-            <h1 className="text-3xl font-bold mb-6">Статистика смен</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-center mb-3 whitespace-pre-line">
+                Статистика{'\n'}смен
+            </h1>
 
             <form
                 onSubmit={handleSubmit(onSubmit)}
