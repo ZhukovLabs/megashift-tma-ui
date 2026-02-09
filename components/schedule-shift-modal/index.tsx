@@ -1,19 +1,18 @@
 'use client';
 
-import { useCallback, useMemo } from 'react';
-import { useRouter, usePathname, useSearchParams } from 'next/navigation';
-import { format, parseISO, differenceInMinutes, addDays } from 'date-fns';
-import { ru } from 'date-fns/locale';
-import { Trash2 } from 'lucide-react';
-import { formatInTimeZone, fromZonedTime } from 'date-fns-tz';
+import {useCallback, useMemo} from 'react';
+import {useRouter, usePathname, useSearchParams} from 'next/navigation';
+import {format, parseISO, differenceInMinutes, addDays} from 'date-fns';
+import {ru} from 'date-fns/locale';
+import {Trash2} from 'lucide-react';
+import {formatInTimeZone, fromZonedTime} from 'date-fns-tz';
 
-import { useGetShiftsByDate } from '@/api-hooks/use-get-shifts-by-date';
-import { useGetShiftTemplates } from '@/api-hooks/use-get-shift-templates';
-import { useUserStore } from '@/store/user-store';
-import { useDeleteShift } from '@/api-hooks/use-delete-shift';
-import { popup } from '@tma.js/sdk';
-
-import ModalSheet from '@/components/modal-sheet'; // ← подключи свою компоненту
+import {useGetShiftsByDate} from '@/api-hooks/use-get-shifts-by-date';
+import {useGetShiftTemplates} from '@/api-hooks/use-get-shift-templates';
+import {useUserStore} from '@/store/user-store';
+import {useDeleteShift} from '@/api-hooks/use-delete-shift';
+import {popup} from '@tma.js/sdk';
+import {ModalSheet} from '@/components/modal-sheet';
 
 type ShiftTemplate = {
     id: string;
@@ -39,9 +38,9 @@ export const ShiftModal = () => {
 
     const isOpen = Boolean(selectedDayStr);
 
-    const { data: shiftTemplates = [] } = useGetShiftTemplates() || { data: [] };
-    const { data: dayShifts = [] } = useGetShiftsByDate({ date: selectedDayStr }) || { data: [] };
-    const { mutateAsync: deleteShift } = useDeleteShift();
+    const {data: shiftTemplates = []} = useGetShiftTemplates() || {data: []};
+    const {data: dayShifts = []} = useGetShiftsByDate({date: selectedDayStr}) || {data: []};
+    const {mutateAsync: deleteShift} = useDeleteShift();
 
     const onClose = useCallback(() => {
         const params = new URLSearchParams(searchParams.toString());
@@ -57,7 +56,7 @@ export const ShiftModal = () => {
                     shiftTemplateId: shift.shiftTemplateId ?? undefined,
                 } as Shift;
                 const template = shiftTemplates.find((t) => t.id === normalizedShift.shiftTemplateId);
-                return { shift: normalizedShift, template };
+                return {shift: normalizedShift, template};
             }),
         [dayShifts, shiftTemplates]
     );
@@ -135,8 +134,8 @@ export const ShiftModal = () => {
             title: 'Удалить смену?',
             message: 'Это действие нельзя отменить',
             buttons: [
-                { id: 'yes', type: 'destructive', text: 'Удалить' },
-                { id: 'no', type: 'cancel' },
+                {id: 'yes', type: 'destructive', text: 'Удалить'},
+                {id: 'no', type: 'cancel'},
             ],
         });
 
@@ -145,7 +144,7 @@ export const ShiftModal = () => {
         }
     };
 
-    const renderShift = ({ shift, template }: { shift: Shift; template?: ShiftTemplate }) => {
+    const renderShift = ({shift, template}: { shift: Shift; template?: ShiftTemplate }) => {
         const start = shift.actualStartTime ?? template?.startTime;
         const end = shift.actualEndTime ?? template?.endTime;
         const duration = getDuration(start, end);
@@ -173,7 +172,7 @@ export const ShiftModal = () => {
                     className="p-3"
                     aria-label="Удалить смену"
                 >
-                    <Trash2 className="w-5 h-5 text-red-500" />
+                    <Trash2 className="w-5 h-5 text-red-500"/>
                 </button>
             </div>
         );
@@ -181,13 +180,11 @@ export const ShiftModal = () => {
 
     const selectedDayDate = selectedDayStr ? parseISO(selectedDayStr) : null;
 
-    if (!isOpen) return null;
-
     return (
         <ModalSheet
             isOpen={isOpen}
             onClose={onClose}
-            title={selectedDayDate ? format(selectedDayDate, 'd MMMM', { locale: ru }) : ''}
+            title={selectedDayDate ? format(selectedDayDate, 'd MMMM', {locale: ru}) : ''}
             footer={
                 <button className="btn btn-primary w-full" onClick={onClose}>
                     Закрыть

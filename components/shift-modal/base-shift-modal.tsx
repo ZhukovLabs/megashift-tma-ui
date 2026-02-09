@@ -1,9 +1,9 @@
 'use client';
 
-import { useForm, useWatch } from 'react-hook-form';
-import { useEffect } from 'react';
-import ModalSheet from '@/components/modal-sheet';
-import { defaultValues } from '@/components/shift-modal/config';
+import {useForm, useWatch} from 'react-hook-form';
+import {useEffect} from 'react';
+import {ModalSheet} from '@/components/modal-sheet';
+import {defaultValues} from '@/components/shift-modal/config';
 
 export type ShiftFormValues = {
     label: string;
@@ -26,7 +26,7 @@ type Props = {
 const clamp = (v: number, a = 0, b = 255) => Math.max(a, Math.min(b, Math.round(v)));
 
 function hexToRgb(hex: string) {
-    if (!hex) return { r: 255, g: 255, b: 255 };
+    if (!hex) return {r: 255, g: 255, b: 255};
     const h = hex.replace('#', '');
     if (h.length === 3) {
         return {
@@ -55,7 +55,7 @@ function rgbToHex(r: number, g: number, b: number) {
 }
 
 function lightenHex(hex: string, percent: number) {
-    const { r, g, b } = hexToRgb(hex);
+    const {r, g, b} = hexToRgb(hex);
     const nr = clamp(r + (255 - r) * (percent / 100));
     const ng = clamp(g + (255 - g) * (percent / 100));
     const nb = clamp(b + (255 - b) * (percent / 100));
@@ -63,26 +63,26 @@ function lightenHex(hex: string, percent: number) {
 }
 
 function getContrastColor(hex: string) {
-    const { r, g, b } = hexToRgb(hex);
+    const {r, g, b} = hexToRgb(hex);
     const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
     return luminance > 0.6 ? '#000000' : '#ffffff';
 }
 
 export function BaseShiftModal({
-                                           isOpen,
-                                           title,
-                                           initialValues,
-                                           isLoading = false,
-                                           isPending = false,
-                                           submitLabel,
-                                           onClose,
-                                           onSubmit,
-                                       }: Props) {
-    const { register, handleSubmit, reset, control, setValue } = useForm<ShiftFormValues>({
+                                   isOpen,
+                                   title,
+                                   initialValues,
+                                   isLoading = false,
+                                   isPending = false,
+                                   submitLabel,
+                                   onClose,
+                                   onSubmit,
+                               }: Props) {
+    const {register, handleSubmit, reset, control, setValue} = useForm<ShiftFormValues>({
         defaultValues: initialValues ?? defaultValues,
     });
 
-    const watchColor = useWatch({ control, name: 'color' }) || defaultValues.color;
+    const watchColor = useWatch({control, name: 'color'}) || defaultValues.color;
 
     useEffect(() => {
         if (initialValues) reset(initialValues);
@@ -90,7 +90,7 @@ export function BaseShiftModal({
     }, [initialValues, reset]);
 
     const onColorChange = (e: React.ChangeEvent<HTMLInputElement>) =>
-        setValue('color', e.target.value.toLowerCase(), { shouldDirty: true, shouldValidate: true });
+        setValue('color', e.target.value.toLowerCase(), {shouldDirty: true, shouldValidate: true});
 
     const base = watchColor || '#ffffff';
     const light = lightenHex(base, 18);
@@ -123,7 +123,7 @@ export function BaseShiftModal({
         >
             <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
                 <input
-                    {...register('label', { required: true })}
+                    {...register('label', {required: true})}
                     placeholder="Название смены"
                     disabled={isLoading}
                     className="input input-bordered w-full py-3 text-base sm:text-base"
@@ -145,12 +145,12 @@ export function BaseShiftModal({
                     >
                         <div
                             className="absolute inset-0 flex items-center justify-between px-4"
-                            style={{ color: textColor }}
+                            style={{color: textColor}}
                         >
                             <div className="flex items-center gap-3">
                 <span
                     className="w-8 h-8 rounded-full border border-gray-300 shadow-inner flex-shrink-0"
-                    style={{ backgroundColor: base }}
+                    style={{backgroundColor: base}}
                     aria-hidden
                 />
                                 <div className="flex flex-col">
@@ -165,7 +165,7 @@ export function BaseShiftModal({
                         <input
                             id="shift-color-input"
                             type="color"
-                            {...register('color', { required: true })}
+                            {...register('color', {required: true})}
                             onChange={onColorChange}
                             disabled={isLoading}
                             className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
@@ -177,13 +177,13 @@ export function BaseShiftModal({
                 <div className="grid grid-cols-2 gap-2">
                     <input
                         type="time"
-                        {...register('startTime', { required: true })}
+                        {...register('startTime', {required: true})}
                         disabled={isLoading}
                         className="input input-bordered w-full py-3 text-sm"
                     />
                     <input
                         type="time"
-                        {...register('endTime', { required: true })}
+                        {...register('endTime', {required: true})}
                         disabled={isLoading}
                         className="input input-bordered w-full py-3 text-sm"
                     />

@@ -1,9 +1,9 @@
 // components/ui/ModalSheet.tsx
 'use client';
 
+import { ReactNode } from 'react';
 import { X } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ReactNode } from 'react';
 
 type ModalSheetProps = {
     isOpen: boolean;
@@ -17,18 +17,7 @@ type ModalSheetProps = {
     noHeader?: boolean;
 };
 
-const backdropVariant = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1 },
-};
-
-const sheetVariant = {
-    hidden: { y: 48, opacity: 0, scale: 0.995 },
-    visible: { y: 0, opacity: 1, scale: 1 },
-    exit: { y: 24, opacity: 0, scale: 0.995 },
-};
-
-export default function ModalSheet({
+export function ModalSheet({
                                        isOpen,
                                        onClose,
                                        title,
@@ -44,13 +33,13 @@ export default function ModalSheet({
             {isOpen && (
                 <motion.div
                     className="fixed inset-0 z-50 flex items-end sm:items-center justify-center"
-                    initial="hidden"
-                    animate="visible"
-                    exit="hidden"
-                    variants={backdropVariant}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
                     aria-modal="true"
                     role="dialog"
                 >
+                    {/* Backdrop */}
                     <motion.div
                         className="absolute inset-0 bg-black/40 backdrop-blur-sm"
                         initial={{ opacity: 0 }}
@@ -59,15 +48,15 @@ export default function ModalSheet({
                         onClick={onClose}
                     />
 
+                    {/* Sheet */}
                     <motion.div
-                        className={`relative w-full ${maxWidth} max-h-[80vh] sm:max-h-[80vh] ${className}`}
-                        variants={sheetVariant}
-                        initial="hidden"
-                        animate="visible"
-                        exit="exit"
+                        className={`relative w-full ${maxWidth} max-h-[80vh] ${className}`}
+                        initial={{ y: 48, opacity: 0, scale: 0.995 }}
+                        animate={{ y: 0, opacity: 1, scale: 1 }}
+                        exit={{ y: 24, opacity: 0, scale: 0.995 }}
                         transition={{ type: 'spring', stiffness: 280, damping: 30 }}
                     >
-                        <div className="flex flex-col h-full max-h-[80vh] bg-base-100 rounded-t-2xl sm:rounded-2xl shadow-lg border border-base-300 overflow-hidden">
+                        <div className="flex flex-col h-full bg-base-100 rounded-t-2xl sm:rounded-2xl shadow-lg border border-base-300 overflow-hidden">
                             {!noHeader && (
                                 <div className="px-5 pt-4 pb-3 sm:px-6 sm:pt-5 sm:pb-4 shrink-0">
                                     <div className="mx-auto w-10 h-1.5 rounded-full bg-base-300 sm:hidden mb-3" />
