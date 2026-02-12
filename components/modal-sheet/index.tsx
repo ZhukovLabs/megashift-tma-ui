@@ -8,7 +8,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 type ModalSheetProps = {
     isOpen: boolean;
     onClose: () => void;
-    title?: string;
+    title?: string | ReactNode;
     children: ReactNode;
     footer?: ReactNode;
     maxWidth?: string;

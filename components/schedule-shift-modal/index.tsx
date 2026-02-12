@@ -14,6 +14,7 @@ import {useUpdateShift} from '@/api-hooks/use-update-shift';
 import {ModalSheet} from '@/components/modal-sheet';
 import {ShiftRow} from './shift-row';
 import * as timeUtils from '@/utils/time';
+import {LoaderLarge} from "@/components/loader-large";
 
 export const ShiftModal = () => {
     const router = useRouter();
@@ -24,8 +25,18 @@ export const ShiftModal = () => {
     const tz = useUserStore(s => s.user?.timezone ?? 'UTC');
     const isOpen = Boolean(selectedDayStr);
 
-    const {data: shiftTemplates = []} = useGetShiftTemplates() || {data: []};
-    const {data: dayShifts = []} = useGetShiftsByDate({date: selectedDayStr}) || {data: []};
+    const {
+        data: shiftTemplates = [],
+        isFetching: isTemplatesFetching,
+    } = useGetShiftTemplates();
+
+    const {
+        data: dayShifts = [],
+        isFetching: isShiftsFetching,
+    } = useGetShiftsByDate({date: selectedDayStr});
+
+    const isAnyFetching = Boolean(isTemplatesFetching || isShiftsFetching);
+
     const {mutateAsync: deleteShift} = useDeleteShift();
     const {mutateAsync: updateShift} = useUpdateShift();
 
@@ -36,9 +47,9 @@ export const ShiftModal = () => {
     }, [router, searchParams, pathname]);
 
     const enhancedShifts = useMemo(() =>
-        dayShifts.map(shift => ({
+        (dayShifts || []).map(shift => ({
             shift,
-            template: shiftTemplates.find(t => t.id === shift.shiftTemplateId)
+            template: (shiftTemplates || []).find(t => t.id === shift.shiftTemplateId)
         })), [dayShifts, shiftTemplates]
     );
 
@@ -60,30 +71,43 @@ export const ShiftModal = () => {
         <ModalSheet
             isOpen={isOpen}
             onClose={onClose}
-            title={selectedDayDate ? format(selectedDayDate, 'd MMMM', {locale: ru}) : ''}
+            title={
+                selectedDayDate && (
+                    <div className="flex items-center">
+                        <span>{format(selectedDayDate, 'd MMMM', {locale: ru})}</span>
+                    </div>
+                )
+            }
             footer={<button className="btn btn-primary w-full" onClick={onClose}>Закрыть</button>}
         >
             <div className="flex flex-col gap-2">
-                {enhancedShifts.length === 0 ? (
-                    <p className="text-center opacity-60 py-8">На этот день нет смен</p>
+                {isAnyFetching ? (
+                    <LoaderLarge/>
                 ) : (
-                    enhancedShifts.map(({shift, template}) => (
-                        <ShiftRow
-                            key={shift.id}
-                            shift={{
-                                ...shift,
-                                actualStartTime: shift.actualStartTime ?? undefined,
-                                actualEndTime: shift.actualEndTime ?? undefined,
-                                shiftTemplateId: shift.shiftTemplateId ?? undefined
-                            }}
-                            template={template}
-                            updateShift={async (data) => { await updateShift(data); }}
-                            getDuration={(s, e) => timeUtils.getDuration(s, e, selectedDayStr, tz)}
-                            handleDelete={handleDelete}
-                            formatTime={(t) => timeUtils.formatTime(t, selectedDayStr, tz)}
-                        />
-
-                    ))
+                    <>
+                        {enhancedShifts.length === 0 ? (
+                            <p className="text-center opacity-60 py-8">На этот день нет смен</p>
+                        ) : (
+                            enhancedShifts.map(({shift, template}) => (
+                                <ShiftRow
+                                    key={shift.id}
+                                    shift={{
+                                        ...shift,
+                                        actualStartTime: shift.actualStartTime ?? undefined,
+                                        actualEndTime: shift.actualEndTime ?? undefined,
+                                        shiftTemplateId: shift.shiftTemplateId ?? undefined
+                                    }}
+                                    template={template}
+                                    updateShift={async (data) => {
+                                        await updateShift(data);
+                                    }}
+                                    getDuration={(s, e) => timeUtils.getDuration(s, e, selectedDayStr, tz)}
+                                    handleDelete={handleDelete}
+                                    formatTime={(t) => timeUtils.formatTime(t, selectedDayStr, tz)}
+                                />
+                            ))
+                        )}
+                    </>
                 )}
             </div>
         </ModalSheet>

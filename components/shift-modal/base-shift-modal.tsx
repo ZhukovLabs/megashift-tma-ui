@@ -4,6 +4,7 @@ import {useForm, useWatch} from 'react-hook-form';
 import {useEffect} from 'react';
 import {ModalSheet} from '@/components/modal-sheet';
 import {defaultValues} from '@/components/shift-modal/config';
+import {LoaderLarge} from '@/components/loader-large';
 
 export type ShiftFormValues = {
     label: string;
@@ -19,7 +20,7 @@ type Props = {
     isLoading?: boolean;
     isPending?: boolean;
     submitLabel: string;
-    onClose: () => void;
+    onClose: VoidFunction;
     onSubmit: (data: ShiftFormValues) => Promise<void> | void;
 };
 
@@ -121,74 +122,76 @@ export function BaseShiftModal({
                 </div>
             }
         >
-            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-                <input
-                    {...register('label', {required: true})}
-                    placeholder="Название смены"
-                    disabled={isLoading}
-                    className="input input-bordered w-full py-3 text-base sm:text-base"
-                />
+            {isLoading ? (<LoaderLarge/>) : (
+                <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+                    <input
+                        {...register('label', {required: true})}
+                        placeholder="Название смены"
+                        disabled={isLoading}
+                        className="input input-bordered w-full py-3 text-base sm:text-base"
+                    />
 
-                <div className="flex flex-col gap-2 w-full">
-                    <label className="text-sm text-gray-600">Цвет</label>
-                    <div
-                        className="relative w-full h-14 rounded-lg border border-gray-200 shadow-sm overflow-hidden transition-transform duration-150"
-                        style={{
-                            background: `linear-gradient(90deg, ${base} 0%, ${light} 100%)`,
-                        }}
-                        title={base.toUpperCase()}
-                        onClick={() => {
-                            const el = document.getElementById('shift-color-input') as HTMLInputElement | null;
-                            el?.focus();
-                            el?.click();
-                        }}
-                    >
+                    <div className="flex flex-col gap-2 w-full">
+                        <label className="text-sm text-gray-600">Цвет</label>
                         <div
-                            className="absolute inset-0 flex items-center justify-between px-4"
-                            style={{color: textColor}}
+                            className="relative w-full h-14 rounded-lg border border-gray-200 shadow-sm overflow-hidden transition-transform duration-150"
+                            style={{
+                                background: `linear-gradient(90deg, ${base} 0%, ${light} 100%)`,
+                            }}
+                            title={base.toUpperCase()}
+                            onClick={() => {
+                                const el = document.getElementById('shift-color-input') as HTMLInputElement | null;
+                                el?.focus();
+                                el?.click();
+                            }}
                         >
-                            <div className="flex items-center gap-3">
-                <span
-                    className="w-8 h-8 rounded-full border border-gray-300 shadow-inner flex-shrink-0"
-                    style={{backgroundColor: base}}
-                    aria-hidden
-                />
-                                <div className="flex flex-col">
-                                    <span className="text-sm font-medium select-none">{base.toUpperCase()}</span>
+                            <div
+                                className="absolute inset-0 flex items-center justify-between px-4"
+                                style={{color: textColor}}
+                            >
+                                <div className="flex items-center gap-3">
+                                    <span
+                                        className="w-8 h-8 rounded-full border border-gray-300 shadow-inner flex-shrink-0"
+                                        style={{backgroundColor: base}}
+                                        aria-hidden
+                                    />
+                                    <div className="flex flex-col">
+                                        <span className="text-sm font-medium select-none">{base.toUpperCase()}</span>
+                                    </div>
+                                </div>
+                                <div className="flex items-center gap-3">
+                                    <span className="text-xs opacity-80 select-none">Нажмите для выбора</span>
                                 </div>
                             </div>
-                            <div className="flex items-center gap-3">
-                                <span className="text-xs opacity-80 select-none">Нажмите для выбора</span>
-                            </div>
-                        </div>
 
+                            <input
+                                id="shift-color-input"
+                                type="color"
+                                {...register('color', {required: true})}
+                                onChange={onColorChange}
+                                disabled={isLoading}
+                                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                aria-label="Выбрать цвет смены"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2">
                         <input
-                            id="shift-color-input"
-                            type="color"
-                            {...register('color', {required: true})}
-                            onChange={onColorChange}
+                            type="time"
+                            {...register('startTime', {required: true})}
                             disabled={isLoading}
-                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                            aria-label="Выбрать цвет смены"
+                            className="input input-bordered w-full py-3 text-sm"
+                        />
+                        <input
+                            type="time"
+                            {...register('endTime', {required: true})}
+                            disabled={isLoading}
+                            className="input input-bordered w-full py-3 text-sm"
                         />
                     </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-2">
-                    <input
-                        type="time"
-                        {...register('startTime', {required: true})}
-                        disabled={isLoading}
-                        className="input input-bordered w-full py-3 text-sm"
-                    />
-                    <input
-                        type="time"
-                        {...register('endTime', {required: true})}
-                        disabled={isLoading}
-                        className="input input-bordered w-full py-3 text-sm"
-                    />
-                </div>
-            </form>
+                </form>
+            )}
         </ModalSheet>
     );
 }
