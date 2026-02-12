@@ -2,9 +2,10 @@ import {create} from 'zustand';
 
 type UserState = {
     selectedShiftId: string | null;
+    editIsOpen: boolean;
+
     setSelectedShiftId: (id: string | null) => void;
     setEditIsOpen: (isOpen: boolean) => void;
-    editIsOpen: boolean;
 }
 
 export const useScheduleStore = create<UserState>((set) => ({
