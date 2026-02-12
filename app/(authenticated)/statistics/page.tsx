@@ -1,6 +1,5 @@
 'use client';
 
-import React from 'react';
 import {useForm, Controller, useWatch} from 'react-hook-form';
 import {ShiftStatisticsTable, ShiftHoursStatisticsTable} from "@/components/shift-statistics-table";
 

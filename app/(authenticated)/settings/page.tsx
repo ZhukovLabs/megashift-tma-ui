@@ -1,32 +1,81 @@
-"use client";
+'use client';
 
-import React from "react";
-import Link from "next/link";
-import {ROUTES} from "@/constants/routes";
+import React from 'react';
+import { useForm, Controller } from 'react-hook-form';
+import { useUpdateSalary, UpdateSalaryPayload } from '@/api-hooks/use-update-salary';
+import { SalaryType } from '@/api-hooks/use-update-salary';
+
+type FormValues = UpdateSalaryPayload;
 
 export default function SettingsPage() {
+    const { control, handleSubmit } = useForm<FormValues>({
+        defaultValues: {
+            typeSalary: 'MONTHLY',
+            salary: 0,
+        },
+    });
+
+    const mutation = useUpdateSalary();
+
+    const onSubmit = (data: FormValues) => {
+        mutation.mutate(data, {
+            onSuccess: () => {
+            },
+            onError: () => {
+            },
+        });
+    };
+
     return (
         <div className="min-h-screen flex flex-col items-center justify-center bg-base-100 p-4">
             <h1 className="text-3xl font-bold mb-4">Настройки</h1>
             <p className="text-base-content/70 mb-6 text-center">
-                Эта страница пока пустая. Здесь будут ваши настройки календаря и аккаунта.
+                Здесь вы можете обновить ваш тип зарплаты и сумму.
             </p>
 
-            <div className="flex gap-4">
-                <Link
-                    href={ROUTES.schedule}
-                    className="px-4 py-2 bg-primary text-primary-content rounded-lg hover:bg-primary/80 transition-colors"
-                >
-                    К календарю
-                </Link>
+            <form
+                onSubmit={handleSubmit(onSubmit)}
+                className="flex flex-col gap-4 w-full max-w-sm"
+            >
+                <Controller
+                    name="typeSalary"
+                    control={control}
+                    render={({ field }) => (
+                        <select
+                            {...field}
+                            className="select select-bordered w-full"
+                        >
+                            {Object.values(SalaryType).map((type) => (
+                                <option key={type} value={type}>
+                                    {type === 'HOURLY' ? 'Часовая' : type === 'SHIFT' ? 'Посменная' : 'Месячная'}
+                                </option>
+                            ))}
+                        </select>
+                    )}
+                />
 
-                <Link
-                    href={ROUTES.settings}
-                    className="px-4 py-2 bg-base-300 text-base-content rounded-lg cursor-not-allowed opacity-50"
+                <Controller
+                    name="salary"
+                    control={control}
+                    render={({ field }) => (
+                        <input
+                            {...field}
+                            type="number"
+                            className="input input-bordered w-full"
+                            min={0}
+                            placeholder="Сумма зарплаты"
+                        />
+                    )}
+                />
+
+                <button
+                    type="submit"
+                    className="btn btn-primary w-full mt-2"
+                    disabled={mutation.isPending}
                 >
-                    Настройки (заглушка)
-                </Link>
-            </div>
+                    {mutation.isPending ? 'Сохраняем...' : 'Сохранить'}
+                </button>
+            </form>
         </div>
     );
 }
