@@ -1,8 +1,9 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { useUpdateSalary, UpdateSalaryPayload, SalaryType } from '@/api-hooks/use-update-salary';
+import { useGetUserSettings } from '@/api-hooks/use-get-user-settings';
 import { DollarSign, Clock, Calendar } from 'lucide-react';
 
 type FormValues = UpdateSalaryPayload & {
@@ -10,7 +11,9 @@ type FormValues = UpdateSalaryPayload & {
 };
 
 export default function SettingsPage() {
-    const { control, handleSubmit } = useForm<FormValues>({
+    const { data: settings, isLoading } = useGetUserSettings();
+
+    const { control, handleSubmit, reset } = useForm<FormValues>({
         defaultValues: {
             typeSalary: 'MONTHLY',
             salary: 0,
@@ -19,6 +22,16 @@ export default function SettingsPage() {
     });
 
     const mutation = useUpdateSalary();
+
+    useEffect(() => {
+        if (settings) {
+            reset({
+                typeSalary: settings.typeSalary,
+                salary: settings.salary,
+                maxSalary: settings.maxSalary ?? undefined,
+            });
+        }
+    }, [settings, reset]);
 
     const onSubmit = (data: FormValues) => {
         mutation.mutate(data);
@@ -33,7 +46,6 @@ export default function SettingsPage() {
                 </p>
 
                 <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
-                    {/* Тип зарплаты */}
                     <div className="flex flex-col gap-1">
                         <label className="font-medium text-base-content">Тип зарплаты</label>
                         <div className="relative">
@@ -45,6 +57,7 @@ export default function SettingsPage() {
                                         {...field}
                                         className="select select-bordered w-full appearance-none pl-10"
                                         aria-label="Тип зарплаты"
+                                        disabled={isLoading}
                                     >
                                         {Object.values(SalaryType).map((type) => (
                                             <option key={type} value={type}>
@@ -62,7 +75,6 @@ export default function SettingsPage() {
                         </div>
                     </div>
 
-                    {/* Сумма зарплаты */}
                     <div className="flex flex-col gap-1">
                         <label className="font-medium text-base-content">Сумма</label>
                         <div className="relative">
@@ -77,6 +89,7 @@ export default function SettingsPage() {
                                         min={0}
                                         placeholder="Сумма зарплаты"
                                         aria-label="Сумма зарплаты"
+                                        disabled={isLoading}
                                     />
                                 )}
                             />
@@ -84,7 +97,6 @@ export default function SettingsPage() {
                         </div>
                     </div>
 
-                    {/* Максимальная зарплата */}
                     <div className="flex flex-col gap-1">
                         <label className="font-medium text-base-content">Максимальная зарплата (опционально)</label>
                         <div className="relative">
@@ -99,6 +111,7 @@ export default function SettingsPage() {
                                         min={0}
                                         placeholder="Максимальная зарплата (для визуализации)"
                                         aria-label="Максимальная зарплата"
+                                        disabled={isLoading}
                                     />
                                 )}
                             />
@@ -106,10 +119,9 @@ export default function SettingsPage() {
                         </div>
                     </div>
 
-                    {/* Кнопка — простой, спокойный стиль */}
                     <button
                         type="submit"
-                        disabled={mutation.isPending}
+                        disabled={mutation.isPending || isLoading}
                         aria-busy={mutation.isPending ? 'true' : 'false'}
                         className={
                             'mt-3 w-full bg-primary text-primary-content font-medium py-3 rounded-lg ' +
