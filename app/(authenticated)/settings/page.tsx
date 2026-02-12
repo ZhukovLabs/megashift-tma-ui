@@ -2,8 +2,7 @@
 
 import React from 'react';
 import { useForm, Controller } from 'react-hook-form';
-import { useUpdateSalary, UpdateSalaryPayload } from '@/api-hooks/use-update-salary';
-import { SalaryType } from '@/api-hooks/use-update-salary';
+import { useUpdateSalary, UpdateSalaryPayload, SalaryType } from '@/api-hooks/use-update-salary';
 
 type FormValues = UpdateSalaryPayload;
 
@@ -12,6 +11,7 @@ export default function SettingsPage() {
         defaultValues: {
             typeSalary: 'MONTHLY',
             salary: 0,
+            maxSalary: undefined,
         },
     });
 
@@ -30,7 +30,7 @@ export default function SettingsPage() {
         <div className="min-h-screen flex flex-col items-center justify-center bg-base-100 p-4">
             <h1 className="text-3xl font-bold mb-4">Настройки</h1>
             <p className="text-base-content/70 mb-6 text-center">
-                Здесь вы можете обновить ваш тип зарплаты и сумму.
+                Здесь вы можете обновить ваш тип зарплаты, сумму и максимальную зарплату для визуализации.
             </p>
 
             <form
@@ -41,13 +41,14 @@ export default function SettingsPage() {
                     name="typeSalary"
                     control={control}
                     render={({ field }) => (
-                        <select
-                            {...field}
-                            className="select select-bordered w-full"
-                        >
+                        <select {...field} className="select select-bordered w-full">
                             {Object.values(SalaryType).map((type) => (
                                 <option key={type} value={type}>
-                                    {type === 'HOURLY' ? 'Часовая' : type === 'SHIFT' ? 'Посменная' : 'Месячная'}
+                                    {type === 'HOURLY'
+                                        ? 'Часовая'
+                                        : type === 'SHIFT'
+                                            ? 'Посменная'
+                                            : 'Месячная'}
                                 </option>
                             ))}
                         </select>
@@ -64,6 +65,20 @@ export default function SettingsPage() {
                             className="input input-bordered w-full"
                             min={0}
                             placeholder="Сумма зарплаты"
+                        />
+                    )}
+                />
+
+                <Controller
+                    name="maxSalary"
+                    control={control}
+                    render={({ field }) => (
+                        <input
+                            {...field}
+                            type="number"
+                            className="input input-bordered w-full"
+                            min={0}
+                            placeholder="Максимальная зарплата (для визуализации)"
                         />
                     )}
                 />

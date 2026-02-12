@@ -2,6 +2,7 @@
 
 import {useForm, Controller, useWatch} from 'react-hook-form';
 import {ShiftStatisticsTable, ShiftHoursStatisticsTable} from "@/components/shift-statistics-table";
+import {SalaryStatisticsTable} from "@/components/salary-statistics-table";
 
 type FormValues = {
     year: number;
@@ -61,6 +62,7 @@ export default function StatisticsPage() {
 
             <ShiftStatisticsTable year={selectedYear} month={selectedMonth}/>
             <ShiftHoursStatisticsTable year={selectedYear} month={selectedMonth}/>
+            <SalaryStatisticsTable year={selectedYear} month={selectedMonth}/>
         </div>
     );
 }

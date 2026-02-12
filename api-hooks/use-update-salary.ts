@@ -10,6 +10,7 @@ export enum SalaryType {
 export type UpdateSalaryPayload = {
     typeSalary: 'HOURLY' | 'SHIFT' | 'MONTHLY';
     salary: number;
+    maxSalary?: number;
 };
 
 export const userSettingsKey = ['settings'] as const;
@@ -22,7 +23,7 @@ export const useUpdateSalary = () => {
             const {data} = await api.patch<UpdateSalaryPayload>('/api/settings/salary', payload);
             return data;
         },
-        onSuccess: (data) => {
+        onSuccess: () => {
             queryClient.invalidateQueries({queryKey: userSettingsKey, exact: true});
         },
     });
