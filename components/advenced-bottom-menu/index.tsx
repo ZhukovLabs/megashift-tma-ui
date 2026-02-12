@@ -81,9 +81,15 @@ export function AdvancedBottomMenu() {
                             {!isLoading && templates.length === 0 && (
                                 <Link
                                     href={ROUTES.createShift}
-                                    className="px-3 py-1.5 text-xs font-medium rounded-lg bg-primary text-primary-content whitespace-nowrap"
+                                    className={cn(
+                                        'flex items-center justify-center px-4 py-2 mx-auto',
+                                        'text-sm font-semibold rounded-lg',
+                                        'bg-gradient-to-r from-primary to-secondary text-primary-content',
+                                        'shadow-lg shadow-primary/40',
+                                        'whitespace-nowrap'
+                                    )}
                                 >
-                                    Создать смену
+                                    + Создать смену
                                 </Link>
                             )}
 

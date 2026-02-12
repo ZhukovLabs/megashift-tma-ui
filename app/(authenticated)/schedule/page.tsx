@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import { useRouter } from "next/navigation";
 import { format } from "date-fns";
 
@@ -24,6 +24,13 @@ const SchedulePageClient = () => {
     const { mutateAsync: createShift } = useCreateShift();
     const { mutateAsync: deleteShift } = useDeleteShift();
     const selectedShiftId = useScheduleStore((s) => s.selectedShiftId);
+    const setEditIsOpen = useScheduleStore(s => s.setEditIsOpen);
+    const setSelectedShiftId = useScheduleStore(s => s.setSelectedShiftId);
+
+    useEffect(() => () => {
+        setEditIsOpen(false);
+        setSelectedShiftId(null);
+    }, [setEditIsOpen, setSelectedShiftId]);
 
     const handleDayClick = async (day: Date, events: CalendarEvent[]) => {
         const dateStr = format(day, "yyyy-MM-dd");

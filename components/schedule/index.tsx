@@ -10,15 +10,12 @@ import {useScheduleStore} from "@/store/schedule-store";
 
 export const Schedule = () => {
     const {currentDate, nextMonth, prevMonth, monthHeight} = useSchedule();
-    const setSelectedShiftId = useScheduleStore(s => s.setSelectedShiftId);
     const y = useMotionValue(0);
     const [isAnimating, setIsAnimating] = useState(false);
 
     useEffect(() => {
         if (monthHeight > 0) y.set(-monthHeight);
     }, [monthHeight, y]);
-
-    useEffect(() => () => setSelectedShiftId(null), [setSelectedShiftId]);
 
     const changeMonth = async (direction: Direction) => {
         if (isAnimating) return;
