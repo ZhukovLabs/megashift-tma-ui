@@ -18,7 +18,6 @@ export const useDeleteShift = () => {
         onMutate: async ({id, year, month}) => {
             const queryKey = ['month-shifts', year, month];
 
-            // Отменяем текущие fetch'ы для этого month перед оптимистичным удалением
             await queryClient.cancelQueries({ queryKey, exact: true });
 
             const previous = queryClient.getQueryData<ShiftDto[]>(queryKey) ?? [];
@@ -36,14 +35,12 @@ export const useDeleteShift = () => {
                 queryClient.setQueryData<ShiftDto[]>(queryKey, context.previous);
             }
 
-            // Планируем централизованный рефетч — чтобы вернуть корректные данные с сервера
             scheduleCancelAndInvalidate(queryClient, queryKey);
         },
         onSuccess: (_data, vars) => {
             const { year, month } = vars;
             const queryKey = ['month-shifts', year, month];
 
-            // Планируем централизованный cancel+invalidate
             scheduleCancelAndInvalidate(queryClient, queryKey);
         },
     });

@@ -20,7 +20,7 @@ export const useUpdateShift = () => {
             return data;
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({queryKey: ['month-shifts']});
+            queryClient.invalidateQueries({queryKey: ['month-shifts'], exact: false});
         },
     });
 };

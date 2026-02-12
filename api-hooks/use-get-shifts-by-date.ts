@@ -17,7 +17,7 @@ type GetShiftsByDayResponse = ShiftDto[];
 
 export const useGetShiftsByDate = ({date}: GetShiftsByDayParams) => {
     return useQuery<GetShiftsByDayResponse>({
-        queryKey: ['shifts'],
+        queryKey: ['month-shifts'],
         queryFn: async () => {
             const {data} = await api.get<GetShiftsByDayResponse>('/api/shifts/date', {
                 params: {date},
