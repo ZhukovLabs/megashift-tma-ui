@@ -15,9 +15,12 @@ type GetShiftsParams = {
 };
 
 type GetShiftsResponse = ShiftDto[];
+
+const monthShiftsKey = (year: number, month: number) => ['month-shifts', year, month] as const;
+
 export const useGetShifts = ({year, month}: GetShiftsParams) => {
     return useQuery<GetShiftsResponse>({
-        queryKey: ['month-shifts', year, month],
+        queryKey: monthShiftsKey(year, month),
         queryFn: async ({signal}) => {
             const {data} = await api.get<GetShiftsResponse>('/api/shifts', {
                 params: {year, month},

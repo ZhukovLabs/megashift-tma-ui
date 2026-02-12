@@ -4,7 +4,7 @@ const invalidateTimers = new Map<string, ReturnType<typeof setTimeout>>();
 
 export function scheduleCancelAndInvalidate(
     queryClient: QueryClient,
-    queryKey: Array<string | number>,
+    queryKey: ReadonlyArray<string | number>,
     delay = 120
 ) {
     const keyStr = JSON.stringify(queryKey);

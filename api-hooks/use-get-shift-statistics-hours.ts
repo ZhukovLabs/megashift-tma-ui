@@ -8,9 +8,11 @@ export type ShiftStatisticsItem = {
     color: string;
 };
 
+const shiftStatisticsHoursKey = (year: number, month: number) => ['shift-statistics-hours', year, month] as const;
+
 export const useGetShiftStatisticsHours = (year: number, month: number) => {
     return useQuery<ShiftStatisticsItem[], Error>({
-        queryKey: ['shift-statistics-hours', year, month],
+        queryKey: shiftStatisticsHoursKey(year, month),
         queryFn: async () => {
             const {data} = await api.get<ShiftStatisticsItem[]>(
                 '/api/statistics/shifts/hours',
@@ -19,6 +21,6 @@ export const useGetShiftStatisticsHours = (year: number, month: number) => {
 
             return data;
         },
-        enabled: Boolean(year && month),
+        enabled: Number.isFinite(year) && Number.isFinite(month),
     });
 };

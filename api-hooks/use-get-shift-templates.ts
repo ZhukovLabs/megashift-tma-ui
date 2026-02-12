@@ -9,9 +9,11 @@ type GetShiftTemplatesResponse = Array<{
     endTime: string;
 }>
 
+const shiftTemplatesKey = () => ['shift-templates'] as const;
+
 export const useGetShiftTemplates = () => {
     return useQuery<GetShiftTemplatesResponse, void>({
-        queryKey: ['shift-templates'],
+        queryKey: shiftTemplatesKey(),
         queryFn: async () => {
             const {data} = await api.get<GetShiftTemplatesResponse>('/api/shift-templates');
             return data;

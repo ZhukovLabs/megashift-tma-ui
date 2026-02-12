@@ -6,9 +6,11 @@ import { scheduleCancelAndInvalidate } from '@/utils/react-query-utils';
 
 export type CreateShiftPayload = {
     date: string;
-    revalidateDate: string;
+    revalidateDate: string; // используется для определения month ключа (год/месяц)
     shiftTemplateId: string;
 };
+
+const monthShiftsKey = (year: number, month: number) => ['month-shifts', year, month] as const;
 
 export const useCreateShift = () => {
     const queryClient = useQueryClient();
@@ -17,7 +19,7 @@ export const useCreateShift = () => {
         ShiftDto,
         Error,
         CreateShiftPayload,
-        { previousShifts: ShiftDto[]; queryKey: (string | number)[] }
+        { previousShifts: ShiftDto[]; queryKey: readonly (string | number)[] }
     >({
         mutationFn: async (payload) => {
             const {data} = await api.post<ShiftDto>('/api/shifts', {
@@ -30,8 +32,9 @@ export const useCreateShift = () => {
             const dateObj = new Date(payload.revalidateDate);
             const year = dateObj.getFullYear();
             const month = dateObj.getMonth() + 1;
-            const queryKey = ['month-shifts', year, month];
+            const queryKey = monthShiftsKey(year, month);
 
+            // отменяем все запросы, которые соответствуют этому префиксу (exact: false — чтобы поймать похожие)
             await queryClient.cancelQueries({ queryKey, exact: false });
 
             const previousShifts = queryClient.getQueryData<ShiftDto[]>(queryKey) ?? [];
