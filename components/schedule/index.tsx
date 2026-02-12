@@ -1,20 +1,24 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { useMotionValue, animate, PanInfo } from "framer-motion";
-import { CalendarHeader, WeekdaysHeader, MonthStack } from "./subcomponents";
-import { useSchedule } from "./context";
-import { Direction } from "./types";
-import { THRESHOLD_FACTOR, SPRING_MAIN, SPRING_SNAP } from "./config";
+import React, {useState, useEffect} from "react";
+import {useMotionValue, animate, PanInfo} from "framer-motion";
+import {CalendarHeader, WeekdaysHeader, MonthStack} from "./subcomponents";
+import {useSchedule} from "./context";
+import {Direction} from "./types";
+import {THRESHOLD_FACTOR, SPRING_MAIN, SPRING_SNAP} from "./config";
+import {useScheduleStore} from "@/store/schedule-store";
 
 export const Schedule = () => {
-    const { currentDate, nextMonth, prevMonth, monthHeight } = useSchedule();
+    const {currentDate, nextMonth, prevMonth, monthHeight} = useSchedule();
+    const setSelectedShiftId = useScheduleStore(s => s.setSelectedShiftId);
     const y = useMotionValue(0);
     const [isAnimating, setIsAnimating] = useState(false);
 
     useEffect(() => {
         if (monthHeight > 0) y.set(-monthHeight);
     }, [monthHeight, y]);
+
+    useEffect(() => () => setSelectedShiftId(null), [setSelectedShiftId]);
 
     const changeMonth = async (direction: Direction) => {
         if (isAnimating) return;
@@ -42,9 +46,9 @@ export const Schedule = () => {
 
     return (
         <div className="h-dvh bg-base-100 flex flex-col select-none touch-none">
-            <CalendarHeader currentDate={currentDate} />
-            <WeekdaysHeader />
-            <MonthStack dragProps={{ y, isAnimating, handleDragEnd }} />
+            <CalendarHeader currentDate={currentDate}/>
+            <WeekdaysHeader/>
+            <MonthStack dragProps={{y, isAnimating, handleDragEnd}}/>
         </div>
     );
 };
