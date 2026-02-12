@@ -3,6 +3,7 @@ import cn from "classnames";
 import { useMemo } from "react";
 import { useSchedule } from "@/components/schedule/context";
 import { useGetShiftTemplates } from "@/api-hooks/use-get-shift-templates";
+import { getContrastColor, lightenHex } from "@/utils/colors";
 
 type DayCellProps = {
     day: Date;
@@ -12,7 +13,7 @@ type DayCellProps = {
 const MAX_VISIBLE_EVENTS = 2;
 
 const DEFAULT_EVENT_COLOR = "#64748b";
-const DEFAULT_EVENT_LABEL = "(Без шаблона)";
+const DEFAULT_EVENT_LABEL = "(Без названия)";
 const TIME_FORMAT = "HH:mm";
 
 export const DayCell = ({ day, monthDate }: DayCellProps) => {
@@ -47,7 +48,6 @@ export const DayCell = ({ day, monthDate }: DayCellProps) => {
                 }
             )}
         >
-            {/* внутренний бордер без обрезки */}
             {isCurrentDay && (
                 <div className="absolute inset-0 border-2 border-primary/60 rounded-sm pointer-events-none box-border z-0" />
             )}
@@ -73,7 +73,9 @@ export const DayCell = ({ day, monthDate }: DayCellProps) => {
                                 : null;
 
                         const label = template?.label ?? DEFAULT_EVENT_LABEL;
-                        const bgColor = template?.color ?? DEFAULT_EVENT_COLOR;
+                        const baseColor = template?.color ?? DEFAULT_EVENT_COLOR;
+                        const bgColor = lightenHex(baseColor, 10); // чуть светлее
+                        const textColor = getContrastColor(baseColor); // читаемый текст
 
                         const startTime =
                             event.actualStartTime ?? template?.startTime;
@@ -82,14 +84,14 @@ export const DayCell = ({ day, monthDate }: DayCellProps) => {
                             <div
                                 key={event.id}
                                 className="rounded-sm shadow-sm overflow-hidden text-center"
-                                style={{ backgroundColor: bgColor }}
+                                style={{ backgroundColor: bgColor, color: textColor }}
                             >
-                                <div className="px-1 py-0.5 text-[10px] font-medium text-white leading-none truncate">
+                                <div className="px-1 py-0.5 text-[10px] font-medium leading-none truncate">
                                     {label}
                                 </div>
 
                                 {startTime && (
-                                    <div className="px-1 pb-0.5 text-[9px] text-white/90 bg-black/20 leading-none">
+                                    <div className="px-1 pb-0.5 text-[9px] bg-black/20 leading-none" style={{ color: textColor }}>
                                         {format(new Date(startTime), TIME_FORMAT)}
                                     </div>
                                 )}
