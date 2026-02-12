@@ -2,6 +2,7 @@ import {useMutation, useQueryClient} from '@tanstack/react-query';
 import {api} from '@/lib/axios';
 import {ShiftDto} from "@/api-hooks/use-get-shifts";
 import {v4 as uuidv4} from 'uuid';
+import { scheduleCancelAndInvalidate } from '@/utils/react-query-utils';
 
 export type CreateShiftPayload = {
     date: string;
@@ -10,6 +11,7 @@ export type CreateShiftPayload = {
 
 export const useCreateShift = () => {
     const queryClient = useQueryClient();
+
     return useMutation<
         ShiftDto,
         Error,
@@ -24,7 +26,11 @@ export const useCreateShift = () => {
             const dateObj = new Date(payload.date);
             const year = dateObj.getFullYear();
             const month = dateObj.getMonth() + 1;
-            const queryKey = ['shifts', year, month];
+            const queryKey = ['month-shifts', year, month];
+
+            // Отменяем текущие fetch'ы для этого month перед optimistic update
+            await queryClient.cancelQueries({ queryKey, exact: true });
+
             const previousShifts = queryClient.getQueryData<ShiftDto[]>(queryKey) ?? [];
             const optimisticShift: ShiftDto = {
                 id: `temp-${uuidv4()}`,
@@ -33,25 +39,26 @@ export const useCreateShift = () => {
                 actualEndTime: null,
                 shiftTemplateId: payload.shiftTemplateId,
             };
+
             queryClient.setQueryData<ShiftDto[]>(queryKey, [...previousShifts, optimisticShift]);
-            return {previousShifts, queryKey};
+
+            return { previousShifts, queryKey };
         },
         onError: (err, payload, context) => {
             if (context) {
                 queryClient.setQueryData<ShiftDto[]>(context.queryKey, context.previousShifts);
+                scheduleCancelAndInvalidate(queryClient, context.queryKey);
             }
         },
         onSuccess: (data, payload, context) => {
-            if (context) {
-                queryClient.setQueryData<ShiftDto[]>(context.queryKey, (old) => {
-                    if (!old) return [data];
-                    return [...old.filter(shift => !shift.id.startsWith('temp-')), data];
-                });
-            }
-            queryClient.invalidateQueries({
-                queryKey: ['shifts'],
+            if (!context) return;
+
+            queryClient.setQueryData<ShiftDto[]>(context.queryKey, (old) => {
+                if (!old) return [data];
+                return [...old.filter(shift => !shift.id.startsWith('temp-')), data];
             });
+
+            scheduleCancelAndInvalidate(queryClient, context.queryKey);
         },
     });
 };
-

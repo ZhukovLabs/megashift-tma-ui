@@ -139,10 +139,17 @@ export const ShiftModal = () => {
             ],
         });
 
-        if (confirmed === 'yes') {
-            await deleteShift(shiftId);
-        }
+        if (confirmed !== 'yes') return;
+
+        if (!selectedDayStr) return;
+
+        const date = parseISO(selectedDayStr);
+        const year = date.getFullYear();
+        const month = date.getMonth() + 1;
+
+        await deleteShift({ id: shiftId, year, month });
     };
+
 
     const renderShift = ({shift, template}: { shift: Shift; template?: ShiftTemplate }) => {
         const start = shift.actualStartTime ?? template?.startTime;
