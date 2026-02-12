@@ -43,16 +43,15 @@ const SchedulePageClient = () => {
         );
 
         if (exists) {
-            // Передаём year и month для корректного queryKey
             await deleteShift({
                 id: exists.id,
                 year,
                 month,
             });
         } else {
-            // Передаём year и month для корректного queryKey
             await createShift({
                 date: dateStr,
+                revalidateDate: format(currentDate, "yyyy-MM-dd"),
                 shiftTemplateId: selectedShiftId,
             });
         }

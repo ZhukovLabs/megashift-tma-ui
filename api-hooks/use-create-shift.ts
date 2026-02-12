@@ -6,6 +6,7 @@ import { scheduleCancelAndInvalidate } from '@/utils/react-query-utils';
 
 export type CreateShiftPayload = {
     date: string;
+    revalidateDate: string;
     shiftTemplateId: string;
 };
 
@@ -19,17 +20,19 @@ export const useCreateShift = () => {
         { previousShifts: ShiftDto[]; queryKey: (string | number)[] }
     >({
         mutationFn: async (payload) => {
-            const {data} = await api.post<ShiftDto>('/api/shifts', payload);
+            const {data} = await api.post<ShiftDto>('/api/shifts', {
+                date: payload.date,
+                shiftTemplateId: payload.shiftTemplateId,
+            });
             return data;
         },
         onMutate: async (payload) => {
-            const dateObj = new Date(payload.date);
+            const dateObj = new Date(payload.revalidateDate);
             const year = dateObj.getFullYear();
             const month = dateObj.getMonth() + 1;
             const queryKey = ['month-shifts', year, month];
 
-            // Отменяем текущие fetch'ы для этого month перед optimistic update
-            await queryClient.cancelQueries({ queryKey, exact: true });
+            await queryClient.cancelQueries({ queryKey, exact: false });
 
             const previousShifts = queryClient.getQueryData<ShiftDto[]>(queryKey) ?? [];
             const optimisticShift: ShiftDto = {
