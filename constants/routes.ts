@@ -5,5 +5,6 @@ export const ROUTES = {
     profile: '/profile',
     statistics: '/statistics',
     shifts: '/shifts',
+    createShift: '/shifts?shiftId=new',
     settings: '/settings',
 } as const;
