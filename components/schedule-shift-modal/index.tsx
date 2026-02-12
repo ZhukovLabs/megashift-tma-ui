@@ -2,31 +2,18 @@
 
 import {useCallback, useMemo} from 'react';
 import {useRouter, usePathname, useSearchParams} from 'next/navigation';
-import {format, parseISO, differenceInMinutes, addDays} from 'date-fns';
+import {format, parseISO} from 'date-fns';
 import {ru} from 'date-fns/locale';
-import {Trash2} from 'lucide-react';
-import {formatInTimeZone, fromZonedTime} from 'date-fns-tz';
+import {popup} from '@tma.js/sdk';
 
 import {useGetShiftsByDate} from '@/api-hooks/use-get-shifts-by-date';
 import {useGetShiftTemplates} from '@/api-hooks/use-get-shift-templates';
 import {useUserStore} from '@/store/user-store';
 import {useDeleteShift} from '@/api-hooks/use-delete-shift';
-import {popup} from '@tma.js/sdk';
+import {useUpdateShift} from '@/api-hooks/use-update-shift';
 import {ModalSheet} from '@/components/modal-sheet';
-
-type ShiftTemplate = {
-    id: string;
-    label?: string;
-    startTime?: string;
-    endTime?: string;
-};
-
-type Shift = {
-    id: string;
-    shiftTemplateId?: string;
-    actualStartTime?: string;
-    actualEndTime?: string;
-};
+import {ShiftRow} from './shift-row';
+import * as timeUtils from '@/utils/time';
 
 export const ShiftModal = () => {
     const router = useRouter();
@@ -34,13 +21,13 @@ export const ShiftModal = () => {
     const searchParams = useSearchParams();
 
     const selectedDayStr = searchParams.get('date') ?? '';
-    const tz = useUserStore((s) => s.user?.timezone ?? 'UTC');
-
+    const tz = useUserStore(s => s.user?.timezone ?? 'UTC');
     const isOpen = Boolean(selectedDayStr);
 
     const {data: shiftTemplates = []} = useGetShiftTemplates() || {data: []};
     const {data: dayShifts = []} = useGetShiftsByDate({date: selectedDayStr}) || {data: []};
     const {mutateAsync: deleteShift} = useDeleteShift();
+    const {mutateAsync: updateShift} = useUpdateShift();
 
     const onClose = useCallback(() => {
         const params = new URLSearchParams(searchParams.toString());
@@ -48,141 +35,23 @@ export const ShiftModal = () => {
         router.replace(pathname + (params.toString() ? `?${params.toString()}` : ''));
     }, [router, searchParams, pathname]);
 
-    const enhancedShifts = useMemo(
-        () =>
-            dayShifts.map((shift) => {
-                const normalizedShift = {
-                    ...shift,
-                    shiftTemplateId: shift.shiftTemplateId ?? undefined,
-                } as Shift;
-                const template = shiftTemplates.find((t) => t.id === normalizedShift.shiftTemplateId);
-                return {shift: normalizedShift, template};
-            }),
-        [dayShifts, shiftTemplates]
-    );
-
-    const isTimeOnly = (s?: string) =>
-        Boolean(s && /^\d{1,2}:\d{2}(:\d{2})?$/.test(s));
-
-    const resolveToUtcDate = useCallback(
-        (time?: string) => {
-            if (!time) return null;
-
-            try {
-                if (isTimeOnly(time)) {
-                    if (!selectedDayStr) return null;
-                    const timePart = time.length === 5 ? `${time}:00` : time;
-                    return fromZonedTime(`${selectedDayStr}T${timePart}`, tz);
-                }
-
-                if (/[Z+-]/.test(time)) {
-                    return parseISO(time);
-                }
-
-                return fromZonedTime(time, tz);
-            } catch {
-                return null;
-            }
-        },
-        [selectedDayStr, tz]
-    );
-
-    const formatTime = useCallback(
-        (time?: string) => {
-            if (!time) return '--:--';
-
-            try {
-                if (isTimeOnly(time)) {
-                    if (!selectedDayStr) return time;
-                    const timePart = time.length === 5 ? `${time}:00` : time;
-                    return formatInTimeZone(`${selectedDayStr}T${timePart}`, tz, 'HH:mm');
-                }
-
-                return formatInTimeZone(time, tz, 'HH:mm');
-            } catch {
-                return '--:--';
-            }
-        },
-        [selectedDayStr, tz]
-    );
-
-    const getDuration = useCallback(
-        (start?: string, end?: string) => {
-            const startUtc = resolveToUtcDate(start);
-            const endUtcRaw = resolveToUtcDate(end);
-
-            if (!startUtc || !endUtcRaw) return null;
-
-            let endUtc = endUtcRaw;
-            if (endUtc <= startUtc) {
-                endUtc = addDays(endUtc, 1);
-            }
-
-            const minutes = differenceInMinutes(endUtc, startUtc);
-            if (minutes <= 0) return null;
-
-            const h = Math.floor(minutes / 60);
-            const m = minutes % 60;
-
-            return `${h}ч ${m.toString().padStart(2, '0')}м`;
-        },
-        [resolveToUtcDate]
+    const enhancedShifts = useMemo(() =>
+        dayShifts.map(shift => ({
+            shift,
+            template: shiftTemplates.find(t => t.id === shift.shiftTemplateId)
+        })), [dayShifts, shiftTemplates]
     );
 
     const handleDelete = (shiftId: string) => async () => {
         const confirmed = await popup.show({
             title: 'Удалить смену?',
             message: 'Это действие нельзя отменить',
-            buttons: [
-                {id: 'yes', type: 'destructive', text: 'Удалить'},
-                {id: 'no', type: 'cancel'},
-            ],
+            buttons: [{id: 'yes', type: 'destructive', text: 'Удалить'}, {id: 'no', type: 'cancel'}]
         });
-
-        if (confirmed !== 'yes') return;
-
-        if (!selectedDayStr) return;
+        if (confirmed !== 'yes' || !selectedDayStr) return;
 
         const date = parseISO(selectedDayStr);
-        const year = date.getFullYear();
-        const month = date.getMonth() + 1;
-
-        await deleteShift({ id: shiftId, year, month });
-    };
-
-
-    const renderShift = ({shift, template}: { shift: Shift; template?: ShiftTemplate }) => {
-        const start = shift.actualStartTime ?? template?.startTime;
-        const end = shift.actualEndTime ?? template?.endTime;
-        const duration = getDuration(start, end);
-
-        return (
-            <div
-                key={shift.id}
-                className="flex items-center justify-between px-4 py-3 rounded-xl bg-base-100"
-            >
-                <div className="flex flex-col gap-1">
-                    <div className="flex items-baseline gap-2">
-                        <span className="text-xl font-semibold">{formatTime(start)}</span>
-                        <span className="text-sm opacity-60">— {formatTime(end)}</span>
-                    </div>
-
-                    <div className="text-sm font-medium">
-                        {template?.label ?? 'Смена без названия'}
-                    </div>
-
-                    {duration && <div className="text-xs opacity-60">{duration}</div>}
-                </div>
-
-                <button
-                    onClick={handleDelete(shift.id)}
-                    className="p-3"
-                    aria-label="Удалить смену"
-                >
-                    <Trash2 className="w-5 h-5 text-red-500"/>
-                </button>
-            </div>
-        );
+        await deleteShift({id: shiftId, year: date.getFullYear(), month: date.getMonth() + 1});
     };
 
     const selectedDayDate = selectedDayStr ? parseISO(selectedDayStr) : null;
@@ -192,17 +61,29 @@ export const ShiftModal = () => {
             isOpen={isOpen}
             onClose={onClose}
             title={selectedDayDate ? format(selectedDayDate, 'd MMMM', {locale: ru}) : ''}
-            footer={
-                <button className="btn btn-primary w-full" onClick={onClose}>
-                    Закрыть
-                </button>
-            }
+            footer={<button className="btn btn-primary w-full" onClick={onClose}>Закрыть</button>}
         >
             <div className="flex flex-col gap-2">
                 {enhancedShifts.length === 0 ? (
                     <p className="text-center opacity-60 py-8">На этот день нет смен</p>
                 ) : (
-                    enhancedShifts.map(renderShift)
+                    enhancedShifts.map(({shift, template}) => (
+                        <ShiftRow
+                            key={shift.id}
+                            shift={{
+                                ...shift,
+                                actualStartTime: shift.actualStartTime ?? undefined,
+                                actualEndTime: shift.actualEndTime ?? undefined,
+                                shiftTemplateId: shift.shiftTemplateId ?? undefined
+                            }}
+                            template={template}
+                            updateShift={async (data) => { await updateShift(data); }}
+                            getDuration={(s, e) => timeUtils.getDuration(s, e, selectedDayStr, tz)}
+                            handleDelete={handleDelete}
+                            formatTime={(t) => timeUtils.formatTime(t, selectedDayStr, tz)}
+                        />
+
+                    ))
                 )}
             </div>
         </ModalSheet>
