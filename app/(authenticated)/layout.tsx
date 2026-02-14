@@ -6,8 +6,6 @@ import { BottomMenu } from '@/components/bottom-menu';
 import { Calendar, User, Settings2, ClipboardClock, ChartNoAxesCombined } from 'lucide-react';
 import { useUserStore } from '@/store/user-store';
 import { ROUTES } from '@/constants/routes';
-import { api } from '@/lib/axios';
-import {useLaunchParams} from '@tma.js/sdk-react';
 
 const bottomMenuItems = [
     { path: ROUTES.schedule, icon: <Calendar size={24} /> },
@@ -22,7 +20,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
-    const launchParams = useLaunchParams();
 
     useEffect(() => {
         if (!user) {
@@ -31,19 +28,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             router.replace(`${ROUTES.root}?${params.toString()}`);
             return;
         }
-
-        const redisId = launchParams.tgWebAppStartParam;
-        if (redisId) {
-            (async () => {
-                try {
-                    const { data } = await api.get(`/api/users/invite/${redisId}`);
-                    alert(`Invite данные:\nID: ${data.id}\nOwner: ${data.owner}\nТип: ${data.type}\nСоздано: ${new Date(data.createdAt).toLocaleString()}`);
-                } catch (err) {
-                    console.error('Ошибка при получении invite:', err);
-                }
-            })();
-        }
-    }, [user, router, pathname, searchParams, launchParams]);
+    }, [user, router, pathname, searchParams]);
 
     if (!user)
         return (
