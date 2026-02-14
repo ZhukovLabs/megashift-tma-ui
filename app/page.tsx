@@ -25,7 +25,7 @@ const RootPage = () => {
             (async () => {
                 try {
                     const { data } = await api.get(`/api/users/invite/${redisId}`);
-                    alert(`Invite данные:\nID: ${data.id}\nOwner: ${data.owner}\nТип: ${data.type}\nСоздано: ${new Date(data.createdAt).toLocaleString()}`);
+                    alert(JSON.stringify(data, null, 2));
                 } catch (err) {
                     console.error('Ошибка при получении invite:', err);
                 }
