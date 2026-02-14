@@ -1,63 +1,61 @@
 'use client';
 
-import {useEffect} from 'react';
-import {useRouter, usePathname, useSearchParams} from 'next/navigation';
-import {BottomMenu} from '@/components/bottom-menu';
-import {Calendar, User, Settings2, ClipboardClock, ChartNoAxesCombined} from 'lucide-react';
-import {useUserStore} from '@/store/user-store';
-import {ROUTES} from '@/constants/routes';
-
+import { useEffect } from 'react';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
+import { BottomMenu } from '@/components/bottom-menu';
+import { Calendar, User, Settings2, ClipboardClock, ChartNoAxesCombined } from 'lucide-react';
+import { useUserStore } from '@/store/user-store';
+import { ROUTES } from '@/constants/routes';
+import { api } from '@/lib/axios';
+import {useLaunchParams} from '@tma.js/sdk-react';
 
 const bottomMenuItems = [
-    {
-        path: ROUTES.schedule,
-        icon: <Calendar size={24}/>,
-    },
-    {
-        path: ROUTES.shifts,
-        icon: <ClipboardClock size={24}/>,
-    },
-    {
-        path: ROUTES.statistics,
-        icon: <ChartNoAxesCombined size={24}/>,
-    },
-    {
-        path: ROUTES.profile,
-        icon: <User size={24}/>,
-    },
-    {
-        path: ROUTES.settings,
-        icon: <Settings2 size={24}/>,
-    },
+    { path: ROUTES.schedule, icon: <Calendar size={24} /> },
+    { path: ROUTES.shifts, icon: <ClipboardClock size={24} /> },
+    { path: ROUTES.statistics, icon: <ChartNoAxesCombined size={24} /> },
+    { path: ROUTES.profile, icon: <User size={24} /> },
+    { path: ROUTES.settings, icon: <Settings2 size={24} /> },
 ];
 
-export default function Layout({children}: { children: React.ReactNode }) {
+export default function Layout({ children }: { children: React.ReactNode }) {
     const user = useUserStore((s) => s.user);
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
+    const launchParams = useLaunchParams();
 
     useEffect(() => {
         if (!user) {
-            const currentUrl =
-                pathname + (searchParams.toString() ? `?${searchParams.toString()}` : '');
-            const params = new URLSearchParams({redirect: currentUrl});
+            const currentUrl = pathname + (searchParams.toString() ? `?${searchParams.toString()}` : '');
+            const params = new URLSearchParams({ redirect: currentUrl });
             router.replace(`${ROUTES.root}?${params.toString()}`);
+            return;
         }
-    }, [user, router, pathname, searchParams]);
+
+        const redisId = launchParams.tgWebAppStartParam;
+        if (redisId) {
+            (async () => {
+                try {
+                    const { data } = await api.get(`/api/users/invite/${redisId}`);
+                    alert(`Invite данные:\nID: ${data.id}\nOwner: ${data.owner}\nТип: ${data.type}\nСоздано: ${new Date(data.createdAt).toLocaleString()}`);
+                } catch (err) {
+                    console.error('Ошибка при получении invite:', err);
+                }
+            })();
+        }
+    }, [user, router, pathname, searchParams, launchParams]);
 
     if (!user)
         return (
             <div className="flex h-screen items-center justify-center">
-                <span className="loading loading-spinner loading-xl"/>
+                <span className="loading loading-spinner loading-xl" />
             </div>
         );
 
     return (
         <>
             {children}
-
-            <BottomMenu items={bottomMenuItems}/>
+            <BottomMenu items={bottomMenuItems} />
         </>
     );
 }
