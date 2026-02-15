@@ -26,7 +26,7 @@ export default function Layout({children}: { children: ReactNode }) {
 
     const inviteId = launchParams?.tgWebAppStartParam ?? searchParams.get('startapp') ?? null;
 
-    const {isProcessing: isInviteProcessing, inviteHandled} = useProcessInvite({
+    useProcessInvite({
         inviteId,
         isLoadingUser: !user,
     });
@@ -40,7 +40,7 @@ export default function Layout({children}: { children: ReactNode }) {
         }
     }, [user, router, pathname, searchParams]);
 
-    if (!user || isInviteProcessing || !inviteHandled) {
+    if (!user) {
         return (
             <div className="flex h-screen items-center justify-center">
                 <span className="loading loading-spinner loading-xl"/>
