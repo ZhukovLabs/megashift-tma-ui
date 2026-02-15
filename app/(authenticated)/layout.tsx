@@ -24,8 +24,7 @@ export default function Layout({children}: { children: ReactNode }) {
     const searchParams = useSearchParams();
     const launchParams = useLaunchParams();
 
-    const inviteId =
-        launchParams?.tgWebAppStartParam ?? searchParams.get('startapp') ?? null;
+    const inviteId = launchParams?.tgWebAppStartParam ?? searchParams.get('startapp') ?? null;
 
     const {isProcessing: isInviteProcessing, inviteHandled} = useProcessInvite({
         inviteId,
@@ -38,16 +37,16 @@ export default function Layout({children}: { children: ReactNode }) {
                 pathname + (searchParams.toString() ? `?${searchParams.toString()}` : '');
             const params = new URLSearchParams({redirect: currentUrl});
             router.replace(`${ROUTES.root}?${params.toString()}`);
-            return;
         }
     }, [user, router, pathname, searchParams]);
 
-    if (!user || isInviteProcessing || !inviteHandled)
+    if (!user || isInviteProcessing || !inviteHandled) {
         return (
             <div className="flex h-screen items-center justify-center">
                 <span className="loading loading-spinner loading-xl"/>
             </div>
         );
+    }
 
     return (
         <>

@@ -1,6 +1,5 @@
 'use client';
 
-import {useLaunchParams} from '@tma.js/sdk-react';
 import {useSyncRegisteredUser} from '@/components/start-form/hooks/use-sync-registered-user';
 import {useSearchParams, useRouter} from 'next/navigation';
 import {ROUTES} from '@/constants/routes';
@@ -10,7 +9,6 @@ import {useEffect} from 'react';
 const RootPage = () => {
     const searchParams = useSearchParams();
     const router = useRouter();
-    const launchParams = useLaunchParams();
 
     const {isLoading} = useSyncRegisteredUser();
     const user = useUserStore(s => s.user);
