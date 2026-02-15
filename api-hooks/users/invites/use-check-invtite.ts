@@ -5,11 +5,12 @@ import {AccessClaim} from "@/types";
 export type CheckInviteResponse = { exists: false }
     | {
     exists: true;
-    type: 'invite';
-    payload: {
-        inviterId: string;
-        claims: AccessClaim[];
-    };
+    inviter: {
+        surname: string,
+        name: string,
+        patronymic?: string,
+    },
+    claims: AccessClaim[],
 };
 
 export const useCheckInvite = () => {

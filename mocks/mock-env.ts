@@ -59,7 +59,24 @@ export async function mockEnv() {
 
                             return;
                         }
+                        if (e.name === 'web_app_open_tg_link') {
+                            const params = e.params as { path_full: string };
 
+                            const url = new URL(params.path_full, "https://t.me");
+                            const targetUrl = url.searchParams.get("url");
+
+                            if (targetUrl) {
+                                const targetUrlObj = new URL(targetUrl);
+                                const queryParams = targetUrlObj.search.substring(1);
+
+                                const localUrl = `http://localhost:3000?${queryParams}`;
+
+                                alert('CONSOLE: ' + localUrl);
+                                console.log('[SHARE URL]:', localUrl);
+                            }
+
+                            return;
+                        }
 
                         next();
                     },

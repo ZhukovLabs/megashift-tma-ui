@@ -35,11 +35,15 @@ export const useProcessInvite = ({inviteId, isLoadingUser}: UseProcessInvitePara
                 const response = await checkInviteAsync(inviteId);
                 if (!response.exists) return;
 
-                const {type, payload} = response;
+                const {
+                    inviter: {
+                        surname, name, patronymic
+                    }, claims
+                } = response;
 
-                if (type !== 'invite') return;
+                const fullName = [surname, name, patronymic].join(' ');
 
-                const message = `${payload.inviterId} пригласил вас к своеву расписанию\n\nДоступ: ${payload.claims}`;
+                const message = `${fullName} пригласил вас к своеву расписанию\n\nДоступ: ${claims}`;
 
                 const choice = await popup.show({
                     title: 'Приглашение',
