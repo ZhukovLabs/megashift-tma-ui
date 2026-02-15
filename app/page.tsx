@@ -6,7 +6,7 @@ import { useProcessInvite } from '@/hooks/use-process-invite';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { ROUTES } from '@/constants/routes';
 import { useUserStore } from '@/store/user-store';
-import {useEffect} from "react";
+import { useEffect } from 'react';
 
 const RootPage = () => {
     const searchParams = useSearchParams();

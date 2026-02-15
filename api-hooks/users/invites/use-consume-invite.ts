@@ -1,14 +1,15 @@
 import { useMutation } from '@tanstack/react-query';
 import { api } from '@/lib/axios';
+import {AccessClaim} from "@/types";
 
-type ConsumeInviteResponse = {
+export type ConsumeInviteResponse = {
     success: true;
-    type: 'view',
+    type: 'invite';
     payload: {
-        inviterId: string,
-        access: 'view',
-    },
-}
+        inviterId: string;
+        claims: AccessClaim[];
+    };
+};
 
 export const useConsumeInvite = () => {
     return useMutation<ConsumeInviteResponse, Error, string>({

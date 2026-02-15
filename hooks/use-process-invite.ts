@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { popup } from '@tma.js/sdk';
-import { useCheckInvite, useConsumeInvite } from '@/api-hooks/invites';
+import { useCheckInvite, useConsumeInvite } from '@/api-hooks/users/invites';
 
 type UseProcessInviteParams = {
     inviteId?: string | null;

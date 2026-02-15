@@ -1,15 +1,16 @@
 import {useMutation} from '@tanstack/react-query';
 import {api} from '@/lib/axios';
+import {AccessClaim} from "@/types";
 
-export type CheckInviteResponse = {
-    exists: false;
-} | {
+export type CheckInviteResponse =
+    | { exists: false }
+    | {
     exists: true;
-    type: 'invite',
+    type: 'invite';
     payload: {
-        inviterId: string,
-        access: 'view',
-    },
+        inviterId: string;
+        claims: AccessClaim[];
+    };
 };
 
 export const useCheckInvite = () => {
