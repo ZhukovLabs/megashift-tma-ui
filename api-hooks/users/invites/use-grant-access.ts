@@ -18,7 +18,7 @@ export type GrantAccessResponse = {
 export const useGrantAccess = () => {
     return useMutation<GrantAccessResponse, Error, GrantAccessRequest>({
         mutationFn: async (body: GrantAccessRequest) => {
-            const { data } = await api.post<GrantAccessResponse>('/users/access/grant', body);
+            const { data } = await api.post<GrantAccessResponse>('/api/users/access/grant', body);
             return data;
         },
     });

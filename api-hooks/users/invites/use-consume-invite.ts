@@ -14,7 +14,7 @@ export type ConsumeInviteResponse = {
 export const useConsumeInvite = () => {
     return useMutation<ConsumeInviteResponse, Error, string>({
         mutationFn: async (inviteId: string) => {
-            const { data } = await api.post<ConsumeInviteResponse>(`/users/invite/${inviteId}/consume`);
+            const { data } = await api.post<ConsumeInviteResponse>(`/api/users/invite/${inviteId}/consume`);
             return data;
         },
     });

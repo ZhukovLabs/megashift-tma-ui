@@ -21,7 +21,7 @@ export const useGetAccess = () => {
     return useQuery<GetAccessResponse, Error>({
         queryKey: ['userAccess'],
         queryFn: async () => {
-            const {data} = await api.get<GetAccessResponse>('/users/access');
+            const {data} = await api.get<GetAccessResponse>('/api/users/access');
             return data;
         },
     });

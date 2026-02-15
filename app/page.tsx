@@ -1,25 +1,25 @@
 'use client';
 
-import { useLaunchParams } from '@tma.js/sdk-react';
-import { useSyncRegisteredUser } from '@/components/start-form/hooks/use-sync-registered-user';
-import { useProcessInvite } from '@/hooks/use-process-invite';
-import { useSearchParams, useRouter } from 'next/navigation';
-import { ROUTES } from '@/constants/routes';
-import { useUserStore } from '@/store/user-store';
-import { useEffect } from 'react';
+import {useLaunchParams} from '@tma.js/sdk-react';
+import {useSyncRegisteredUser} from '@/components/start-form/hooks/use-sync-registered-user';
+import {useProcessInvite} from '@/hooks/use-process-invite';
+import {useSearchParams, useRouter} from 'next/navigation';
+import {ROUTES} from '@/constants/routes';
+import {useUserStore} from '@/store/user-store';
+import {useEffect} from 'react';
 
 const RootPage = () => {
     const searchParams = useSearchParams();
     const router = useRouter();
     const launchParams = useLaunchParams();
 
-    const { isLoading } = useSyncRegisteredUser();
+    const {isLoading} = useSyncRegisteredUser();
     const user = useUserStore(s => s.user);
 
-    const inviteId = launchParams?.tgWebAppStartParam ?? null;
+    const inviteId = launchParams?.tgWebAppStartParam ?? searchParams.get('startapp') ?? null;
     const redirect = searchParams.get('redirect');
 
-    const { isProcessing } = useProcessInvite({
+    const {isProcessing} = useProcessInvite({
         inviteId,
         isLoadingUser: isLoading,
     });
@@ -36,7 +36,7 @@ const RootPage = () => {
 
     return (
         <div className="flex h-screen items-center justify-center">
-            <span className="loading loading-spinner loading-xl" />
+            <span className="loading loading-spinner loading-xl"/>
         </div>
     );
 };
