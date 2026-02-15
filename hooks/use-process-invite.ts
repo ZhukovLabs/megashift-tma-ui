@@ -25,25 +25,34 @@ export const useProcessInvite = ({inviteId, isLoadingUser}: UseProcessInvitePara
     }, []);
 
     useEffect(() => {
-        if (isLoadingUser || !inviteId || hasProcessedRef.current) return;
+        if (isLoadingUser || hasProcessedRef.current) return;
 
         hasProcessedRef.current = true;
+
+        if (!inviteId) {
+            setInviteHandled(true);
+            return;
+        }
+
         setIsProcessing(true);
 
         const process = async () => {
             try {
                 const response = await checkInviteAsync(inviteId);
-                if (!response.exists) return;
+
+                // Если invite не существует — считаем обработанным
+                if (!response?.exists) {
+                    if (isMountedRef.current) setInviteHandled(true);
+                    return;
+                }
 
                 const {
-                    inviter: {
-                        surname, name, patronymic
-                    }, claims
+                    inviter: {surname, name, patronymic},
+                    claims,
                 } = response;
 
-                const fullName = [surname, name, patronymic].join(' ');
-
-                const message = `${fullName} пригласил вас к своеву расписанию\n\nДоступ: ${claims}`;
+                const fullName = [surname, name, patronymic].filter(Boolean).join(' ');
+                const message = `${fullName} пригласил вас к своему расписанию\n\nДоступ: ${claims.join(', ')}`;
 
                 const choice = await popup.show({
                     title: 'Приглашение',
@@ -57,13 +66,12 @@ export const useProcessInvite = ({inviteId, isLoadingUser}: UseProcessInvitePara
                 if (choice === 'accept') {
                     await consumeInviteAsync(inviteId);
                 }
-
-                if (isMountedRef.current) setInviteHandled(true);
             } catch (err: any) {
                 console.error('useProcessInvite error:', err);
                 if (isMountedRef.current) setError(err);
             } finally {
                 if (isMountedRef.current) setIsProcessing(false);
+                if (isMountedRef.current) setInviteHandled(true);
             }
         };
 
