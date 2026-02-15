@@ -1,49 +1,44 @@
 'use client';
 
-import {useEffect} from 'react';
-import {useRouter, useSearchParams} from 'next/navigation';
-import {useUserStore} from '@/store/user-store';
-import {useSyncRegisteredUser} from '@/components/start-form/hooks/use-sync-registered-user';
-import {ROUTES} from '@/constants/routes';
-import {useLaunchParams} from "@tma.js/sdk-react";
-import {api} from "@/lib/axios";
+import { useLaunchParams } from '@tma.js/sdk-react';
+import { useSyncRegisteredUser } from '@/components/start-form/hooks/use-sync-registered-user';
+import { useProcessInvite } from '@/hooks/use-process-invite';
+import { useSearchParams, useRouter } from 'next/navigation';
+import { ROUTES } from '@/constants/routes';
+import { useUserStore } from '@/store/user-store';
+import {useEffect} from "react";
 
 const RootPage = () => {
-    const router = useRouter();
     const searchParams = useSearchParams();
-    const user = useUserStore(s => s.user);
-    const {isLoading} = useSyncRegisteredUser();
+    const router = useRouter();
     const launchParams = useLaunchParams();
 
+    const { isLoading } = useSyncRegisteredUser();
+    const user = useUserStore(s => s.user);
+
+    const inviteId = launchParams?.tgWebAppStartParam ?? null;
     const redirect = searchParams.get('redirect');
 
-    useEffect(() => {
-        if (isLoading) return;
+    const { isProcessing } = useProcessInvite({
+        inviteId,
+        isLoadingUser: isLoading,
+    });
 
-        const redisId = launchParams.tgWebAppStartParam;
-        if (redisId) {
-            (async () => {
-                try {
-                    const { data } = await api.get(`/api/users/invite/${redisId}`);
-                    alert(JSON.stringify(data, null, 2));
-                } catch (err) {
-                    console.error('Ошибка при получении invite:', err);
-                }
-            })();
-        }
-        
+    useEffect(() => {
+        if (isLoading || isProcessing) return;
+
         if (user) {
             router.replace(redirect || ROUTES.schedule);
         } else {
             router.replace(ROUTES.onboarding);
         }
-    }, [user, isLoading, redirect, router, launchParams.tgWebAppStartParam]);
+    }, [isLoading, isProcessing, user, redirect, router]);
 
     return (
         <div className="flex h-screen items-center justify-center">
-            <span className="loading loading-spinner loading-xl"/>
+            <span className="loading loading-spinner loading-xl" />
         </div>
     );
-}
+};
 
 export default RootPage;
