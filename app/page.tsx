@@ -12,13 +12,12 @@ const RootPage = () => {
     const router = useRouter();
 
     const {isLoading} = useSyncRegisteredUser();
-    const user = useUserStore(s => s.user);
 
     const startapp = searchParams.get('startapp') ?? null;
     const redirect = searchParams.get('redirect');
 
     useEffect(() => {
-        if (isLoading || !user) return;
+        if (isLoading) return;
 
         const url = new URL(redirect || ROUTES.schedule, window.location.origin);
         if (startapp) {
@@ -26,7 +25,7 @@ const RootPage = () => {
         }
 
         router.replace(url.pathname + url.search);
-    }, [isLoading, user, redirect, router, startapp]);
+    }, [isLoading, redirect, router, startapp]);
 
     usePrefetch({urls: [ROUTES.schedule]});
 
