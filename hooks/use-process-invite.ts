@@ -1,18 +1,18 @@
-import { useEffect, useRef, useState } from 'react';
-import { popup } from '@tma.js/sdk';
-import { useCheckInvite, useConsumeInvite } from '@/api-hooks/users/invites';
+import {useEffect, useRef, useState} from 'react';
+import {popup} from '@tma.js/sdk';
+import {useCheckInvite, useConsumeInvite} from '@/api-hooks/users/invites';
 
 type UseProcessInviteParams = {
     inviteId?: string | null;
     isLoadingUser: boolean;
 };
 
-export const useProcessInvite = ({ inviteId, isLoadingUser }: UseProcessInviteParams) => {
+export const useProcessInvite = ({inviteId, isLoadingUser}: UseProcessInviteParams) => {
     const hasProcessedRef = useRef(false);
     const isMountedRef = useRef(true);
 
-    const { mutateAsync: checkInviteAsync } = useCheckInvite();
-    const { mutateAsync: consumeInviteAsync } = useConsumeInvite();
+    const {mutateAsync: checkInviteAsync} = useCheckInvite();
+    const {mutateAsync: consumeInviteAsync} = useConsumeInvite();
 
     const [isProcessing, setIsProcessing] = useState(false);
     const [inviteHandled, setInviteHandled] = useState(false);
@@ -32,15 +32,21 @@ export const useProcessInvite = ({ inviteId, isLoadingUser }: UseProcessInvitePa
 
         const process = async () => {
             try {
-                const invite = await checkInviteAsync(inviteId);
-                if (!invite) return;
+                const response = await checkInviteAsync(inviteId);
+                if (!response.exists) return;
+
+                const {type, payload} = response;
+
+                if (type !== 'invite') return;
+
+                const message = `${payload.inviterId} пригласил вас к своеву расписанию\n\nДоступ: ${payload.claims}`;
 
                 const choice = await popup.show({
                     title: 'Приглашение',
-                    message: 'Вы хотите принять приглашение?',
+                    message,
                     buttons: [
-                        { id: 'accept', type: 'default', text: 'Принять' },
-                        { id: 'decline', type: 'destructive', text: 'Отклонить' },
+                        {id: 'accept', type: 'default', text: 'Принять'},
+                        {id: 'decline', type: 'destructive', text: 'Отклонить'},
                     ],
                 });
 
@@ -61,5 +67,5 @@ export const useProcessInvite = ({ inviteId, isLoadingUser }: UseProcessInvitePa
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [inviteId, isLoadingUser]);
 
-    return { isProcessing, inviteHandled, error };
+    return {isProcessing, inviteHandled, error};
 };
