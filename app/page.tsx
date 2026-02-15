@@ -10,6 +10,7 @@ import {usePrefetch} from "@/hooks/use-prefetch";
 const RootPage = () => {
     const searchParams = useSearchParams();
     const router = useRouter();
+    const user = useUserStore(s=>s.user);
 
     const {isLoading} = useSyncRegisteredUser();
 
@@ -19,13 +20,13 @@ const RootPage = () => {
     useEffect(() => {
         if (isLoading) return;
 
-        const url = new URL(redirect || ROUTES.schedule, window.location.origin);
+        const url = new URL(user ? (redirect || ROUTES.schedule) : ROUTES.onboarding, window.location.origin);
         if (startapp) {
             url.searchParams.set('startapp', startapp);
         }
 
         router.replace(url.pathname + url.search);
-    }, [isLoading, redirect, router, startapp]);
+    }, [isLoading, redirect, router, startapp, user]);
 
     usePrefetch({urls: [ROUTES.schedule]});
 
