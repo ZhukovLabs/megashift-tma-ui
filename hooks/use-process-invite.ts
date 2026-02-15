@@ -15,7 +15,7 @@ export const useProcessInvite = ({inviteId}: UseProcessInviteParams) => {
     const {mutateAsync: checkInviteAsync} = useCheckInvite();
     const {mutateAsync: consumeInviteAsync} = useConsumeInvite();
 
-    const [isProcessing, setIsProcessing] = useState(false);
+    const [isProcessing, setIsProcessing] = useState(true);
     const [inviteHandled, setInviteHandled] = useState(false);
     const [error, setError] = useState<Error | null>(null);
 

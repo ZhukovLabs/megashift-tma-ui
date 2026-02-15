@@ -27,13 +27,13 @@ export default function Layout({children}: { children: ReactNode }) {
 
     const inviteId = launchParams?.tgWebAppStartParam ?? searchParams.get('startapp') ?? null;
 
-    useProcessInvite({
+    const {isProcessing} = useProcessInvite({
         inviteId,
         isLoadingUser: !user,
     });
 
     useEffect(() => {
-        if (!user) {
+        if (!user && !isProcessing) {
             const currentUrl =
                 pathname + (searchParams.toString() ? `?${searchParams.toString()}` : '');
             const params = new URLSearchParams({redirect: currentUrl});
