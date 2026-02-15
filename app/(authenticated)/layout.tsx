@@ -8,6 +8,7 @@ import {useUserStore} from '@/store/user-store';
 import {ROUTES} from '@/constants/routes';
 import {useLaunchParams} from '@tma.js/sdk-react';
 import {useProcessInvite} from '@/hooks/use-process-invite';
+import {usePrefetch} from "@/hooks/use-prefetch";
 
 const bottomMenuItems = [
     {path: ROUTES.schedule, icon: <Calendar size={24}/>},
@@ -39,6 +40,8 @@ export default function Layout({children}: { children: ReactNode }) {
             router.replace(`${ROUTES.root}?${params.toString()}`);
         }
     }, [user, router, pathname, searchParams]);
+
+    usePrefetch({urls: [ROUTES.schedule, ROUTES.shifts, ROUTES.profile]});
 
     if (!user) {
         return (

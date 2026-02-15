@@ -5,6 +5,7 @@ import {useSearchParams, useRouter} from 'next/navigation';
 import {ROUTES} from '@/constants/routes';
 import {useUserStore} from '@/store/user-store';
 import {useEffect} from 'react';
+import {usePrefetch} from "@/hooks/use-prefetch";
 
 const RootPage = () => {
     const searchParams = useSearchParams();
@@ -26,6 +27,8 @@ const RootPage = () => {
 
         router.replace(url.pathname + url.search);
     }, [isLoading, user, redirect, router, startapp]);
+
+    usePrefetch({urls: [ROUTES.schedule]});
 
     return (
         <div className="flex h-screen items-center justify-center">
