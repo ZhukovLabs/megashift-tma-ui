@@ -1,18 +1,19 @@
 'use client';
 
 import {useEffect, useState} from "react";
-import { useRouter } from "next/navigation";
-import { format } from "date-fns";
+import {useRouter} from "next/navigation";
+import {format} from "date-fns";
 
-import { Schedule } from "@/components/schedule";
-import { ScheduleProvider, CalendarEvent } from "@/components/schedule/context";
-import { AdvancedBottomMenu } from "@/components/advenced-bottom-menu";
-import { ShiftModal } from "@/components/schedule-shift-modal";
+import {Schedule} from "@/components/schedule";
+import {ScheduleProvider, CalendarEvent} from "@/components/schedule/context";
+import {AdvancedBottomMenu} from "@/components/advenced-bottom-menu";
+import {ShiftModal} from "@/components/schedule-shift-modal";
 
-import { useGetShifts } from "@/api-hooks/use-get-shifts";
-import { useCreateShift } from "@/api-hooks/use-create-shift";
-import { useDeleteShift } from "@/api-hooks/use-delete-shift";
-import { useScheduleStore } from "@/store/schedule-store";
+import {useGetShifts} from "@/api-hooks/use-get-shifts";
+import {useCreateShift} from "@/api-hooks/use-create-shift";
+import {useDeleteShift} from "@/api-hooks/use-delete-shift";
+import {useScheduleStore} from "@/store/schedule-store";
+import {ROUTES} from "@/constants/routes";
 
 const SchedulePageClient = () => {
     const [currentDate, setCurrentDate] = useState(new Date());
@@ -20,12 +21,20 @@ const SchedulePageClient = () => {
     const month = currentDate.getMonth() + 1;
     const router = useRouter();
 
-    const { data: shifts = [] } = useGetShifts({ year, month });
-    const { mutateAsync: createShift } = useCreateShift();
-    const { mutateAsync: deleteShift } = useDeleteShift();
+    const {data: shifts = []} = useGetShifts({year, month});
+    const {mutateAsync: createShift} = useCreateShift();
+    const {mutateAsync: deleteShift} = useDeleteShift();
     const selectedShiftId = useScheduleStore((s) => s.selectedShiftId);
     const setEditIsOpen = useScheduleStore(s => s.setEditIsOpen);
     const setSelectedShiftId = useScheduleStore(s => s.setSelectedShiftId);
+
+    useEffect(() => {
+        router.prefetch(ROUTES.shifts);
+        router.prefetch(ROUTES.statistics);
+        router.prefetch(ROUTES.profile);
+        router.prefetch(ROUTES.settings);
+        router.prefetch(ROUTES.createShift);
+    }, [router]);
 
     useEffect(() => () => {
         setEditIsOpen(false);
@@ -72,12 +81,12 @@ const SchedulePageClient = () => {
                 shifts={shifts}
                 onDayClick={handleDayClick}
             >
-                <Schedule />
+                <Schedule/>
             </ScheduleProvider>
 
-            <AdvancedBottomMenu />
+            <AdvancedBottomMenu/>
 
-            <ShiftModal />
+            <ShiftModal/>
         </>
     );
 };
