@@ -10,7 +10,7 @@ import {useGetShiftsByDate} from '@/api-hooks/shifts/use-get-shifts-by-date';
 import {useGetShiftTemplates} from '@/api-hooks/shift-templates/use-get-shift-templates';
 import {useUserStore} from '@/store/user-store';
 import {useDeleteShift} from '@/api-hooks/shifts/use-delete-shift';
-import {useUpdateShift} from '@/api-hooks/use-update-shift';
+import {useUpdateShift} from '@/api-hooks/shifts/use-update-shift';
 import {ModalSheet} from '@/components/modal-sheet';
 import {ShiftRow} from './shift-row';
 import * as timeUtils from '@/utils/time';

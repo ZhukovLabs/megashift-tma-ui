@@ -4,7 +4,7 @@ import {useState} from 'react';
 import {useForm, Controller, useWatch} from 'react-hook-form';
 import {Trash2, Edit2, Check, X} from 'lucide-react';
 
-import type {UpdateShiftPayload} from '@/api-hooks/use-update-shift';
+import type {UpdateShiftPayload} from '@/api-hooks/shifts/use-update-shift';
 
 type ShiftRowProps = {
     shift: { id: string; actualStartTime?: string; actualEndTime?: string; shiftTemplateId?: string };
