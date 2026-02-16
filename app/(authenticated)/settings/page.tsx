@@ -3,12 +3,12 @@
 import Link from "next/link";
 import {
     User,
-    Shield,
+    CalendarCog,
     ChevronRight,
     Wallet,
     Users
 } from "lucide-react";
-import {ROUTES} from "@/constants/routes";
+import { ROUTES } from "@/constants/routes";
 
 const settingsSections = [
     {
@@ -23,8 +23,14 @@ const settingsSections = [
             {
                 label: "Общий доступ",
                 description: "Настройка доступа другим людям к вашему расписанию",
-                href: "/settings/shared-access",
+                href: ROUTES.settingsSharedAccess,
                 icon: Users,
+            },
+            {
+                label: "Выбор календаря",
+                description: "Выберите календарь для отображения",
+                href: ROUTES.settingsCalendar,
+                icon: CalendarCog,
             },
         ],
     },

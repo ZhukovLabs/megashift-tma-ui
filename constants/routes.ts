@@ -8,5 +8,7 @@ export const ROUTES = {
     createShift: '/shifts?shiftId=new',
     settings: '/settings',
     settingsProfile: '/settings/profile',
+    settingsSharedAccess: '/settings/shared-access',
+    settingsCalendar: '/settings/calendar',
     settingsCompensation: '/settings/compensation',
 } as const;

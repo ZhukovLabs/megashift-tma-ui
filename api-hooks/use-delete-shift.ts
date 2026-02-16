@@ -1,6 +1,6 @@
 import {useMutation, useQueryClient} from '@tanstack/react-query';
 import {api} from '@/lib/axios';
-import {ShiftDto} from "@/api-hooks/use-get-shifts";
+import {ShiftDto} from "@/api-hooks/schedule/use-get-shifts";
 import { scheduleCancelAndInvalidate } from '@/utils/react-query-utils';
 
 const monthShiftsKey = (year: number, month: number) => ['month-shifts', year, month] as const;
