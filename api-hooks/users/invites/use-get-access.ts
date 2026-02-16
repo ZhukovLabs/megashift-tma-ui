@@ -1,27 +1,21 @@
-import {useQuery} from '@tanstack/react-query';
-import {api} from '@/lib/axios';
+import { useQuery } from '@tanstack/react-query';
+import { api } from '@/lib/axios';
+
+export type AccessClaim = 'READ' | 'EDIT_OWNER' | 'EDIT_SELF' | 'DELETE_OWNER' | 'DELETE_SELF';
 
 export type AccessUser = {
     id: string;
     name: string;
     surname: string;
+    patronymic?: string;
+    claims: AccessClaim[];
 };
 
-export type GetAccessResponse = {
-    id: string;
-    ownerId: string;
-    grantedToId: string;
-    claim: AccessUser;
-    createdAt: string;
-    updatedAt: string;
-    grantedTo: AccessUser;
-}[];
-
 export const useGetAccess = () => {
-    return useQuery<GetAccessResponse, Error>({
+    return useQuery<AccessUser[], Error>({
         queryKey: ['userAccess'],
         queryFn: async () => {
-            const {data} = await api.get<GetAccessResponse>('/api/users/access');
+            const { data } = await api.get<AccessUser[]>('/api/users/access');
             return data;
         },
     });

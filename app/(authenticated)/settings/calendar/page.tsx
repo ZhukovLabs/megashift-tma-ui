@@ -1,45 +1,40 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Check, X } from "lucide-react";
-import { useUserStore } from "@/store/user-store"; // путь к вашему стора
+import { useUserStore } from "@/store/user-store";
+import { useGetAccess } from "@/api-hooks/users/invites";
+import {AccessUser} from "@/api-hooks/users/invites/use-get-access";
 
 export default function CalendarSettingsPage() {
-    const userId = useUserStore((s) => s.user?.id ?? '');
-    const [selectedUser, setSelectedUser] = useState(userId);
+    const userId = useUserStore((s) => s.user?.id ?? "");
     const setOwnerId = useUserStore((s) => s.setOwnerId);
 
-    const accessibleUsers = [
-        { id: userId, fullName: "Мой календарь" },
-        { id: "user1", fullName: "Иван Иванов" },
-        { id: "user2", fullName: "Мария Петрова" },
-    ];
+    const { data: accessData, isLoading } = useGetAccess();
 
-    const claimsMap: Record<string, { label: string; hasAccess: boolean }[]> = {
-        [userId]: [
-            { label: "Просмотр (READ)", hasAccess: true },
-            { label: "Редактирование своих смен (EDIT_SELF)", hasAccess: true },
-            { label: "Редактирование чужих смен (EDIT_OWNER)", hasAccess: true },
-            { label: "Удаление своих смен (DELETE_SELF)", hasAccess: true },
-            { label: "Удаление чужих смен (DELETE_OWNER)", hasAccess: true },
-        ],
-        user1: [
-            { label: "Просмотр (READ)", hasAccess: true },
-            { label: "Редактирование своих смен (EDIT_SELF)", hasAccess: true },
-            { label: "Редактирование чужих смен (EDIT_OWNER)", hasAccess: false },
-            { label: "Удаление своих смен (DELETE_SELF)", hasAccess: false },
-            { label: "Удаление чужих смен (DELETE_OWNER)", hasAccess: false },
-        ],
-        user2: [
-            { label: "Просмотр (READ)", hasAccess: true },
-            { label: "Редактирование своих смен (EDIT_SELF)", hasAccess: false },
-            { label: "Редактирование чужих смен (EDIT_OWNER)", hasAccess: false },
-            { label: "Удаление своих смен (DELETE_SELF)", hasAccess: false },
-            { label: "Удаление чужих смен (DELETE_OWNER)", hasAccess: false },
-        ],
-    };
+    const [selectedUser, setSelectedUser] = useState(userId);
+    const [accessibleUsers, setAccessibleUsers] = useState<AccessUser[]>([]);
 
-    const currentClaims = claimsMap[selectedUser] || [];
+    // при загрузке данных с сервера формируем список пользователей
+    useEffect(() => {
+        if (accessData) {
+            // добавляем себя в начало списка
+            const me: AccessUser = {
+                id: userId,
+                name: "Мой календарь",
+                surname: "",
+                claims: ["READ"],
+            };
+            setAccessibleUsers([me, ...accessData]);
+        }
+    }, [accessData, userId]);
+
+    // текущие клеймы выбранного пользователя
+    const currentClaims: { label: string; hasAccess: boolean }[] =
+        accessibleUsers.find((u) => u.id === selectedUser)?.claims.map((c) => ({
+            label: c,
+            hasAccess: true,
+        })) || [];
 
     const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const value = e.target.value;
@@ -62,28 +57,33 @@ export default function CalendarSettingsPage() {
                     className="select select-bordered w-full"
                     value={selectedUser}
                     onChange={handleChange}
+                    disabled={isLoading}
                 >
                     {accessibleUsers.map((user) => (
                         <option key={user.id} value={user.id}>
-                            {user.fullName}
+                            {user.name} {user.surname}
                         </option>
                     ))}
                 </select>
 
                 <div className="mt-4 space-y-2">
-                    {currentClaims.map((claim) => (
-                        <div
-                            key={claim.label}
-                            className="flex items-center gap-2 text-sm text-base-content"
-                        >
-                            {claim.hasAccess ? (
-                                <Check size={16} className="text-green-500" />
-                            ) : (
-                                <X size={16} className="text-red-500" />
-                            )}
-                            <span>{claim.label}</span>
-                        </div>
-                    ))}
+                    {currentClaims.length > 0 ? (
+                        currentClaims.map((claim) => (
+                            <div
+                                key={claim.label}
+                                className="flex items-center gap-2 text-sm text-base-content"
+                            >
+                                {claim.hasAccess ? (
+                                    <Check size={16} className="text-green-500" />
+                                ) : (
+                                    <X size={16} className="text-red-500" />
+                                )}
+                                <span>{claim.label}</span>
+                            </div>
+                        ))
+                    ) : (
+                        <p className="text-sm text-base-content/50">Нет доступных прав</p>
+                    )}
                 </div>
             </div>
         </div>
