@@ -4,7 +4,7 @@ import {Plus} from "lucide-react";
 import {useRouter} from "next/navigation";
 import ShiftsList from "@/components/shifts-list";
 import {CreateShiftModal, UpdateShiftModal} from "@/components/shift-modal";
-import {useGetShiftTemplates} from "@/api-hooks/use-get-shift-templates";
+import {useGetShiftTemplates} from "@/api-hooks/shift-templates/use-get-shift-templates";
 import {useRemoveShiftTemplate} from "./hooks/use-remove-shift-template";
 import {popup} from "@tma.js/sdk";
 

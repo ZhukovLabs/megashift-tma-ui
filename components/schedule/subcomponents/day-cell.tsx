@@ -2,7 +2,7 @@ import { format, isSameDay, isSameMonth, isToday } from "date-fns";
 import cn from "classnames";
 import { useMemo } from "react";
 import { useSchedule } from "@/components/schedule/context";
-import { useGetShiftTemplates } from "@/api-hooks/use-get-shift-templates";
+import { useGetShiftTemplates } from "@/api-hooks/shift-templates/use-get-shift-templates";
 import { getContrastColor, lightenHex } from "@/utils/colors";
 
 type DayCellProps = {

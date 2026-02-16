@@ -4,7 +4,7 @@ import {motion, AnimatePresence} from 'framer-motion';
 import cn from 'classnames';
 import {useUserStore} from '@/store/user-store';
 import {useScheduleStore} from '@/store/schedule-store';
-import {useGetShiftTemplates} from '@/api-hooks/use-get-shift-templates';
+import {useGetShiftTemplates} from '@/api-hooks/shift-templates/use-get-shift-templates';
 import {formatInTimeZone} from 'date-fns-tz';
 import {X, Edit2} from 'lucide-react';
 import Link from 'next/link';

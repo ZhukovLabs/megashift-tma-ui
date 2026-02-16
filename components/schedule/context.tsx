@@ -3,7 +3,7 @@
 import {createContext, useContext, ReactNode, useRef, useLayoutEffect, useState} from "react";
 import {addMonths, subMonths} from "date-fns";
 import {CELL_ROWS} from "./config";
-import {ShiftDto} from "@/api-hooks/schedule/use-get-shifts";
+import {ShiftDto} from "@/api-hooks/shifts/use-get-shifts";
 
 export type CalendarEvent = ShiftDto;
 

@@ -10,11 +10,11 @@ export type AccessUser = {
     claims: AccessClaim[];
 };
 
-export const useGetAccess = () => {
+export const useGetAvailableCalendars = () => {
     return useQuery<AccessUser[], Error>({
         queryKey: ['userAccess'],
         queryFn: async () => {
-            const { data } = await api.get<AccessUser[]>('/api/users/access');
+            const { data } = await api.get<AccessUser[]>('/api/users/available-calendars');
             return data;
         },
     });

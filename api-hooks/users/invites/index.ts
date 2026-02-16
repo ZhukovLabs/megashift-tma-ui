@@ -1,4 +1,4 @@
 export {useCheckInvite} from './use-check-invtite';
 export {useConsumeInvite} from './use-consume-invite';
-export {useGetAccess} from './use-get-access';
+export {useGetAvailableCalendars} from './use-get-available-calendars';
 export {useGrantAccess} from './use-grant-access';

@@ -1,6 +1,6 @@
 import {useMutation, useQueryClient} from '@tanstack/react-query';
 import {api} from '@/lib/axios';
-import {ShiftDto} from '@/api-hooks/schedule/use-get-shifts';
+import {ShiftDto} from '@/api-hooks/shifts/use-get-shifts';
 
 export type UpdateShiftPayload = {
     id: string;

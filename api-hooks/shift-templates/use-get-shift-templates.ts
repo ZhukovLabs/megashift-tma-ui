@@ -1,5 +1,6 @@
 import {useQuery} from '@tanstack/react-query';
 import {api} from '@/lib/axios';
+import {useOwnerId} from "@/hooks/use-owner-id";
 
 type GetShiftTemplatesResponse = Array<{
     id: string;
@@ -12,10 +13,14 @@ type GetShiftTemplatesResponse = Array<{
 const shiftTemplatesKey = () => ['shift-templates'] as const;
 
 export const useGetShiftTemplates = () => {
+    const ownerId = useOwnerId();
+
     return useQuery<GetShiftTemplatesResponse, void>({
         queryKey: shiftTemplatesKey(),
         queryFn: async () => {
-            const {data} = await api.get<GetShiftTemplatesResponse>('/api/shift-templates');
+            const {data} = await api.get<GetShiftTemplatesResponse>('/api/shift-templates', {
+                params: {ownerId}
+            });
             return data;
         },
     });

@@ -9,9 +9,9 @@ import {ScheduleProvider, CalendarEvent} from "@/components/schedule/context";
 import {AdvancedBottomMenu} from "@/components/advenced-bottom-menu";
 import {ShiftModal} from "@/components/schedule-shift-modal";
 
-import {useGetShifts} from "@/api-hooks/schedule/use-get-shifts";
-import {useCreateShift} from "@/api-hooks/use-create-shift";
-import {useDeleteShift} from "@/api-hooks/use-delete-shift";
+import {useGetShifts} from "@/api-hooks/shifts/use-get-shifts";
+import {useCreateShift} from "@/api-hooks/shifts/use-create-shift";
+import {useDeleteShift} from "@/api-hooks/shifts/use-delete-shift";
 import {useScheduleStore} from "@/store/schedule-store";
 
 const SchedulePageClient = () => {

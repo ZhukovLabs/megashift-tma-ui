@@ -1,8 +1,9 @@
 import {useMutation, useQueryClient} from '@tanstack/react-query';
 import {api} from '@/lib/axios';
-import {ShiftDto} from "@/api-hooks/schedule/use-get-shifts";
+import {ShiftDto} from "@/api-hooks/shifts/use-get-shifts";
 import {v4 as uuidv4} from 'uuid';
-import { scheduleCancelAndInvalidate } from '@/utils/react-query-utils';
+import {scheduleCancelAndInvalidate} from '@/utils/react-query-utils';
+import {useOwnerId} from "@/hooks/use-owner-id";
 
 export type CreateShiftPayload = {
     date: string;
@@ -13,7 +14,9 @@ export type CreateShiftPayload = {
 const monthShiftsKey = (year: number, month: number) => ['month-shifts', year, month] as const;
 
 export const useCreateShift = () => {
+    const ownerId = useOwnerId();
     const queryClient = useQueryClient();
+
 
     return useMutation<
         ShiftDto,
@@ -25,7 +28,7 @@ export const useCreateShift = () => {
             const {data} = await api.post<ShiftDto>('/api/shifts', {
                 date: payload.date,
                 shiftTemplateId: payload.shiftTemplateId,
-            });
+            }, {params: {ownerId}});
             return data;
         },
         onMutate: async (payload) => {
@@ -34,7 +37,7 @@ export const useCreateShift = () => {
             const month = dateObj.getMonth() + 1;
             const queryKey = monthShiftsKey(year, month);
 
-            await queryClient.cancelQueries({ queryKey, exact: false });
+            await queryClient.cancelQueries({queryKey, exact: false});
 
             const previousShifts = queryClient.getQueryData<ShiftDto[]>(queryKey) ?? [];
             const optimisticShift: ShiftDto = {
@@ -47,7 +50,7 @@ export const useCreateShift = () => {
 
             queryClient.setQueryData<ShiftDto[]>(queryKey, [...previousShifts, optimisticShift]);
 
-            return { previousShifts, queryKey };
+            return {previousShifts, queryKey};
         },
         onError: (err, payload, context) => {
             if (context) {

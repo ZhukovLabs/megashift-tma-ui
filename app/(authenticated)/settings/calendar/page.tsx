@@ -1,17 +1,17 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Check, X } from "lucide-react";
-import { useUserStore } from "@/store/user-store";
-import { useGetAccess } from "@/api-hooks/users/invites";
-import {AccessUser} from "@/api-hooks/users/invites/use-get-access";
+import {useState, useEffect} from "react";
+import {Check, X} from "lucide-react";
+import {useUserStore} from "@/store/user-store";
+import {useGetAvailableCalendars} from "@/api-hooks/users/invites";
+import {AccessUser} from "@/api-hooks/users/invites/use-get-available-calendars";
 import {AccessClaim} from "@/types";
 
 export default function CalendarSettingsPage() {
     const userId = useUserStore((s) => s.user?.id ?? "");
     const setOwnerId = useUserStore((s) => s.setOwnerId);
 
-    const { data: accessData, isLoading } = useGetAccess();
+    const {data: accessData, isLoading} = useGetAvailableCalendars();
 
     const [selectedUser, setSelectedUser] = useState(userId);
     const [accessibleUsers, setAccessibleUsers] = useState<AccessUser[]>([]);
@@ -28,7 +28,6 @@ export default function CalendarSettingsPage() {
         }
     }, [accessData, userId]);
 
-    // текущие клеймы выбранного пользователя
     const currentClaims: { label: string; hasAccess: boolean }[] =
         accessibleUsers.find((u) => u.id === selectedUser)?.claims.map((c) => ({
             label: c,
@@ -38,7 +37,7 @@ export default function CalendarSettingsPage() {
     const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const value = e.target.value;
         setSelectedUser(value);
-        setOwnerId(value); // сохраняем выбранный ownerId в стор
+        setOwnerId(value);
     };
 
     return (
@@ -73,9 +72,9 @@ export default function CalendarSettingsPage() {
                                 className="flex items-center gap-2 text-sm text-base-content"
                             >
                                 {claim.hasAccess ? (
-                                    <Check size={16} className="text-green-500" />
+                                    <Check size={16} className="text-green-500"/>
                                 ) : (
-                                    <X size={16} className="text-red-500" />
+                                    <X size={16} className="text-red-500"/>
                                 )}
                                 <span>{claim.label}</span>
                             </div>
