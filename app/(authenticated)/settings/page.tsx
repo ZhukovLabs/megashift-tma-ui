@@ -1,136 +1,96 @@
-'use client';
+"use client";
 
-import React, { useEffect } from 'react';
-import { useForm, Controller } from 'react-hook-form';
-import { useUpdateSalary, UpdateSalaryPayload, SalaryType } from '@/api-hooks/use-update-salary';
-import { useGetUserSettings } from '@/api-hooks/use-get-user-settings';
-import { DollarSign, Clock, Calendar } from 'lucide-react';
+import Link from "next/link";
+import {
+    User,
+    Shield,
+    ChevronRight,
+    Wallet
+} from "lucide-react";
+import {ROUTES} from "@/constants/routes";
 
-type FormValues = UpdateSalaryPayload & {
-    maxSalary?: number;
-};
+const settingsSections = [
+    {
+        title: "Аккаунт",
+        items: [
+            {
+                label: "Профиль",
+                description: "Имя, фото, личные данные",
+                href: ROUTES.settingsProfile,
+                icon: User,
+            },
+            {
+                label: "Безопасность",
+                description: "Пароль, двухфакторная аутентификация",
+                href: "/settings/security",
+                icon: Shield,
+            },
+        ],
+    },
+    {
+        title: "Работа",
+        items: [
+            {
+                label: "Оплата труда",
+                description: "Тип оплаты, ставка и лимиты",
+                href: ROUTES.settingsCompensation,
+                icon: Wallet,
+            },
+        ],
+    }
+];
 
 export default function SettingsPage() {
-    const { data: settings, isLoading } = useGetUserSettings();
-
-    const { control, handleSubmit, reset } = useForm<FormValues>({
-        defaultValues: {
-            typeSalary: 'MONTHLY',
-            salary: 0,
-            maxSalary: undefined,
-        },
-    });
-
-    const mutation = useUpdateSalary();
-
-    useEffect(() => {
-        if (settings) {
-            reset({
-                typeSalary: settings.typeSalary,
-                salary: settings.salary,
-                maxSalary: settings.maxSalary ?? undefined,
-            });
-        }
-    }, [settings, reset]);
-
-    const onSubmit = (data: FormValues) => {
-        mutation.mutate(data);
-    };
-
     return (
-        <div className="min-h-screen flex items-center justify-center bg-base-100 p-6">
-            <div className="w-full max-w-md bg-base-200 rounded-2xl shadow-md p-6">
-                <h1 className="text-2xl sm:text-3xl font-bold text-center mb-2 text-base-content">Настройки зарплаты</h1>
-                <p className="text-center text-base-content/70 mb-6">
-                    Обновите тип зарплаты, текущую сумму и максимальную для визуализации.
-                </p>
+        <div className="flex min-h-screen flex-col bg-gradient-to-b from-base-100 via-base-200 to-base-100 px-4 pb-10">
+            <h1 className="text-center text-2xl font-bold tracking-tight text-base-content">
+                Настройки
+            </h1>
 
-                <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
-                    <div className="flex flex-col gap-1">
-                        <label className="font-medium text-base-content">Тип зарплаты</label>
-                        <div className="relative">
-                            <Controller
-                                name="typeSalary"
-                                control={control}
-                                render={({ field }) => (
-                                    <select
-                                        {...field}
-                                        className="select select-bordered w-full appearance-none pl-10"
-                                        aria-label="Тип зарплаты"
-                                        disabled={isLoading}
+            <div className="space-y-6 mt-6">
+                {settingsSections.map((section) => (
+                    <div key={section.title}>
+                        <h2 className="mb-2 px-2 text-sm font-semibold uppercase text-base-content/60">
+                            {section.title}
+                        </h2>
+
+                        <div className="rounded-2xl bg-base-100 shadow">
+                            {section.items.map((item, index) => {
+                                const Icon = item.icon;
+
+                                return (
+                                    <Link
+                                        key={item.label}
+                                        href={item.href}
+                                        className={`
+                                          flex items-center gap-4 px-4 py-4 active:bg-base-200
+                                          ${index !== section.items.length - 1 ? "border-b border-base-200" : ""}
+                                        `}
                                     >
-                                        {Object.values(SalaryType).map((type) => (
-                                            <option key={type} value={type}>
-                                                {type === 'HOURLY'
-                                                    ? 'Часовая'
-                                                    : type === 'SHIFT'
-                                                        ? 'Посменная'
-                                                        : 'Месячная'}
-                                            </option>
-                                        ))}
-                                    </select>
-                                )}
-                            />
-                            <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-base-content/50" />
+                                        <div
+                                            className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                                            <Icon size={20}/>
+                                        </div>
+
+                                        <div className="flex flex-1 flex-col">
+                                            <span className="text-base font-medium text-base-content">
+                                                {item.label}
+                                            </span>
+                                            <span className="text-sm text-base-content/60">
+                                                {item.description}
+                                            </span>
+                                        </div>
+
+                                        <ChevronRight
+                                            size={18}
+                                            className="text-base-content/40"
+                                        />
+                                    </Link>
+                                );
+                            })}
                         </div>
                     </div>
-
-                    <div className="flex flex-col gap-1">
-                        <label className="font-medium text-base-content">Сумма</label>
-                        <div className="relative">
-                            <Controller
-                                name="salary"
-                                control={control}
-                                render={({ field }) => (
-                                    <input
-                                        {...field}
-                                        type="number"
-                                        className="input input-bordered w-full pl-10"
-                                        min={0}
-                                        placeholder="Сумма зарплаты"
-                                        aria-label="Сумма зарплаты"
-                                        disabled={isLoading}
-                                    />
-                                )}
-                            />
-                            <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-base-content/50" />
-                        </div>
-                    </div>
-
-                    <div className="flex flex-col gap-1">
-                        <label className="font-medium text-base-content">Максимальная зарплата (опционально)</label>
-                        <div className="relative">
-                            <Controller
-                                name="maxSalary"
-                                control={control}
-                                render={({ field }) => (
-                                    <input
-                                        {...field}
-                                        type="number"
-                                        className="input input-bordered w-full pl-10"
-                                        min={0}
-                                        placeholder="Максимальная зарплата (для визуализации)"
-                                        aria-label="Максимальная зарплата"
-                                        disabled={isLoading}
-                                    />
-                                )}
-                            />
-                            <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-base-content/50" />
-                        </div>
-                    </div>
-
-                    <button
-                        type="submit"
-                        disabled={mutation.isPending || isLoading}
-                        aria-busy={mutation.isPending ? 'true' : 'false'}
-                        className={
-                            'mt-3 w-full bg-primary text-primary-content font-medium py-3 rounded-lg ' +
-                            'shadow-sm disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-primary/30'
-                        }
-                    >
-                        {mutation.isPending ? 'Сохраняем...' : 'Сохранить'}
-                    </button>
-                </form>
+                ))}
             </div>
         </div>
     );

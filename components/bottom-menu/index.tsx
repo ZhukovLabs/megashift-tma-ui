@@ -47,7 +47,7 @@ export function BottomMenu({ items, className }: BottomMenuProps) {
                         )}
                     >
                         {items.map(({ path, icon }) => {
-                            const isActive = pathname === path;
+                            const isActive = pathname.startsWith(path);
 
                             return (
                                 <Link
