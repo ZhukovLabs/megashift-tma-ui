@@ -5,6 +5,7 @@ import { Check, X } from "lucide-react";
 import { useUserStore } from "@/store/user-store";
 import { useGetAccess } from "@/api-hooks/users/invites";
 import {AccessUser} from "@/api-hooks/users/invites/use-get-access";
+import {AccessClaim} from "@/types";
 
 export default function CalendarSettingsPage() {
     const userId = useUserStore((s) => s.user?.id ?? "");
@@ -15,15 +16,13 @@ export default function CalendarSettingsPage() {
     const [selectedUser, setSelectedUser] = useState(userId);
     const [accessibleUsers, setAccessibleUsers] = useState<AccessUser[]>([]);
 
-    // при загрузке данных с сервера формируем список пользователей
     useEffect(() => {
         if (accessData) {
-            // добавляем себя в начало списка
             const me: AccessUser = {
                 id: userId,
                 name: "Мой календарь",
                 surname: "",
-                claims: ["READ"],
+                claims: Object.values(AccessClaim),
             };
             setAccessibleUsers([me, ...accessData]);
         }

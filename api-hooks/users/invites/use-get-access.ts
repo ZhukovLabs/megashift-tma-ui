@@ -1,7 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { api } from '@/lib/axios';
-
-export type AccessClaim = 'READ' | 'EDIT_OWNER' | 'EDIT_SELF' | 'DELETE_OWNER' | 'DELETE_SELF';
+import {AccessClaim} from "@/types";
 
 export type AccessUser = {
     id: string;
