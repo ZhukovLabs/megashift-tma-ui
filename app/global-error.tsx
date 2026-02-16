@@ -1,7 +1,6 @@
 'use client';
 
 import './globals.css';
-import {useRouter} from 'next/navigation';
 import {Geist, Geist_Mono} from 'next/font/google';
 import Link from "next/link";
 import {ROUTES} from "@/constants/routes";
@@ -17,7 +16,7 @@ interface GlobalErrorProps {
 export default function GlobalError({error, reset}: GlobalErrorProps) {
     const handleReportClick = () => {
         const ua = typeof navigator !== 'undefined' ? navigator.userAgent : 'unknown';
-        const to = 'support@example.com';
+        const to = 'deniszhukov.hachiko@gmail.com';
         const subject = encodeURIComponent('Глобальная ошибка приложения');
         const body = encodeURIComponent(
             `Ошибка: ${error.message}\n` +

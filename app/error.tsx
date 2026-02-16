@@ -1,6 +1,7 @@
 'use client';
 
-import {useRouter} from 'next/navigation';
+import Link from "next/link";
+import {ROUTES} from "@/constants/routes";
 
 interface ErrorProps {
     error: Error;
@@ -8,11 +9,9 @@ interface ErrorProps {
 }
 
 export default function GlobalError({error, reset}: ErrorProps) {
-    const router = useRouter();
-
     const handleReportClick = () => {
         const ua = typeof navigator !== 'undefined' ? navigator.userAgent : 'unknown';
-        const to = 'support@example.com'; // поменять на свой адрес
+        const to = 'deniszhukov.hachiko@gmail.com';
         const subject = encodeURIComponent('Ошибка приложения');
         const body = encodeURIComponent(
             `Ошибка: ${error.message}\n` +
@@ -31,18 +30,25 @@ export default function GlobalError({error, reset}: ErrorProps) {
             </p>
 
             <div className="flex flex-col gap-3 w-full max-w-xs">
-                <button
+                <Link
                     className="btn btn-primary btn-block"
-                    onClick={() => reset()} // пробуем перезагрузить текущую страницу
+                    href={ROUTES.root}
                 >
-                    Попробовать снова
-                </button>
+                    На главную
+                </Link>
 
                 <button
                     className="btn btn-outline btn-block"
                     onClick={handleReportClick}
                 >
                     Сообщить о проблеме
+                </button>
+
+                <button
+                    className="btn btn-secondary btn-block"
+                    onClick={() => reset()}
+                >
+                    Попробовать снова
                 </button>
             </div>
 

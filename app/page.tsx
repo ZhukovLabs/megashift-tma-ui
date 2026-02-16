@@ -5,6 +5,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { ROUTES } from '@/constants/routes';
 import { useSyncRegisteredUser } from '@/components/start-form/hooks/use-sync-registered-user';
 import { useUserStore } from '@/store/user-store';
+import {SkeletonPage} from "@/components/skeleton-page";
 
 export default function RootPage() {
     const searchParams = useSearchParams();
@@ -38,5 +39,5 @@ export default function RootPage() {
         router.replace(onboardingUrl.pathname + onboardingUrl.search);
     }, [user, isLoading, redirectParam, startapp, router]);
 
-    return null;
+    return <SkeletonPage/>;
 }
