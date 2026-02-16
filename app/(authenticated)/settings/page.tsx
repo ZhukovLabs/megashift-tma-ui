@@ -5,7 +5,8 @@ import {
     User,
     Shield,
     ChevronRight,
-    Wallet
+    Wallet,
+    Users
 } from "lucide-react";
 import {ROUTES} from "@/constants/routes";
 
@@ -20,10 +21,10 @@ const settingsSections = [
                 icon: User,
             },
             {
-                label: "Безопасность",
-                description: "Пароль, двухфакторная аутентификация",
-                href: "/settings/security",
-                icon: Shield,
+                label: "Общий доступ",
+                description: "Настройка доступа другим людям к вашему расписанию",
+                href: "/settings/shared-access",
+                icon: Users,
             },
         ],
     },
@@ -35,7 +36,7 @@ const settingsSections = [
                 description: "Тип оплаты, ставка и лимиты",
                 href: ROUTES.settingsCompensation,
                 icon: Wallet,
-            },
+            }
         ],
     }
 ];

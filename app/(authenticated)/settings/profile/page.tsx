@@ -2,19 +2,15 @@
 
 import { useState } from "react";
 import { useGetProfile } from "@/api-hooks/use-get-profile";
-import { useCreateInvite } from "@/api-hooks/use-create-invite";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
-import { shareURL } from "@tma.js/sdk";
-import { User, Calendar, Share2 } from "lucide-react";
+import { User, Calendar} from "lucide-react";
 import { useLaunchParams } from "@tma.js/sdk-react";
 
 export default function ProfilePage() {
     const { data: user, isLoading } = useGetProfile();
     const lp = useLaunchParams(true);
     const photoUrl = lp.tgWebAppData?.user?.photoUrl;
-
-    const { mutateAsync: createInvite, isPending } = useCreateInvite();
 
     const [imgError, setImgError] = useState(false);
 
@@ -23,16 +19,6 @@ export default function ProfilePage() {
             return format(new Date(date), 'dd.MM.yyyy', { locale: ru });
         } catch {
             return 'Неизвестно';
-        }
-    };
-
-    const handleShare = async () => {
-        try {
-            const { id } = await createInvite();
-            const url = `https://t.me/megashiftbot?startapp=${id}`;
-            shareURL(url, "Приглашаю тебя следить за моими сменами");
-        } catch (e) {
-            console.error('Invite creation failed', e);
         }
     };
 
@@ -83,7 +69,6 @@ export default function ProfilePage() {
                 )}
             </div>
 
-            {/* Registration */}
             <div className="mt-6 rounded-2xl bg-base-100 shadow">
                 <div className="flex items-center gap-4 px-4 py-4">
                     <Calendar size={20} className="text-primary shrink-0" />
@@ -98,22 +83,6 @@ export default function ProfilePage() {
                         </span>
                     </div>
                 </div>
-            </div>
-
-            {/* Share */}
-            <div className="mt-6 rounded-2xl bg-base-100 p-4 shadow">
-                <button
-                    onClick={handleShare}
-                    disabled={isPending}
-                    className="btn btn-primary w-full gap-2"
-                >
-                    <Share2 size={18} />
-                    {isPending ? 'Создание ссылки...' : 'Поделиться ботом'}
-                </button>
-
-                <p className="mt-3 text-xs text-base-content/50 text-center">
-                    Отправьте приглашение и позвольте другим следить за вашими сменами
-                </p>
             </div>
         </div>
     );
