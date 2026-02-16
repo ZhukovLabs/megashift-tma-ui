@@ -1,0 +1,54 @@
+'use client';
+
+import {useRouter} from 'next/navigation';
+
+interface ErrorProps {
+    error: Error;
+    reset: () => void;
+}
+
+export default function GlobalError({error, reset}: ErrorProps) {
+    const router = useRouter();
+
+    const handleReportClick = () => {
+        const ua = typeof navigator !== 'undefined' ? navigator.userAgent : 'unknown';
+        const to = 'support@example.com'; // поменять на свой адрес
+        const subject = encodeURIComponent('Ошибка приложения');
+        const body = encodeURIComponent(
+            `Ошибка: ${error.message}\n` +
+            `Stack: ${error.stack || 'нет'}\n` +
+            `UserAgent: ${ua}\n\nОпиши, что делал(а):`
+        );
+        window.location.href = `mailto:${to}?subject=${subject}&body=${body}`;
+    };
+
+    return (
+        <main className="min-h-screen flex flex-col items-center justify-center bg-base-200 p-6">
+            <div className="text-6xl mb-4 animate-bounce">💥</div>
+            <h1 className="text-4xl font-bold mb-2 text-center">Что-то пошло не так</h1>
+            <p className="text-center text-base-content/70 mb-6">
+                Возникла ошибка в приложении. Не переживай, всё можно исправить!
+            </p>
+
+            <div className="flex flex-col gap-3 w-full max-w-xs">
+                <button
+                    className="btn btn-primary btn-block"
+                    onClick={() => reset()} // пробуем перезагрузить текущую страницу
+                >
+                    Попробовать снова
+                </button>
+
+                <button
+                    className="btn btn-outline btn-block"
+                    onClick={handleReportClick}
+                >
+                    Сообщить о проблеме
+                </button>
+            </div>
+
+            <p className="text-xs text-base-content/50 mt-6 text-center">
+                Мы автоматически получим сообщение о проблеме, если нажмёшь кнопку выше.
+            </p>
+        </main>
+    );
+}

@@ -2,6 +2,7 @@ import {useQuery} from '@tanstack/react-query';
 import {api} from '@/lib/axios';
 
 interface CheckRegistrationResponse {
+    id: string;
     surname: string;
     name: string;
     patronymic?: string;

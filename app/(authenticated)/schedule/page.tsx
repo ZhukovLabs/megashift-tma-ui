@@ -13,7 +13,6 @@ import {useGetShifts} from "@/api-hooks/use-get-shifts";
 import {useCreateShift} from "@/api-hooks/use-create-shift";
 import {useDeleteShift} from "@/api-hooks/use-delete-shift";
 import {useScheduleStore} from "@/store/schedule-store";
-import {ROUTES} from "@/constants/routes";
 
 const SchedulePageClient = () => {
     const [currentDate, setCurrentDate] = useState(new Date());
@@ -27,14 +26,6 @@ const SchedulePageClient = () => {
     const selectedShiftId = useScheduleStore((s) => s.selectedShiftId);
     const setEditIsOpen = useScheduleStore(s => s.setEditIsOpen);
     const setSelectedShiftId = useScheduleStore(s => s.setSelectedShiftId);
-
-    useEffect(() => {
-        router.prefetch(ROUTES.shifts);
-        router.prefetch(ROUTES.statistics);
-        router.prefetch(ROUTES.profile);
-        router.prefetch(ROUTES.settings);
-        router.prefetch(ROUTES.createShift);
-    }, [router]);
 
     useEffect(() => () => {
         setEditIsOpen(false);

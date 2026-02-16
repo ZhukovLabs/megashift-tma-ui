@@ -1,45 +1,42 @@
 'use client';
 
-import {useEffect, useMemo} from 'react';
-import {useSearchParams, useRouter} from 'next/navigation';
-import {ROUTES} from '@/constants/routes';
-import {useUserStore} from '@/store/user-store';
-import {useSyncRegisteredUser} from '@/components/start-form/hooks/use-sync-registered-user';
-import {usePrefetch} from '@/hooks/use-prefetch';
+import { useEffect } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
+import { ROUTES } from '@/constants/routes';
+import { useSyncRegisteredUser } from '@/components/start-form/hooks/use-sync-registered-user';
+import { useUserStore } from '@/store/user-store';
 
-const RootPage = () => {
+export default function RootPage() {
     const searchParams = useSearchParams();
     const router = useRouter();
-    const user = useUserStore((s) => s.user);
-
-    const {isLoading} = useSyncRegisteredUser();
 
     const startapp = searchParams.get('startapp');
-    const redirect = searchParams.get('redirect');
+    const redirectParam = searchParams.get('redirect');
 
-    usePrefetch({urls: [ROUTES.onboarding, ROUTES.schedule]});
-
-    const redirectUrl = useMemo(() => {
-        if (isLoading) return null;
-
-        const target = user ? redirect || ROUTES.schedule : ROUTES.onboarding;
-        const url = new URL(target, window.location.origin);
-
-        if (startapp) url.searchParams.set('startapp', startapp);
-        return url.pathname + url.search;
-    }, [isLoading, user, redirect, startapp]);
+    const { user, isLoading } = useSyncRegisteredUser();
+    const initialize = useUserStore((s) => s.initialize);
 
     useEffect(() => {
-        if (redirectUrl) {
-            router.replace(redirectUrl);
+        initialize();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    useEffect(() => {
+        if (isLoading) return;
+
+        if (user) {
+            const target = redirectParam || ROUTES.schedule;
+            const url = new URL(target, window.location.origin);
+            if (startapp) url.searchParams.set('startapp', startapp);
+            router.replace(url.pathname + url.search);
+            return;
         }
-    }, [redirectUrl, router]);
 
-    return (
-        <div className="flex h-screen items-center justify-center">
-            <span className="loading loading-spinner loading-xl"/>
-        </div>
-    );
-};
+        const onboardingUrl = new URL(ROUTES.onboarding, window.location.origin);
+        if (redirectParam) onboardingUrl.searchParams.set('redirect', redirectParam);
+        if (startapp) onboardingUrl.searchParams.set('startapp', startapp);
+        router.replace(onboardingUrl.pathname + onboardingUrl.search);
+    }, [user, isLoading, redirectParam, startapp, router]);
 
-export default RootPage;
+    return null;
+}
