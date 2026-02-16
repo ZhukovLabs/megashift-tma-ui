@@ -11,7 +11,7 @@ export interface InitOptions {
     debug?: boolean;
 }
 
-export const init = (options: InitOptions = {}) => {
+export const telegramInit = (options: InitOptions = {}) => {
     const {debug = false} = options;
 
     setDebug(debug);

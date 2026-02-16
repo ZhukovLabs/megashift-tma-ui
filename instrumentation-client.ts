@@ -1,9 +1,9 @@
-import {init} from '@/telegram/init';
+import {telegramInit} from '@/utils/telegram-init';
 import {mockEnv} from '@/mocks/mock-env';
 
 mockEnv().then(() => {
     try {
-        init({debug: true});
+        telegramInit({debug: true});
     } catch (e) {
         console.log(e);
     }
