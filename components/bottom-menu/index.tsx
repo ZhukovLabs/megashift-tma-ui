@@ -3,7 +3,8 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import cn from 'classnames';
 import { ReactNode } from 'react';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
+import Link from 'next/link';
 import { useScheduleStore } from '@/store/schedule-store';
 
 type MenuItem = {
@@ -17,13 +18,8 @@ type BottomMenuProps = {
 };
 
 export function BottomMenu({ items, className }: BottomMenuProps) {
-    const router = useRouter();
     const pathname = usePathname();
-    const editIsOpen = useScheduleStore(s => s.editIsOpen);
-
-    const handleClick = (path: string) => () => {
-        router.push(path);
-    };
+    const editIsOpen = useScheduleStore((s) => s.editIsOpen);
 
     return (
         <AnimatePresence>
@@ -51,12 +47,12 @@ export function BottomMenu({ items, className }: BottomMenuProps) {
                         )}
                     >
                         {items.map(({ path, icon }) => {
-                            const isActive = path === pathname;
+                            const isActive = pathname === path;
 
                             return (
-                                <button
+                                <Link
                                     key={path}
-                                    onClick={handleClick(path)}
+                                    href={path}
                                     className={cn(
                                         'relative flex items-center justify-center',
                                         'h-10 w-10',
@@ -70,18 +66,26 @@ export function BottomMenu({ items, className }: BottomMenuProps) {
                                         <motion.span
                                             layoutId="floating-menu-active"
                                             className="absolute inset-0 rounded-full bg-primary/10"
-                                            transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                                            transition={{
+                                                type: 'spring',
+                                                stiffness: 400,
+                                                damping: 30,
+                                            }}
                                         />
                                     )}
 
                                     <motion.span
                                         animate={{ scale: isActive ? 1.15 : 1 }}
-                                        transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+                                        transition={{
+                                            type: 'spring',
+                                            stiffness: 400,
+                                            damping: 20,
+                                        }}
                                         className="relative z-10"
                                     >
                                         {icon}
                                     </motion.span>
-                                </button>
+                                </Link>
                             );
                         })}
                     </div>
