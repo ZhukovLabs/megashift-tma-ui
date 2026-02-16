@@ -1,75 +1,72 @@
-import {useEffect, useRef, useState} from 'react';
-import {popup} from '@tma.js/sdk';
-import {useCheckInvite, useConsumeInvite} from '@/api-hooks/users/invites';
-import {useUserStore} from "@/store/user-store";
+import { useEffect, useRef, useState } from 'react';
+import { popup } from '@tma.js/sdk';
+import { useCheckInvite, useConsumeInvite } from '@/api-hooks/users/invites';
+import { useUserStore } from '@/store/user-store';
 
-type UseProcessInviteParams = {
+interface UseProcessInviteParams {
     inviteId?: string | null;
-    isLoadingUser: boolean;
-};
+}
 
-export const useProcessInvite = ({inviteId}: UseProcessInviteParams) => {
-    const user = useUserStore(s => s.user);
+export const useProcessInvite = ({ inviteId }: UseProcessInviteParams) => {
+    const user = useUserStore(state => state.user);
     const hasProcessedRef = useRef(false);
 
-    const {mutateAsync: checkInviteAsync} = useCheckInvite();
-    const {mutateAsync: consumeInviteAsync} = useConsumeInvite();
+    const checkInvite = useCheckInvite().mutateAsync;
+    const consumeInvite = useConsumeInvite().mutateAsync;
 
     const [isProcessing, setIsProcessing] = useState(true);
-    const [inviteHandled, setInviteHandled] = useState(false);
     const [error, setError] = useState<Error | null>(null);
 
     useEffect(() => {
-        if (!user || hasProcessedRef.current) return;
+        if (!user || !inviteId || hasProcessedRef.current) {
+            return;
+        }
 
         hasProcessedRef.current = true;
 
         const processInvite = async () => {
-            setIsProcessing(true);
-
             try {
-                if (!inviteId) {
-                    setInviteHandled(true);
-                    return;
-                }
+                const inviteData = await checkInvite(inviteId);
 
-                const response = await checkInviteAsync(inviteId);
-
-                if (!response?.exists) {
+                if (!inviteData?.exists) {
                     await popup.show({
-                        title: "Приглашение",
-                        message: "Приглашение устарело"
+                        title: 'Приглашение',
+                        message: 'Приглашение устарело или недействительно',
                     });
-                    setInviteHandled(true);
                     return;
                 }
 
-                const {inviter: {surname, name, patronymic}, claims} = response;
-                const fullName = [surname, name, patronymic].filter(Boolean).join(' ');
+                const { inviter, claims } = inviteData;
+                const fullName = [inviter.surname, inviter.name, inviter.patronymic]
+                    .filter(Boolean)
+                    .join(' ');
+
                 const message = `${fullName} пригласил вас к своему расписанию\n\nДоступ: ${claims.join(', ')}`;
 
                 const choice = await popup.show({
                     title: 'Приглашение',
                     message,
                     buttons: [
-                        {id: 'accept', type: 'default', text: 'Принять'},
-                        {id: 'decline', type: 'destructive', text: 'Отклонить'},
+                        { id: 'accept', type: 'default', text: 'Принять' },
+                        { id: 'decline', type: 'destructive', text: 'Отклонить' },
                     ],
                 });
 
                 if (choice === 'accept') {
-                    await consumeInviteAsync(inviteId);
+                    await consumeInvite(inviteId);
                 }
-            } catch (err: any) {
-                setError(err);
+            } catch (err) {
+                setError(err instanceof Error ? err : new Error(String(err)));
             } finally {
                 setIsProcessing(false);
-                setInviteHandled(true);
             }
         };
 
         processInvite();
-    }, [inviteId, user]);
+    }, [inviteId, user, checkInvite, consumeInvite]);
 
-    return {isProcessing, inviteHandled, error};
+    return {
+        isProcessing,
+        error,
+    };
 };
