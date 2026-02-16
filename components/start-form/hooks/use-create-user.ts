@@ -10,6 +10,7 @@ type CreateUserRequest = {
 }
 
 type CreateUserResponse = CreateUserRequest & {
+    id: string;
     createdAt: string;
 }
 
@@ -23,6 +24,7 @@ export const useCreateUser = () => {
         },
         onSuccess: async (data) => {
             setUser({
+                id: data.id,
                 name: data.name,
                 surname: data.surname,
                 patronymic: data.patronymic,
