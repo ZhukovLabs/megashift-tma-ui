@@ -3,14 +3,14 @@ import { useCheckRegistration } from './use-check-registration';
 import { useUserStore } from '@/store/user-store';
 
 export const useSyncRegisteredUser = () => {
-    const { data: user, isLoading, isError } = useCheckRegistration();
+    const { data: user, isFetching, isError } = useCheckRegistration();
 
     const setUser = useUserStore((s) => s.setUser);
     const setUnauthenticated = useUserStore((s) => s.setUnauthenticated);
     const isInitialized = useUserStore((s) => s.isInitialized);
 
     useEffect(() => {
-        if (isLoading) return;
+        if (isFetching) return;
 
         if (isError || !user) {
             setUnauthenticated();
@@ -19,11 +19,11 @@ export const useSyncRegisteredUser = () => {
 
         const { id, name, surname, patronymic, timezone } = user;
         setUser({ id, name, surname, patronymic, timezone });
-    }, [user, isLoading, isError, setUser, setUnauthenticated]);
+    }, [user, isFetching, isError, setUser, setUnauthenticated]);
 
     return {
         user,
-        isLoading,
+        isFetching,
         isInitialized,
     };
 };

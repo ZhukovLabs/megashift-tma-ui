@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
-import { ROUTES } from '@/constants/routes';
-import { useSyncRegisteredUser } from '@/components/start-form/hooks/use-sync-registered-user';
-import { useUserStore } from '@/store/user-store';
+import {useEffect} from 'react';
+import {useSearchParams, useRouter} from 'next/navigation';
+import {ROUTES} from '@/constants/routes';
+import {useSyncRegisteredUser} from '@/components/start-form/hooks/use-sync-registered-user';
+import {useUserStore} from '@/store/user-store';
 import {SkeletonPage} from "@/components/skeleton-page";
 
 export default function RootPage() {
@@ -14,7 +14,7 @@ export default function RootPage() {
     const startapp = searchParams.get('startapp');
     const redirectParam = searchParams.get('redirect');
 
-    const { user, isLoading } = useSyncRegisteredUser();
+    const {user, isFetching} = useSyncRegisteredUser();
     const initialize = useUserStore((s) => s.initialize);
 
     useEffect(() => {
@@ -23,7 +23,7 @@ export default function RootPage() {
     }, []);
 
     useEffect(() => {
-        if (isLoading) return;
+        if (isFetching) return;
 
         if (user) {
             const target = redirectParam || ROUTES.schedule;
@@ -37,7 +37,7 @@ export default function RootPage() {
         if (redirectParam) onboardingUrl.searchParams.set('redirect', redirectParam);
         if (startapp) onboardingUrl.searchParams.set('startapp', startapp);
         router.replace(onboardingUrl.pathname + onboardingUrl.search);
-    }, [user, isLoading, redirectParam, startapp, router]);
+    }, [user, isFetching, redirectParam, startapp, router]);
 
     return <SkeletonPage/>;
 }

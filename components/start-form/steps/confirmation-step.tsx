@@ -34,7 +34,6 @@ export const ConfirmationStep = ({
         router.replace(ROUTES.root);
     });
 
-    // Находим объект TZ
     const tzInfo = TIMEZONES.find(t => t.tz === values.timezone);
 
     return (

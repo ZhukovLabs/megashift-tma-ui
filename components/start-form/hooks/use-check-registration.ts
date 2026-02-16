@@ -16,6 +16,6 @@ export const useCheckRegistration = () => {
         queryFn: async () => {
             const {data} = await api.get<CheckRegistrationResponse>('/api/users/check-registration');
             return data;
-        },
+        }
     });
 };
