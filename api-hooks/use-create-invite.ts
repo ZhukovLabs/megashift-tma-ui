@@ -1,12 +1,13 @@
 import { useMutation } from '@tanstack/react-query';
 import { api } from '@/lib/axios';
+import {AccessClaim} from "@/types";
 
 type CreateInviteResponse = {
     id: string;
 };
 
 type CreateInvitePayload = {
-    accessClaims: string[];
+    claims: (keyof typeof AccessClaim)[]
 };
 
 export const useCreateInvite = () => {

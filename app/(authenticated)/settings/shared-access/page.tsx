@@ -5,17 +5,10 @@ import { useForm, Controller } from "react-hook-form";
 import { useCreateInvite } from "@/api-hooks/use-create-invite";
 import { shareURL } from "@tma.js/sdk";
 import { Share2 } from "lucide-react";
-
-enum AccessClaim {
-    READ = "Чтение расписания",
-    EDIT_OWNER = "Редактирование чужих смен",
-    EDIT_SELF = "Редактирование своих смен",
-    DELETE_OWNER = "Удаление чужих смен",
-    DELETE_SELF = "Удаление своих смен"
-}
+import { AccessClaim } from "@/types";
 
 type FormValues = {
-    accessClaims: (keyof typeof AccessClaim)[];
+    claims: (keyof typeof AccessClaim)[];
 };
 
 export default function SharedAccessPage() {
@@ -24,7 +17,7 @@ export default function SharedAccessPage() {
 
     const { control, handleSubmit, formState: { errors } } = useForm<FormValues>({
         defaultValues: {
-            accessClaims: ["READ"]
+            claims: ["READ"]
         },
         mode: "onSubmit"
     });
@@ -32,7 +25,7 @@ export default function SharedAccessPage() {
     const onSubmit = async (data: FormValues) => {
         setError(null);
         try {
-            const { id } = await createInvite({ accessClaims: data.accessClaims });
+            const { id } = await createInvite({ claims: data.claims });
             const url = `https://t.me/megashiftbot?startapp=${id}`;
             shareURL(url, "Приглашаю тебя следить за моими сменами");
         } catch (e) {
@@ -49,7 +42,7 @@ export default function SharedAccessPage() {
 
             <form onSubmit={handleSubmit(onSubmit)} className="mt-6 rounded-2xl bg-base-100 p-4 shadow space-y-4">
                 <Controller
-                    name="accessClaims"
+                    name="claims"
                     control={control}
                     rules={{
                         validate: (value) => value.length > 0 || "Должен быть выбран хотя бы один доступ"
@@ -85,8 +78,8 @@ export default function SharedAccessPage() {
                                     );
                                 })}
                             </div>
-                            {errors.accessClaims && (
-                                <p className="text-xs text-red-500 mt-1">{errors.accessClaims.message}</p>
+                            {errors.claims && (
+                                <p className="text-xs text-red-500 mt-1">{errors.claims.message}</p>
                             )}
                         </div>
                     )}
@@ -98,7 +91,7 @@ export default function SharedAccessPage() {
                     className="btn btn-primary w-full gap-2"
                 >
                     <Share2 size={18} />
-                    {isPending ? "Создание ссылки..." : "Поделиться ботом"}
+                    {isPending ? "Создание ссылки..." : "Поделиться расписанием"}
                 </button>
 
                 {error && (
