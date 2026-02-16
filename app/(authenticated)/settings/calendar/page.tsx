@@ -2,20 +2,21 @@
 
 import { useState } from "react";
 import { Check, X } from "lucide-react";
+import { useUserStore } from "@/store/user-store"; // путь к вашему стора
 
 export default function CalendarSettingsPage() {
-    const [selectedUser, setSelectedUser] = useState("me");
+    const userId = useUserStore((s) => s.user?.id ?? '');
+    const [selectedUser, setSelectedUser] = useState(userId);
+    const setOwnerId = useUserStore((s) => s.setOwnerId);
 
-    // Заглушки пользователей
     const accessibleUsers = [
-        { id: "me", fullName: "Мой календарь" },
+        { id: userId, fullName: "Мой календарь" },
         { id: "user1", fullName: "Иван Иванов" },
         { id: "user2", fullName: "Мария Петрова" },
     ];
 
-    // Заглушка доступов (только для визуала)
     const claimsMap: Record<string, { label: string; hasAccess: boolean }[]> = {
-        me: [
+        [userId]: [
             { label: "Просмотр (READ)", hasAccess: true },
             { label: "Редактирование своих смен (EDIT_SELF)", hasAccess: true },
             { label: "Редактирование чужих смен (EDIT_OWNER)", hasAccess: true },
@@ -40,6 +41,12 @@ export default function CalendarSettingsPage() {
 
     const currentClaims = claimsMap[selectedUser] || [];
 
+    const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const value = e.target.value;
+        setSelectedUser(value);
+        setOwnerId(value); // сохраняем выбранный ownerId в стор
+    };
+
     return (
         <div className="flex min-h-screen flex-col bg-gradient-to-b from-base-100 via-base-200 to-base-100 px-4 pb-10">
             <h1 className="text-center text-2xl font-bold tracking-tight mb-6">
@@ -54,7 +61,7 @@ export default function CalendarSettingsPage() {
                 <select
                     className="select select-bordered w-full"
                     value={selectedUser}
-                    onChange={(e) => setSelectedUser(e.target.value)}
+                    onChange={handleChange}
                 >
                     {accessibleUsers.map((user) => (
                         <option key={user.id} value={user.id}>
@@ -78,8 +85,6 @@ export default function CalendarSettingsPage() {
                         </div>
                     ))}
                 </div>
-
-                <button className="btn btn-primary w-full mt-4">Сохранить</button>
             </div>
         </div>
     );

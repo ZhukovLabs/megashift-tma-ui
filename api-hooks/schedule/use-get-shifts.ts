@@ -1,6 +1,7 @@
 import {useQuery} from '@tanstack/react-query';
 import {api} from '@/lib/axios';
 import {useUserStore} from "@/store/user-store";
+import {useOwnerId} from "@/hooks/use-owner-id";
 
 export type ShiftDto = {
     id: string;
@@ -13,7 +14,6 @@ export type ShiftDto = {
 type GetShiftsParams = {
     year: number;
     month: number;
-    ownerId?: string;
 };
 
 type GetShiftsResponse = ShiftDto[];
@@ -21,9 +21,8 @@ type GetShiftsResponse = ShiftDto[];
 const monthShiftsKey = (year: number, month: number) =>
     ['month-shifts', year, month] as const;
 
-export const useGetShifts = ({year, month, ownerId}: GetShiftsParams) => {
-    const user = useUserStore(s => s.user);
-    if (!ownerId) ownerId = user?.id ?? '';
+export const useGetShifts = ({year, month}: GetShiftsParams) => {
+    const ownerId = useOwnerId();
 
     return useQuery<GetShiftsResponse>({
         queryKey: monthShiftsKey(year, month),
