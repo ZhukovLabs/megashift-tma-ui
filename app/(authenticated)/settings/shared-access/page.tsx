@@ -11,6 +11,14 @@ type FormValues = {
     claims: (keyof typeof AccessClaim)[];
 };
 
+const ACCESS_CLAIM_LABELS: Record<keyof typeof AccessClaim, string> = {
+    READ: "Чтение",
+    EDIT_OWNER: "Редактирование всех",
+    EDIT_SELF: "Редактирование своих",
+    DELETE_OWNER: "Удаление всех",
+    DELETE_SELF: "Удаление своих",
+};
+
 export default function SharedAccessPage() {
     const { mutateAsync: createInvite, isPending } = useCreateInvite();
     const [error, setError] = useState<string | null>(null);
@@ -40,7 +48,7 @@ export default function SharedAccessPage() {
                 Общий доступ
             </h1>
 
-            <form onSubmit={handleSubmit(onSubmit)} className="mt-6 rounded-2xl bg-base-100 p-4 shadow space-y-4">
+            <form onSubmit={handleSubmit(onSubmit)} className="mt-6 rounded-2xl bg-base-100 p-6 shadow space-y-4">
                 <Controller
                     name="claims"
                     control={control}
@@ -49,31 +57,35 @@ export default function SharedAccessPage() {
                     }}
                     render={({ field }) => (
                         <div>
-                            <span className="font-medium text-base-content">Права доступа для приглашённого:</span>
-                            <div className="mt-2 flex flex-col gap-2">
-                                {Object.entries(AccessClaim).map(([key, label]) => {
-                                    const isRead = key === "READ";
+                            <span className="font-medium text-base-content mb-2 block">Права доступа для приглашённого:</span>
+                            <div className="flex flex-col gap-2">
+                                {Object.keys(AccessClaim).map((key) => {
+                                    const claim = key as keyof typeof AccessClaim;
+                                    const label = ACCESS_CLAIM_LABELS[claim];
+                                    const isRead = claim === "READ";
+
                                     return (
                                         <label
-                                            key={key}
-                                            className="flex items-center gap-2 text-sm cursor-pointer select-none"
+                                            key={claim}
+                                            className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-colors
+                                                       ${field.value.includes(claim) ? "bg-base-200" : "hover:bg-base-150"}`}
                                         >
                                             <input
                                                 type="checkbox"
-                                                value={key}
-                                                checked={field.value.includes(key as keyof typeof AccessClaim)}
+                                                value={claim}
+                                                checked={field.value.includes(claim)}
                                                 disabled={isRead} // READ нельзя убрать
                                                 onChange={(e) => {
                                                     const checked = e.target.checked;
                                                     if (checked) {
-                                                        field.onChange([...field.value, key as keyof typeof AccessClaim]);
+                                                        field.onChange([...field.value, claim]);
                                                     } else {
-                                                        field.onChange(field.value.filter(c => c !== key));
+                                                        field.onChange(field.value.filter(c => c !== claim));
                                                     }
                                                 }}
                                                 className="checkbox checkbox-primary"
                                             />
-                                            {label}
+                                            <span className="text-sm font-medium">{label}</span>
                                         </label>
                                     );
                                 })}

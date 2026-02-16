@@ -15,15 +15,14 @@ const StartForm = dynamic(
 export default function WelcomeClient() {
     const router = useRouter();
     const isInitialized = useUserStore((s) => s.isInitialized);
-    const user = useUserStore((s) => s.user);
 
     useEffect(() => {
-        if (!isInitialized || !user) {
+        if (!isInitialized) {
             router.replace(ROUTES.root);
         }
-    }, [isInitialized, user, router]);
+    }, [isInitialized, router]);
 
-    if (!isInitialized || !user) {
+    if (!isInitialized) {
         return <SkeletonPage />;
     }
 

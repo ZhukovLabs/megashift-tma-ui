@@ -18,7 +18,6 @@ export const telegramInit = (options: InitOptions = {}) => {
 
     initSDK();
 
-
     mountSafely(miniApp, 'miniApp.mount');
 
     mountSafely(closingBehavior, 'closingBehavior.mount', () => {
