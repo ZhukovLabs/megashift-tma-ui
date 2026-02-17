@@ -1,43 +1,51 @@
 "use client";
 
-import {useState, useEffect} from "react";
-import {Check, X} from "lucide-react";
-import {useUserStore} from "@/store/user-store";
-import {useGetAvailableCalendars} from "@/api-hooks/users/invites";
-import {AccessUser} from "@/api-hooks/users/invites/use-get-available-calendars";
-import {AccessClaim} from "@/types";
+import {ChangeEvent, useEffect, useMemo} from "react";
+import { Check } from "lucide-react";
+import { useUserStore } from "@/store/user-store";
+import { useGetAvailableCalendars } from "@/api-hooks/users/invites";
+import { AccessUser } from "@/api-hooks/users/invites/use-get-available-calendars";
+import { AccessClaim } from "@/types";
 
 export default function CalendarSettingsPage() {
     const userId = useUserStore((s) => s.user?.id ?? "");
+    const ownerId = useUserStore((s) => s.ownerId);
     const setOwnerId = useUserStore((s) => s.setOwnerId);
 
-    const {data: accessData, isLoading} = useGetAvailableCalendars();
+    const { data: accessData = [], isLoading } = useGetAvailableCalendars();
 
-    const [selectedUser, setSelectedUser] = useState(userId);
-    const [accessibleUsers, setAccessibleUsers] = useState<AccessUser[]>([]);
+    const accessibleUsers: AccessUser[] = useMemo(() => {
+        const me: AccessUser = {
+            id: userId,
+            name: "Мой календарь",
+            surname: "",
+            claims: Object.values(AccessClaim),
+        };
+        return [me, ...accessData];
+    }, [userId, accessData]);
+
+    const selectedUserId = useMemo(() => {
+        const ownerIsValid = ownerId && accessibleUsers.some((u) => u.id === ownerId);
+        return ownerIsValid ? ownerId : userId;
+    }, [ownerId, accessibleUsers, userId]);
 
     useEffect(() => {
-        if (accessData) {
-            const me: AccessUser = {
-                id: userId,
-                name: "Мой календарь",
-                surname: "",
-                claims: Object.values(AccessClaim),
-            };
-            setAccessibleUsers([me, ...accessData]);
+        const ownerIsValid = ownerId && accessibleUsers.some((u) => u.id === ownerId);
+        const desiredOwner = ownerIsValid ? ownerId : userId;
+
+        if (ownerId !== desiredOwner) {
+            setOwnerId(desiredOwner);
         }
-    }, [accessData, userId]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [ownerId, accessibleUsers, userId, setOwnerId]);
 
-    const currentClaims: { label: string; hasAccess: boolean }[] =
-        accessibleUsers.find((u) => u.id === selectedUser)?.claims.map((c) => ({
-            label: c,
-            hasAccess: true,
-        })) || [];
+    const selectedUser = useMemo(
+        () => accessibleUsers.find((u) => u.id === selectedUserId),
+        [accessibleUsers, selectedUserId]
+    );
 
-    const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const value = e.target.value;
-        setSelectedUser(value);
-        setOwnerId(value);
+    const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
+        setOwnerId(e.target.value);
     };
 
     return (
@@ -53,7 +61,7 @@ export default function CalendarSettingsPage() {
 
                 <select
                     className="select select-bordered w-full"
-                    value={selectedUser}
+                    value={selectedUserId}
                     onChange={handleChange}
                     disabled={isLoading}
                 >
@@ -65,18 +73,14 @@ export default function CalendarSettingsPage() {
                 </select>
 
                 <div className="mt-4 space-y-2">
-                    {currentClaims.length > 0 ? (
-                        currentClaims.map((claim) => (
+                    {selectedUser?.claims?.length ? (
+                        selectedUser.claims.map((claim) => (
                             <div
-                                key={claim.label}
+                                key={claim}
                                 className="flex items-center gap-2 text-sm text-base-content"
                             >
-                                {claim.hasAccess ? (
-                                    <Check size={16} className="text-green-500"/>
-                                ) : (
-                                    <X size={16} className="text-red-500"/>
-                                )}
-                                <span>{claim.label}</span>
+                                <Check size={16} className="text-green-500" />
+                                <span>{claim}</span>
                             </div>
                         ))
                     ) : (
