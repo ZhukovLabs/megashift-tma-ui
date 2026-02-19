@@ -1,7 +1,7 @@
 'use client';
 
 import React, {useMemo} from 'react';
-import {useGetSalaryStatistics} from '@/api-hooks/use-get-salary-statistics';
+import {useGetSalaryStatistics} from '@/api-hooks/statistics/use-get-salary-statistics';
 import {format} from 'date-fns';
 import {motion} from 'framer-motion';
 
