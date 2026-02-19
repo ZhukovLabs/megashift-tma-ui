@@ -19,7 +19,7 @@ export const useCreateUser = () => {
 
     return useMutation<CreateUserResponse, Error, CreateUserRequest>({
         mutationFn: async (userData) => {
-            const {data} = await api.post('/api/users', userData);
+            const {data} = await api.post('/api/users/register', userData);
             return data;
         },
         onSuccess: async (data) => {
