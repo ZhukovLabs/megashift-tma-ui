@@ -2,7 +2,7 @@
 
 import React, {useEffect, useState} from 'react';
 import {FormData, StepProps} from '../types';
-import {useCreateUser} from '@/components/start-form/hooks/use-create-user';
+import {useCreateUser} from '@/api-hooks/use-create-user';
 import {useFormContext} from 'react-hook-form';
 import {useRouter} from 'next/navigation';
 import {ROUTES} from '@/constants/routes';

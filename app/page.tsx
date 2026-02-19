@@ -3,7 +3,7 @@
 import {useEffect} from 'react';
 import {useSearchParams, useRouter} from 'next/navigation';
 import {ROUTES} from '@/constants/routes';
-import {useSyncRegisteredUser} from '@/components/start-form/hooks/use-sync-registered-user';
+import {useSyncRegisteredUser} from '@/api-hooks/use-sync-registered-user';
 import {useUserStore} from '@/store/user-store';
 import {SkeletonPage} from "@/components/skeleton-page";
 
