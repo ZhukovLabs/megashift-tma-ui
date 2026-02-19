@@ -39,7 +39,14 @@ export default async function RootLayout({
             <I18nProvider>
                 <SafeContentArea>
                     {children}
-                    <ToastContainer/>
+                    <ToastContainer
+                        position="bottom-right"
+                        theme="dark"
+                        autoClose={4000}
+                        draggable={true}
+                        pauseOnHover={true}
+                        closeOnClick={true}
+                    />
                 </SafeContentArea>
             </I18nProvider>
         </QueryClientProvider>

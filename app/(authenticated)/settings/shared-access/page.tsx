@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
-import { useForm, Controller } from "react-hook-form";
-import { useCreateInvite } from "@/api-hooks/use-create-invite";
-import { shareURL } from "@tma.js/sdk";
-import { Share2 } from "lucide-react";
-import { AccessClaim } from "@/types";
+import {useState} from "react";
+import {useForm, Controller} from "react-hook-form";
+import {useCreateInvite} from "@/api-hooks/use-create-invite";
+import {shareURL} from "@tma.js/sdk";
+import {Share2} from "lucide-react";
+import {AccessClaim} from "@/types";
+import {toast} from 'react-toastify';
 
 type FormValues = {
     claims: (keyof typeof AccessClaim)[];
@@ -20,10 +21,10 @@ const ACCESS_CLAIM_LABELS: Record<keyof typeof AccessClaim, string> = {
 };
 
 export default function SharedAccessPage() {
-    const { mutateAsync: createInvite, isPending } = useCreateInvite();
+    const {mutateAsync: createInvite, isPending} = useCreateInvite();
     const [error, setError] = useState<string | null>(null);
 
-    const { control, handleSubmit, formState: { errors } } = useForm<FormValues>({
+    const {control, handleSubmit, formState: {errors}} = useForm<FormValues>({
         defaultValues: {
             claims: ["READ"]
         },
@@ -32,13 +33,18 @@ export default function SharedAccessPage() {
 
     const onSubmit = async (data: FormValues) => {
         setError(null);
+
         try {
-            const { id } = await createInvite({ claims: data.claims });
+            const {id} = await createInvite({claims: data.claims});
             const url = `https://t.me/megashiftbot?startapp=${id}`;
             shareURL(url, "Приглашаю тебя следить за моими сменами");
+
+            toast.success('Приглашение отправлено!');
         } catch (e) {
             console.error("Invite creation failed", e);
             setError("Не удалось создать ссылку, попробуйте позже");
+
+            toast.error("Не удалось создать приглашение");
         }
     };
 
@@ -55,9 +61,10 @@ export default function SharedAccessPage() {
                     rules={{
                         validate: (value) => value.length > 0 || "Должен быть выбран хотя бы один доступ"
                     }}
-                    render={({ field }) => (
+                    render={({field}) => (
                         <div>
-                            <span className="font-medium text-base-content mb-2 block">Права доступа для приглашённого:</span>
+                            <span
+                                className="font-medium text-base-content mb-2 block">Права доступа для приглашённого:</span>
                             <div className="flex flex-col gap-2">
                                 {Object.keys(AccessClaim).map((key) => {
                                     const claim = key as keyof typeof AccessClaim;
@@ -102,7 +109,7 @@ export default function SharedAccessPage() {
                     disabled={isPending}
                     className="btn btn-primary w-full gap-2"
                 >
-                    <Share2 size={18} />
+                    <Share2 size={18}/>
                     {isPending ? "Создание ссылки..." : "Поделиться расписанием"}
                 </button>
 
