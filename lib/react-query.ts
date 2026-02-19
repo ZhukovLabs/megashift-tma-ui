@@ -17,14 +17,7 @@ const showErrorToast = (error: unknown) => {
         message = error.message;
     }
 
-    toast.error(message, {
-        position: 'bottom-right',
-        theme: 'dark',
-        autoClose: 4000,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-    });
+    toast.error(message);
 };
 
 export const queryClient = new QueryClient({
