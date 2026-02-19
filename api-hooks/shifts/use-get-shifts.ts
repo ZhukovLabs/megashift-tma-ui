@@ -27,7 +27,7 @@ export const useGetShifts = ({year, month}: GetShiftsParams) => {
     return useQuery<GetShiftsResponse>({
         queryKey: monthShiftsKey(year, month),
         queryFn: async ({signal}) => {
-            const {data} = await api.get<GetShiftsResponse>('/api/shifts', {
+            const {data} = await api.get<GetShiftsResponse>('/api/shifts/by-month', {
                 params: {year, month, ownerId},
                 signal,
             });

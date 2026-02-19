@@ -24,7 +24,7 @@ export const useGetShiftsByDate = ({date}: GetShiftsByDayParams) => {
     return useQuery<GetShiftsByDayResponse>({
         queryKey: shiftsByDateKey(),
         queryFn: async () => {
-            const {data} = await api.get<GetShiftsByDayResponse>('/api/shifts/date', {
+            const {data} = await api.get<GetShiftsByDayResponse>('/api/shifts/by-date', {
                 params: {date, ownerId},
             });
             return data;
