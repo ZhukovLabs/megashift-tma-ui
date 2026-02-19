@@ -1,5 +1,44 @@
 'use client';
 
-import { QueryClient } from '@tanstack/react-query';
+import {
+    QueryClient,
+    QueryCache,
+    MutationCache,
+} from '@tanstack/react-query';
+import { toast } from 'react-toastify';
+import axios from 'axios';
 
-export const queryClient = new QueryClient();
+const showErrorToast = (error: unknown) => {
+    let message = 'Произошла ошибка';
+
+    if (axios.isAxiosError(error)) {
+        message = error.response?.data?.message ?? 'Ошибка запроса';
+    } else if (error instanceof Error) {
+        message = error.message;
+    }
+
+    toast.error(message, {
+        position: 'bottom-right',
+        theme: 'dark',
+        autoClose: 4000,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+    });
+};
+
+export const queryClient = new QueryClient({
+    queryCache: new QueryCache({
+        onError: showErrorToast,
+    }),
+
+    mutationCache: new MutationCache({
+        onError: showErrorToast,
+    }),
+
+    defaultOptions: {
+        queries: {
+            retry: 3,
+        },
+    },
+});
