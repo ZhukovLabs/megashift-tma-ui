@@ -6,6 +6,7 @@ import {useUserStore} from "@/store/user-store";
 import {useGetAvailableCalendars} from "@/api-hooks/users/invites";
 import {AccessUser} from "@/api-hooks/users/invites/use-get-available-calendars";
 import {AccessClaim} from "@/types";
+import {ACCESS_CLAIM_LABELS} from "@/constants/access-claim-labels";
 
 export default function CalendarSettingsPage() {
     const userId = useUserStore((s) => s.user?.id ?? "");
@@ -86,7 +87,7 @@ export default function CalendarSettingsPage() {
                                 ) : (
                                     <X size={16} className="text-red-500"/>
                                 )}
-                                <span>{claim}</span>
+                                <span>{ACCESS_CLAIM_LABELS[claim]}</span>
                             </div>
                         );
                     })}
