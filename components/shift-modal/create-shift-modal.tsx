@@ -2,7 +2,7 @@
 
 import {useRouter, useSearchParams} from "next/navigation";
 import {BaseShiftModal, ShiftFormValues} from "./base-shift-modal";
-import {useCreateShiftTemplate} from "./hooks/use-create-shift-template";
+import {useCreateShiftTemplate} from "../../api-hooks/shift-templates/use-create-shift-template";
 
 export function CreateShiftModal() {
     const router = useRouter();

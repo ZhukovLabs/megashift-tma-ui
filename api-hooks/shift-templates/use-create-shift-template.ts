@@ -1,5 +1,6 @@
 import {useMutation, useQueryClient} from '@tanstack/react-query';
 import {api} from '@/lib/axios';
+import {useOwnerId} from "@/hooks/use-owner-id";
 
 type CreateShiftTemplateRequest = {
     label: string;
@@ -17,6 +18,7 @@ type ShiftTemplateResponse = {
 };
 
 export const useCreateShiftTemplate = () => {
+    const ownerId = useOwnerId();
     const queryClient = useQueryClient();
 
     return useMutation<
@@ -27,7 +29,8 @@ export const useCreateShiftTemplate = () => {
         mutationFn: async (data) => {
             const response = await api.post<ShiftTemplateResponse>(
                 '/api/shift-templates',
-                data
+                data,
+                {params: {ownerId}}
             );
             return response.data;
         },
