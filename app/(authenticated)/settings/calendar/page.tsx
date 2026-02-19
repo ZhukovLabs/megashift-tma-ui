@@ -1,18 +1,18 @@
-"use client";
+'use client';
 
 import {ChangeEvent, useEffect, useMemo} from "react";
-import { Check } from "lucide-react";
-import { useUserStore } from "@/store/user-store";
-import { useGetAvailableCalendars } from "@/api-hooks/users/invites";
-import { AccessUser } from "@/api-hooks/users/invites/use-get-available-calendars";
-import { AccessClaim } from "@/types";
+import {Check, X} from "lucide-react";
+import {useUserStore} from "@/store/user-store";
+import {useGetAvailableCalendars} from "@/api-hooks/users/invites";
+import {AccessUser} from "@/api-hooks/users/invites/use-get-available-calendars";
+import {AccessClaim} from "@/types";
 
 export default function CalendarSettingsPage() {
     const userId = useUserStore((s) => s.user?.id ?? "");
     const ownerId = useUserStore((s) => s.ownerId);
     const setOwnerId = useUserStore((s) => s.setOwnerId);
 
-    const { data: accessData = [], isLoading } = useGetAvailableCalendars();
+    const {data: accessData = [], isLoading} = useGetAvailableCalendars();
 
     const accessibleUsers: AccessUser[] = useMemo(() => {
         const me: AccessUser = {
@@ -36,7 +36,6 @@ export default function CalendarSettingsPage() {
         if (ownerId !== desiredOwner) {
             setOwnerId(desiredOwner);
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [ownerId, accessibleUsers, userId, setOwnerId]);
 
     const selectedUser = useMemo(
@@ -47,6 +46,8 @@ export default function CalendarSettingsPage() {
     const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
         setOwnerId(e.target.value);
     };
+
+    const allClaims = Object.values(AccessClaim);
 
     return (
         <div className="flex min-h-screen flex-col bg-gradient-to-b from-base-100 via-base-200 to-base-100 px-4 pb-10">
@@ -73,19 +74,22 @@ export default function CalendarSettingsPage() {
                 </select>
 
                 <div className="mt-4 space-y-2">
-                    {selectedUser?.claims?.length ? (
-                        selectedUser.claims.map((claim) => (
+                    {allClaims.map((claim) => {
+                        const hasAccess = selectedUser?.claims.includes(claim);
+                        return (
                             <div
                                 key={claim}
                                 className="flex items-center gap-2 text-sm text-base-content"
                             >
-                                <Check size={16} className="text-green-500" />
+                                {hasAccess ? (
+                                    <Check size={16} className="text-green-500"/>
+                                ) : (
+                                    <X size={16} className="text-red-500"/>
+                                )}
                                 <span>{claim}</span>
                             </div>
-                        ))
-                    ) : (
-                        <p className="text-sm text-base-content/50">Нет доступных прав</p>
-                    )}
+                        );
+                    })}
                 </div>
             </div>
         </div>
