@@ -1,5 +1,7 @@
-import { useEffect, useState } from 'react';
-import { useCheckInvite, useConsumeInvite } from '@/api-hooks/users/invites';
+import {useEffect, useState} from 'react';
+import {useCheckInvite, useConsumeInvite} from '@/api-hooks/users/invites';
+import axios from "axios";
+import {AccessClaim} from "@/types";
 
 type InviteState =
     | 'idle'
@@ -13,12 +15,12 @@ export function useInviteProcessor(
     inviteId: string | null,
     userId?: string
 ) {
-    const { mutateAsync: checkInvite } = useCheckInvite();
-    const { mutateAsync: consumeInvite } = useConsumeInvite();
+    const {mutateAsync: checkInvite} = useCheckInvite();
+    const {mutateAsync: consumeInvite} = useConsumeInvite();
 
     const [state, setState] = useState<InviteState>('idle');
     const [inviterName, setInviterName] = useState<string | null>(null);
-    const [claims, setClaims] = useState<string[] | null>(null);
+    const [claims, setClaims] = useState<(keyof typeof AccessClaim)[] | null>(null);
 
     useEffect(() => {
         if (!inviteId || !userId) return;
@@ -30,11 +32,6 @@ export function useInviteProcessor(
 
             try {
                 const inviteData = await checkInvite(inviteId);
-
-                if (!inviteData?.exists) {
-                    setState('done');
-                    return;
-                }
 
                 const fullName = [
                     inviteData.inviter.surname,
@@ -49,7 +46,11 @@ export function useInviteProcessor(
                 setInviterName(fullName);
                 setClaims(inviteData.claims);
                 setState('ready');
-            } catch {
+            } catch (error) {
+                if (axios.isAxiosError(error) && !error.response?.data?.exists) {
+                    setState('done');
+                    return;
+                }
                 if (!cancelled) setState('error');
             }
         };

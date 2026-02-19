@@ -7,17 +7,10 @@ import {shareURL} from "@tma.js/sdk";
 import {Share2} from "lucide-react";
 import {AccessClaim} from "@/types";
 import {toast} from 'react-toastify';
+import {ACCESS_CLAIM_LABELS} from "@/constants/access-claim-labels";
 
 type FormValues = {
     claims: (keyof typeof AccessClaim)[];
-};
-
-const ACCESS_CLAIM_LABELS: Record<keyof typeof AccessClaim, string> = {
-    READ: "Чтение",
-    EDIT_OWNER: "Редактирование всех",
-    EDIT_SELF: "Редактирование своих",
-    DELETE_OWNER: "Удаление всех",
-    DELETE_SELF: "Удаление своих",
 };
 
 export default function SharedAccessPage() {
@@ -26,7 +19,7 @@ export default function SharedAccessPage() {
 
     const {control, handleSubmit, formState: {errors}} = useForm<FormValues>({
         defaultValues: {
-            claims: ["READ"]
+            claims: [AccessClaim.READ]
         },
         mode: "onSubmit"
     });
@@ -58,9 +51,6 @@ export default function SharedAccessPage() {
                 <Controller
                     name="claims"
                     control={control}
-                    rules={{
-                        validate: (value) => value.length > 0 || "Должен быть выбран хотя бы один доступ"
-                    }}
                     render={({field}) => (
                         <div>
                             <span
@@ -69,7 +59,7 @@ export default function SharedAccessPage() {
                                 {Object.keys(AccessClaim).map((key) => {
                                     const claim = key as keyof typeof AccessClaim;
                                     const label = ACCESS_CLAIM_LABELS[claim];
-                                    const isRead = claim === "READ";
+                                    const isRead = claim === AccessClaim.READ;
 
                                     return (
                                         <label
