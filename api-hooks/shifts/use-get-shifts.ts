@@ -1,7 +1,9 @@
 import {useQuery} from '@tanstack/react-query';
 import {api} from '@/lib/axios';
+import {useOwnerId} from '@/hooks/use-owner-id';
+import {queryClient} from "@/lib/react-query";
+import axios from "axios";
 import {useUserStore} from "@/store/user-store";
-import {useOwnerId} from "@/hooks/use-owner-id";
 
 export type ShiftDto = {
     id: string;
@@ -23,15 +25,23 @@ const monthShiftsKey = (year: number, month: number) =>
 
 export const useGetShifts = ({year, month}: GetShiftsParams) => {
     const ownerId = useOwnerId();
+    const setOwnerId = useUserStore(s => s.setOwnerId);
 
     return useQuery<GetShiftsResponse>({
         queryKey: monthShiftsKey(year, month),
         queryFn: async ({signal}) => {
-            const {data} = await api.get<GetShiftsResponse>('/api/shifts/by-month', {
-                params: {year, month, ownerId},
-                signal,
-            });
-            return data;
+            try {
+                const {data} = await api.get<GetShiftsResponse>('/api/shifts/by-month', {
+                    params: {year, month, ownerId},
+                    signal,
+                });
+                return data;
+            } catch (error: unknown) {
+                if (axios.isAxiosError(error) && error.status === 403) {
+                    setOwnerId(null);
+                }
+                throw error;
+            }
         },
         enabled: Number.isFinite(year) && Number.isFinite(month),
     });
