@@ -128,7 +128,7 @@ export default function StatisticsPage() {
     }, [goToNext, goToPrev]);
 
     return (
-        <div ref={wrapperRef} className="min-h-screen flex flex-col items-center bg-base-100 px-4">
+        <div ref={wrapperRef} className="min-h-screen flex flex-col items-center bg-base-100 px-4 mb-20">
             <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-center mb-3">Статистика</h1>
 
             <form className="flex gap-4 mb-6 flex-wrap justify-center">
