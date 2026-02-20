@@ -36,8 +36,6 @@ export default function SharedAccessPage() {
         } catch (e) {
             console.error("Invite creation failed", e);
             setError("Не удалось создать ссылку, попробуйте позже");
-
-            toast.error("Не удалось создать приглашение");
         }
     };
 
