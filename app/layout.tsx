@@ -5,6 +5,7 @@ import {I18nProvider} from "@/i18n/provider";
 import {getLocale} from "@/i18n/locale";
 
 import "./globals.css";
+import 'react-toastify/dist/ReactToastify.css';
 
 import {QueryClientProvider} from "@tanstack/react-query";
 import {queryClient} from "@/lib/react-query";
@@ -40,12 +41,23 @@ export default async function RootLayout({
                 <SafeContentArea>
                     {children}
                     <ToastContainer
-                        position="bottom-right"
-                        theme="dark"
+                        position="bottom-center"
                         autoClose={4000}
-                        draggable={true}
-                        pauseOnHover={true}
+                        hideProgressBar={false}
+                        newestOnTop={true}
                         closeOnClick={true}
+                        rtl={false}
+                        pauseOnFocusLoss
+                        draggable
+                        pauseOnHover
+                        theme="dark"
+                        style={{
+                            width: '100vw',
+                            maxWidth: '400px',
+                            fontSize: '16px',
+                            borderRadius: '12px',
+                            padding: '12px 16px'
+                        }}
                     />
                 </SafeContentArea>
             </I18nProvider>
