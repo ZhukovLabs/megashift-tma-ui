@@ -46,40 +46,38 @@ export default function StatisticsPage() {
     const selectedYear = Number(watchedYear);
     const selectedMonth = Number(watchedMonth);
 
-    // direction used by variants: 1 = next (swipe left), -1 = prev (swipe right)
     const [direction, setDirection] = useState<number>(0);
 
-    // container height to prevent layout jumps when switching slides
     const wrapperRef = useRef<HTMLDivElement | null>(null);
     const activeContentRef = useRef<HTMLDivElement | null>(null);
-    const [containerHeight, setContainerHeight] = useState<number | undefined>(undefined);
+    const [containerHeight, setContainerHeight] = useState<number | 'auto'>('auto');
 
     const measureHeight = useCallback(() => {
         const el = activeContentRef.current;
         if (!el) return;
-        // Use getBoundingClientRect for sub-pixel precision
         const h = Math.ceil(el.getBoundingClientRect().height);
         setContainerHeight(h);
     }, []);
 
-    // measure after mount and whenever month/year change
     useLayoutEffect(() => {
-        // measure on next frame to allow content to render
         requestAnimationFrame(measureHeight);
-        // also measure after a short timeout to catch images/tables that render later
         const t = setTimeout(measureHeight, 250);
         return () => clearTimeout(t);
     }, [selectedYear, selectedMonth, measureHeight]);
+
+    useLayoutEffect(() => {
+        if (!activeContentRef.current) return;
+        const observer = new ResizeObserver(() => measureHeight());
+        observer.observe(activeContentRef.current);
+        return () => observer.disconnect();
+    }, [measureHeight, selectedYear, selectedMonth]);
 
     const variants = {
         enter: (dir: number) => ({
             x: dir > 0 ? 300 : -300,
             opacity: 0,
         }),
-        center: {
-            x: 0,
-            opacity: 1,
-        },
+        center: { x: 0, opacity: 1 },
         exit: (dir: number) => ({
             x: dir < 0 ? 300 : -300,
             opacity: 0,
@@ -115,11 +113,8 @@ export default function StatisticsPage() {
         const velocityX = info.velocity.x;
 
         if (Math.abs(offsetX) > SWIPE_OFFSET_THRESHOLD || Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
-            if (offsetX < 0 || velocityX < 0) {
-                goToNext();
-            } else {
-                goToPrev();
-            }
+            if (offsetX < 0 || velocityX < 0) goToNext();
+            else goToPrev();
         }
     };
 
@@ -168,8 +163,8 @@ export default function StatisticsPage() {
             </form>
 
             <div
-                className="w-full relative overflow-hidden rounded-box"
-                style={containerHeight ? { height: containerHeight } : undefined}
+                className="w-full relative overflow-hidden rounded-box transition-height duration-300"
+                style={{ height: containerHeight }}
             >
                 <AnimatePresence custom={direction} initial={false}>
                     <motion.div

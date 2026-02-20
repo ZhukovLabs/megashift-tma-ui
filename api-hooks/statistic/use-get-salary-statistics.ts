@@ -1,6 +1,6 @@
-import {useQuery} from '@tanstack/react-query';
-import {api} from '@/lib/axios';
-import {useOwnerId} from "@/hooks/use-owner-id";
+import { useQuery } from '@tanstack/react-query';
+import { api } from '@/lib/axios';
+import { useOwnerId } from "@/hooks/use-owner-id";
 
 export type SalaryStatistics = {
     salary: number;
@@ -16,10 +16,15 @@ export const useGetSalaryStatistics = (year: number, month: number) => {
 
     return useQuery<SalaryStatistics, Error>({
         queryKey: salaryStatisticsKey(year, month),
-        queryFn: async () => {
-            const {data} = await api.get<SalaryStatistics>('/api/statistics/salary', {
-                params: {year, month, ownerId},
+        queryFn: async ({ signal }) => {
+            const controller = new AbortController();
+            signal.addEventListener('abort', () => controller.abort());
+
+            const { data } = await api.get<SalaryStatistics>('/api/statistics/salary', {
+                params: { year, month, ownerId },
+                signal: controller.signal,
             });
+
             return data;
         },
         enabled: Number.isFinite(year) && Number.isFinite(month),
