@@ -1,7 +1,6 @@
 import {useQuery} from '@tanstack/react-query';
 import {api} from '@/lib/axios';
 import {useOwnerId} from '@/hooks/use-owner-id';
-import {queryClient} from "@/lib/react-query";
 import axios from "axios";
 import {useUserStore} from "@/store/user-store";
 

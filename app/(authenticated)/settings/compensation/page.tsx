@@ -1,8 +1,7 @@
 'use client';
 import React, {useEffect} from 'react';
 import {useForm, Controller, useWatch} from 'react-hook-form';
-import {useUpdateSalary, SalaryType} from '@/api-hooks/use-update-salary';
-import {useGetUserSettings} from '@/api-hooks/use-get-user-settings';
+import {useUpdateSalary, useGetUserSettings, SalaryType} from '@/api-hooks/user/setting';
 import {DollarSign, Calendar, Wallet} from 'lucide-react';
 import {z} from 'zod';
 import {zodResolver} from '@hookform/resolvers/zod';
@@ -107,7 +106,7 @@ export default function CompensationPage() {
                     <Controller
                         name="salary"
                         control={control}
-                        render={({ field }) => (
+                        render={({field}) => (
                             <input
                                 {...field}
                                 type="number"

@@ -2,12 +2,12 @@
 
 import {useState} from "react";
 import {useForm, Controller} from "react-hook-form";
-import {useCreateInvite} from "@/api-hooks/use-create-invite";
+import {useCreateInvite} from "@/api-hooks/user/invites";
 import {shareURL} from "@tma.js/sdk";
 import {Share2} from "lucide-react";
-import {AccessClaim} from "@/types";
 import {toast} from 'react-toastify';
 import {ACCESS_CLAIM_LABELS} from "@/constants/access-claim-labels";
+import {AccessClaim} from "@/constants/access-claim";
 
 type FormValues = {
     claims: (keyof typeof AccessClaim)[];

@@ -1,5 +1,5 @@
 import {BaseStatisticsTable, StatisticItem} from './base-statistics-table';
-import {useGetShiftStatistics} from '@/api-hooks/statistics/use-get-shift-statistics';
+import {useGetShiftStatistics} from '@/api-hooks/statistic';
 
 type ShiftStatisticsTableProps = {
     year: number;

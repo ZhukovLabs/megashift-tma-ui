@@ -1,5 +1,5 @@
 import {useState} from "react";
-import {useForm} from "react-hook-form";
+import {useForm, useWatch} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {formSchema} from "./schema";
 import {FormData} from './types';
@@ -22,10 +22,10 @@ export const useStartForm = () => {
     const {
         trigger,
         formState: {isValid, isSubmitting},
-        watch,
+        control,
     } = methods;
 
-    const values = watch();
+    const values = useWatch({control});
 
     const goToNext = async () => {
         if (currentStep === 2) {

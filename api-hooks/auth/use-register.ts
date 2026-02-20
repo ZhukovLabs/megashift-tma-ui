@@ -14,7 +14,7 @@ type CreateUserResponse = CreateUserRequest & {
     createdAt: string;
 }
 
-export const useCreateUser = () => {
+export const useRegister = () => {
     const setUser = useUserStore((s) => s.setUser);
 
     return useMutation<CreateUserResponse, Error, CreateUserRequest>({

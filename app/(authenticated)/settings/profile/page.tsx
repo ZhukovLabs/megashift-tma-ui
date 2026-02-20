@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from "react";
-import { useGetProfile } from "@/api-hooks/use-get-profile";
+import { useGetProfile } from "@/api-hooks/user/profile";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import { User, Calendar} from "lucide-react";

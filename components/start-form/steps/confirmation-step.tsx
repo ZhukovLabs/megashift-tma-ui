@@ -2,7 +2,7 @@
 
 import React, {useEffect, useState} from 'react';
 import {FormData, StepProps} from '../types';
-import {useCreateUser} from '@/api-hooks/use-create-user';
+import {useRegister} from '@/api-hooks/auth';
 import {useFormContext} from 'react-hook-form';
 import {useRouter} from 'next/navigation';
 import {ROUTES} from '@/constants/routes';
@@ -13,7 +13,7 @@ export const ConfirmationStep = ({
                                      values,
                                  }: StepProps & { values: FormData }) => {
     const {handleSubmit, formState: {isSubmitting}} = useFormContext<FormData>();
-    const {mutateAsync: createUser} = useCreateUser();
+    const {mutateAsync: createUser} = useRegister();
     const router = useRouter();
 
     const [currentTime, setCurrentTime] = useState<string>(getCurrentTimeInTZ(values.timezone));

@@ -8,11 +8,11 @@ export type UserSettings = {
     maxSalary?: number | null;
 };
 
-export const userSettingsKey = ['settings'] as const;
+export const getUserSettingsKey = ['settings'] as const;
 
 export const useGetUserSettings = () => {
     return useQuery<UserSettings, Error>({
-        queryKey: userSettingsKey,
+        queryKey: getUserSettingsKey,
         queryFn: async () => {
             const {data} = await api.get<UserSettings>('/api/settings');
             return data;

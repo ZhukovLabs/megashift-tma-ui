@@ -1,7 +1,7 @@
 import {useEffect, useState} from 'react';
-import {useCheckInvite, useConsumeInvite} from '@/api-hooks/users/invites';
+import {useCheckInvite, useConsumeInvite} from '@/api-hooks/user/invites';
+import {AccessClaim} from "@/constants/access-claim";
 import axios from "axios";
-import {AccessClaim} from "@/types";
 
 type InviteState =
     | 'idle'

@@ -3,10 +3,10 @@
 import {ChangeEvent, useEffect, useMemo} from "react";
 import {Check, X} from "lucide-react";
 import {useUserStore} from "@/store/user-store";
-import {useGetAvailableCalendars} from "@/api-hooks/users/invites";
-import {AccessUser} from "@/api-hooks/users/invites/use-get-available-calendars";
-import {AccessClaim} from "@/types";
+import {useGetAvailableCalendars} from "@/api-hooks/user/calendar";
+import {AccessUser} from "@/api-hooks/user/calendar/use-get-available-calendars";
 import {ACCESS_CLAIM_LABELS} from "@/constants/access-claim-labels";
+import {AccessClaim} from "@/constants/access-claim";
 
 export default function CalendarSettingsPage() {
     const userId = useUserStore((s) => s.user?.id ?? "");

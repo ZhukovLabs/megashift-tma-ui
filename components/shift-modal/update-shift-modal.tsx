@@ -3,8 +3,7 @@
 import {useRouter, useSearchParams} from "next/navigation";
 import {formatInTimeZone} from "date-fns-tz";
 import {BaseShiftModal, ShiftFormValues} from "./base-shift-modal";
-import {useUpdateShiftTemplate} from "../../api-hooks/shift-templates/use-update-shift-template";
-import {useGetShiftTemplate} from "../../api-hooks/shift-templates/use-get-shift-template";
+import {useUpdateShiftTemplate, useGetShiftTemplate} from "@/api-hooks/shift-template";
 import {useUserStore} from "@/store/user-store";
 
 export function UpdateShiftModal() {

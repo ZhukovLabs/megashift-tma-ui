@@ -1,7 +1,7 @@
 'use client';
 
-import React, {useMemo} from 'react';
-import {useGetSalaryStatistics} from '@/api-hooks/statistics/use-get-salary-statistics';
+import {useMemo} from 'react';
+import {useGetSalaryStatistics} from '@/api-hooks/statistic';
 import {format} from 'date-fns';
 import {motion} from 'framer-motion';
 
@@ -86,8 +86,8 @@ export const SalaryStatisticsTable = ({year, month}: SalaryDonutCardProps) => {
             )}
 
             <div className="flex justify-between w-full mt-4 text-xs text-base-content/50">
-                <span>0 ₽</span>
-                <span>{maxSalary.toLocaleString()} ДЕНЯК</span>
+                <span>0 BYN</span>
+                <span>{maxSalary.toLocaleString()} BYN</span>
             </div>
         </div>
     );
