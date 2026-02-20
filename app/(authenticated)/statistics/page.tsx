@@ -1,10 +1,12 @@
 'use client';
 
-import React, {useCallback, useLayoutEffect, useRef, useState} from "react";
-import {useForm, Controller, useWatch} from "react-hook-form";
-import {motion, AnimatePresence, PanInfo} from "framer-motion";
-import {ShiftStatisticsTable, ShiftHoursStatisticsTable} from "@/components/shift-statistics-table";
-import {SalaryStatisticsTable} from "@/components/salary-statistics-table";
+import React, {useCallback, useEffect, useLayoutEffect, useRef, useState} from 'react';
+import {useForm, Controller, useWatch} from 'react-hook-form';
+import {motion, AnimatePresence, PanInfo} from 'framer-motion';
+import {format} from 'date-fns';
+import {ru} from 'date-fns/locale/ru';
+import {ShiftStatisticsTable, ShiftHoursStatisticsTable} from '@/components/shift-statistics-table';
+import {SalaryStatisticsTable} from '@/components/salary-statistics-table';
 
 type FormValues = {
     year: number;
@@ -13,25 +15,24 @@ type FormValues = {
 
 const SWIPE_OFFSET_THRESHOLD = 100;
 const SWIPE_VELOCITY_THRESHOLD = 800;
-const BOTTOM_SPACE = 96;
+const BOTTOM_SPACE = 128;
 
-const SlideContent = React.forwardRef<HTMLDivElement, { year: number; month: number }>(
-    function SlideContent({year, month}, ref) {
-        return (
-            <div ref={ref} className="w-full space-y-6 px-4 md:px-0 pb-16">
-                <div className="text-center mb-1">
-                    <div className="text-lg font-medium">
-                        {new Date(year, month - 1).toLocaleString("ru", {month: "long", year: "numeric"})}
-                    </div>
+const SlideContent = React.forwardRef<HTMLDivElement, {year: number; month: number}>(
+    ({year, month}, ref) => (
+        <div ref={ref} className="w-full space-y-6 px-4 md:px-0 pb-16">
+            <div className="text-center mb-1">
+                <div className="text-lg font-medium">
+                    {format(new Date(year, month - 1, 1), 'LLLL yyyy', {locale: ru})}
                 </div>
-
-                <ShiftStatisticsTable year={year} month={month}/>
-                <ShiftHoursStatisticsTable year={year} month={month}/>
-                <SalaryStatisticsTable year={year} month={month}/>
             </div>
-        );
-    }
+
+            <ShiftStatisticsTable year={year} month={month} />
+            <ShiftHoursStatisticsTable year={year} month={month} />
+            <SalaryStatisticsTable year={year} month={month} />
+        </div>
+    )
 );
+SlideContent.displayName = 'SlideContent';
 
 export default function StatisticsPage() {
     const {control, setValue} = useForm<FormValues>({
@@ -41,8 +42,8 @@ export default function StatisticsPage() {
         },
     });
 
-    const watchedYear = useWatch({control, name: "year"});
-    const watchedMonth = useWatch({control, name: "month"});
+    const watchedYear = useWatch({control, name: 'year'});
+    const watchedMonth = useWatch({control, name: 'month'});
 
     const selectedYear = Number(watchedYear);
     const selectedMonth = Number(watchedMonth);
@@ -51,6 +52,7 @@ export default function StatisticsPage() {
 
     const wrapperRef = useRef<HTMLDivElement | null>(null);
     const activeContentRef = useRef<HTMLDivElement | null>(null);
+    const rafRef = useRef<number | null>(null);
 
     const [containerHeight, setContainerHeight] = useState<number | 'auto'>('auto');
 
@@ -62,74 +64,59 @@ export default function StatisticsPage() {
     }, []);
 
     useLayoutEffect(() => {
-        requestAnimationFrame(measureHeight);
-        const t = setTimeout(measureHeight, 350);
-        return () => clearTimeout(t);
+        rafRef.current = requestAnimationFrame(measureHeight);
+        const t = setTimeout(measureHeight, 250);
+        return () => {
+            if (rafRef.current) cancelAnimationFrame(rafRef.current);
+            clearTimeout(t);
+        };
     }, [selectedYear, selectedMonth, measureHeight]);
 
     useLayoutEffect(() => {
         const el = activeContentRef.current;
         if (!el) return;
-        const obs = new ResizeObserver(() => {
-            requestAnimationFrame(measureHeight);
-        });
+        const obs = new ResizeObserver(() => requestAnimationFrame(measureHeight));
         obs.observe(el);
         return () => obs.disconnect();
     }, [measureHeight, selectedYear, selectedMonth]);
 
     const variants = {
-        enter: (dir: number) => ({
-            x: dir > 0 ? 300 : -300,
-            opacity: 0,
-        }),
+        enter: (dir: number) => ({x: dir > 0 ? 300 : -300, opacity: 0}),
         center: {x: 0, opacity: 1},
-        exit: (dir: number) => ({
-            x: dir < 0 ? 300 : -300,
-            opacity: 0,
-        }),
+        exit: (dir: number) => ({x: dir < 0 ? 300 : -300, opacity: 0}),
     };
 
-    const goToNext = useCallback(() => {
-        let newMonth = selectedMonth + 1;
-        let newYear = selectedYear;
-        if (newMonth > 12) {
-            newMonth = 1;
-            newYear += 1;
-        }
-        setDirection(1);
-        setValue("month", newMonth);
-        setValue("year", newYear);
-    }, [selectedMonth, selectedYear, setValue]);
+    const goTo = useCallback(
+        (delta: number) => {
+            const date = new Date(selectedYear, selectedMonth - 1 + delta, 1);
+            const newYear = date.getFullYear();
+            const newMonth = date.getMonth() + 1;
+            setDirection(Math.sign(delta));
+            setValue('year', newYear);
+            setValue('month', newMonth);
+        },
+        [selectedYear, selectedMonth, setValue]
+    );
 
-    const goToPrev = useCallback(() => {
-        let newMonth = selectedMonth - 1;
-        let newYear = selectedYear;
-        if (newMonth < 1) {
-            newMonth = 12;
-            newYear -= 1;
-        }
-        setDirection(-1);
-        setValue("month", newMonth);
-        setValue("year", newYear);
-    }, [selectedMonth, selectedYear, setValue]);
+    const goToNext = useCallback(() => goTo(1), [goTo]);
+    const goToPrev = useCallback(() => goTo(-1), [goTo]);
 
-    const handleDragEnd = (event: PointerEvent | TouchEvent | MouseEvent, info: PanInfo) => {
+    const handleDragEnd = useCallback((_: any, info: PanInfo) => {
         const offsetX = info.offset.x;
         const velocityX = info.velocity.x;
-
         if (Math.abs(offsetX) > SWIPE_OFFSET_THRESHOLD || Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
             if (offsetX < 0 || velocityX < 0) goToNext();
             else goToPrev();
         }
-    };
+    }, [goToNext, goToPrev]);
 
-    React.useEffect(() => {
+    useEffect(() => {
         const onKey = (e: KeyboardEvent) => {
-            if (e.key === "ArrowLeft") goToPrev();
-            if (e.key === "ArrowRight") goToNext();
+            if (e.key === 'ArrowLeft') goToPrev();
+            if (e.key === 'ArrowRight') goToNext();
         };
-        window.addEventListener("keydown", onKey);
-        return () => window.removeEventListener("keydown", onKey);
+        window.addEventListener('keydown', onKey);
+        return () => window.removeEventListener('keydown', onKey);
     }, [goToNext, goToPrev]);
 
     const hasMeasured = containerHeight !== 'auto';
@@ -148,7 +135,7 @@ export default function StatisticsPage() {
                             {...field}
                             className="input input-bordered w-32 mb-3"
                             min={1900}
-                            max={2222}
+                            max={2200}
                             placeholder="Год"
                         />
                     )}
@@ -161,7 +148,7 @@ export default function StatisticsPage() {
                         <select {...field} className="select select-bordered w-32">
                             {Array.from({length: 12}, (_, i) => (
                                 <option key={i + 1} value={i + 1}>
-                                    {new Date(0, i).toLocaleString("ru", {month: "long"})}
+                                    {format(new Date(2020, i, 1), 'LLLL', {locale: ru})}
                                 </option>
                             ))}
                         </select>
@@ -170,10 +157,10 @@ export default function StatisticsPage() {
             </form>
 
             <div
-                className="w-full relative rounded-box transition-[height] duration-300 overflow-y-auto overflow-x-hidden"
-                style={hasMeasured ? {height: containerHeight} : undefined}
+                className="w-full relative rounded-box transition-[height] duration-300 overflow-hidden"
+                style={hasMeasured ? {height: `${containerHeight}px`} : undefined}
             >
-                <AnimatePresence custom={direction} initial={false}>
+                <AnimatePresence custom={direction} initial={false} mode="popLayout">
                     <motion.div
                         key={`${selectedYear}-${selectedMonth}`}
                         custom={direction}
@@ -181,22 +168,44 @@ export default function StatisticsPage() {
                         initial="enter"
                         animate="center"
                         exit="exit"
-                        transition={{type: "spring", stiffness: 300, damping: 30}}
+                        transition={{type: 'spring', stiffness: 300, damping: 30}}
                         className={
                             hasMeasured
-                                ? "absolute inset-0 w-full flex justify-center items-start"
-                                : "relative w-full flex justify-center items-start"
+                                ? 'absolute inset-0 w-full flex justify-center items-start overflow-auto'
+                                : 'relative w-full flex justify-center items-start'
                         }
                         drag="x"
                         dragConstraints={{left: 0, right: 0}}
-                        dragElastic={0.2}
+                        dragElastic={0.15}
                         onDragEnd={handleDragEnd}
                     >
                         <div className="w-full max-w-5xl">
-                            <SlideContent ref={activeContentRef} year={selectedYear} month={selectedMonth}/>
+                            <SlideContent ref={activeContentRef} year={selectedYear} month={selectedMonth} />
                         </div>
                     </motion.div>
                 </AnimatePresence>
+
+                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center">
+                    <button
+                        type="button"
+                        onClick={goToPrev}
+                        aria-label="Previous month"
+                        className="pointer-events-auto btn btn-ghost btn-circle"
+                    >
+                        ‹
+                    </button>
+                </div>
+
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center">
+                    <button
+                        type="button"
+                        onClick={goToNext}
+                        aria-label="Next month"
+                        className="pointer-events-auto btn btn-ghost btn-circle"
+                    >
+                        ›
+                    </button>
+                </div>
             </div>
 
             <div style={{height: BOTTOM_SPACE}} aria-hidden />
