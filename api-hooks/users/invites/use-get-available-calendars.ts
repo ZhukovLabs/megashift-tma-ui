@@ -14,7 +14,7 @@ export const useGetAvailableCalendars = () => {
     return useQuery<AccessUser[], Error>({
         queryKey: ['userAccess'],
         queryFn: async () => {
-            const { data } = await api.get<AccessUser[]>('/api/users/available-calendars');
+            const { data } = await api.get<AccessUser[]>('/api/users/access/available-calendars');
             return data;
         },
     });
