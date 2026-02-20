@@ -26,7 +26,7 @@ export const SafeContentArea = ({children, className}: SafeContentAreaProps) => 
                 paddingTop: top + INNER_PADDING,
                 paddingBottom: bottom + INNER_PADDING,
                 maxWidth: `calc(100vw - ${left + right}px)`,
-                minHeight: '100dvh',
+                height: '100dvh',
             }}
             className={clsx(
                 "mx-auto w-full overflow-hidden flex flex-col",

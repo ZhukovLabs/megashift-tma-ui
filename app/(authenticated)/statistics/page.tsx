@@ -1,10 +1,10 @@
 'use client';
 
-import React, { useCallback, useLayoutEffect, useRef, useState } from "react";
-import { useForm, Controller, useWatch } from "react-hook-form";
-import { motion, AnimatePresence, PanInfo } from "framer-motion";
-import { ShiftStatisticsTable, ShiftHoursStatisticsTable } from "@/components/shift-statistics-table";
-import { SalaryStatisticsTable } from "@/components/salary-statistics-table";
+import React, {useCallback, useLayoutEffect, useRef, useState} from "react";
+import {useForm, Controller, useWatch} from "react-hook-form";
+import {motion, AnimatePresence, PanInfo} from "framer-motion";
+import {ShiftStatisticsTable, ShiftHoursStatisticsTable} from "@/components/shift-statistics-table";
+import {SalaryStatisticsTable} from "@/components/salary-statistics-table";
 
 type FormValues = {
     year: number;
@@ -13,35 +13,36 @@ type FormValues = {
 
 const SWIPE_OFFSET_THRESHOLD = 100;
 const SWIPE_VELOCITY_THRESHOLD = 800;
+const BOTTOM_SPACE = 96;
 
 const SlideContent = React.forwardRef<HTMLDivElement, { year: number; month: number }>(
-    function SlideContent({ year, month }, ref) {
+    function SlideContent({year, month}, ref) {
         return (
-            <div ref={ref} className="w-full space-y-6 px-4 md:px-0">
+            <div ref={ref} className="w-full space-y-6 px-4 md:px-0 pb-16">
                 <div className="text-center mb-1">
                     <div className="text-lg font-medium">
-                        {new Date(year, month - 1).toLocaleString("ru", { month: "long", year: "numeric" })}
+                        {new Date(year, month - 1).toLocaleString("ru", {month: "long", year: "numeric"})}
                     </div>
                 </div>
 
-                <ShiftStatisticsTable year={year} month={month} />
-                <ShiftHoursStatisticsTable year={year} month={month} />
-                <SalaryStatisticsTable year={year} month={month} />
+                <ShiftStatisticsTable year={year} month={month}/>
+                <ShiftHoursStatisticsTable year={year} month={month}/>
+                <SalaryStatisticsTable year={year} month={month}/>
             </div>
         );
     }
 );
 
 export default function StatisticsPage() {
-    const { control, setValue } = useForm<FormValues>({
+    const {control, setValue} = useForm<FormValues>({
         defaultValues: {
             year: new Date().getFullYear(),
             month: new Date().getMonth() + 1,
         },
     });
 
-    const watchedYear = useWatch({ control, name: "year" });
-    const watchedMonth = useWatch({ control, name: "month" });
+    const watchedYear = useWatch({control, name: "year"});
+    const watchedMonth = useWatch({control, name: "month"});
 
     const selectedYear = Number(watchedYear);
     const selectedMonth = Number(watchedMonth);
@@ -81,7 +82,7 @@ export default function StatisticsPage() {
             x: dir > 0 ? 300 : -300,
             opacity: 0,
         }),
-        center: { x: 0, opacity: 1 },
+        center: {x: 0, opacity: 1},
         exit: (dir: number) => ({
             x: dir < 0 ? 300 : -300,
             opacity: 0,
@@ -134,14 +135,14 @@ export default function StatisticsPage() {
     const hasMeasured = containerHeight !== 'auto';
 
     return (
-        <div ref={wrapperRef} className="min-h-screen flex flex-col items-center bg-base-100 px-4 mb-20">
+        <div ref={wrapperRef} className="min-h-screen flex flex-col items-center bg-base-100 px-4">
             <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-center mb-5">Статистика</h1>
 
             <form className="flex gap-4 mb-6 flex-wrap justify-center">
                 <Controller
                     name="year"
                     control={control}
-                    render={({ field }) => (
+                    render={({field}) => (
                         <input
                             type="number"
                             {...field}
@@ -156,11 +157,11 @@ export default function StatisticsPage() {
                 <Controller
                     name="month"
                     control={control}
-                    render={({ field }) => (
+                    render={({field}) => (
                         <select {...field} className="select select-bordered w-32">
-                            {Array.from({ length: 12 }, (_, i) => (
+                            {Array.from({length: 12}, (_, i) => (
                                 <option key={i + 1} value={i + 1}>
-                                    {new Date(0, i).toLocaleString("ru", { month: "long" })}
+                                    {new Date(0, i).toLocaleString("ru", {month: "long"})}
                                 </option>
                             ))}
                         </select>
@@ -169,8 +170,8 @@ export default function StatisticsPage() {
             </form>
 
             <div
-                className="w-full relative overflow-hidden rounded-box transition-[height] duration-300"
-                style={hasMeasured ? { height: containerHeight } : undefined}
+                className="w-full relative rounded-box transition-[height] duration-300 overflow-y-auto overflow-x-hidden"
+                style={hasMeasured ? {height: containerHeight} : undefined}
             >
                 <AnimatePresence custom={direction} initial={false}>
                     <motion.div
@@ -180,23 +181,25 @@ export default function StatisticsPage() {
                         initial="enter"
                         animate="center"
                         exit="exit"
-                        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                        transition={{type: "spring", stiffness: 300, damping: 30}}
                         className={
                             hasMeasured
                                 ? "absolute inset-0 w-full flex justify-center items-start"
                                 : "relative w-full flex justify-center items-start"
                         }
                         drag="x"
-                        dragConstraints={{ left: 0, right: 0 }}
+                        dragConstraints={{left: 0, right: 0}}
                         dragElastic={0.2}
                         onDragEnd={handleDragEnd}
                     >
                         <div className="w-full max-w-5xl">
-                            <SlideContent ref={activeContentRef} year={selectedYear} month={selectedMonth} />
+                            <SlideContent ref={activeContentRef} year={selectedYear} month={selectedMonth}/>
                         </div>
                     </motion.div>
                 </AnimatePresence>
             </div>
+
+            <div style={{height: BOTTOM_SPACE}} aria-hidden />
         </div>
     );
 }
