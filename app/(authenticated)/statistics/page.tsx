@@ -135,7 +135,7 @@ export default function StatisticsPage() {
 
     return (
         <div ref={wrapperRef} className="min-h-screen flex flex-col items-center bg-base-100 px-4 mb-20">
-            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-center mb-3">Статистика</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-center mb-5">Статистика</h1>
 
             <form className="flex gap-4 mb-6 flex-wrap justify-center">
                 <Controller
@@ -146,8 +146,8 @@ export default function StatisticsPage() {
                             type="number"
                             {...field}
                             className="input input-bordered w-32 mb-3"
-                            min={2000}
-                            max={2100}
+                            min={1900}
+                            max={2222}
                             placeholder="Год"
                         />
                     )}
