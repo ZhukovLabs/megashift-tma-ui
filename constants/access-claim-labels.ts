@@ -1,4 +1,4 @@
-import {AccessClaim} from "@/types";
+import {AccessClaim} from "@/constants/access-claim";
 
 export const ACCESS_CLAIM_LABELS: Record<keyof typeof AccessClaim, string> = {
     READ: "Чтение",

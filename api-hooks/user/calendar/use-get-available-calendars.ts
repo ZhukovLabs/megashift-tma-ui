@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { api } from '@/lib/axios';
-import {AccessClaim} from "@/types";
+import {AccessClaim} from "@/constants/access-claim";
 
 export type AccessUser = {
     id: string;

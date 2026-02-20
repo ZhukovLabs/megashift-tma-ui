@@ -25,7 +25,10 @@ export const useStartForm = () => {
         control,
     } = methods;
 
-    const values = useWatch({control});
+    const [name, surname, patronymic, timezone] = useWatch({
+        control,
+        name: ['name', 'surname', 'patronymic', 'timezone']
+    });
 
     const goToNext = async () => {
         if (currentStep === 2) {
@@ -46,7 +49,7 @@ export const useStartForm = () => {
         methods,
         isValid,
         isSubmitting,
-        values,
+        values: {name, surname, patronymic, timezone},
         goToNext,
         goToBack
     };
