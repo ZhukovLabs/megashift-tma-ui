@@ -50,26 +50,30 @@ export default function StatisticsPage() {
 
     const wrapperRef = useRef<HTMLDivElement | null>(null);
     const activeContentRef = useRef<HTMLDivElement | null>(null);
+
     const [containerHeight, setContainerHeight] = useState<number | 'auto'>('auto');
 
     const measureHeight = useCallback(() => {
         const el = activeContentRef.current;
         if (!el) return;
         const h = Math.ceil(el.getBoundingClientRect().height);
-        setContainerHeight(h);
+        setContainerHeight(prev => (prev === h ? prev : h));
     }, []);
 
     useLayoutEffect(() => {
         requestAnimationFrame(measureHeight);
-        const t = setTimeout(measureHeight, 250);
+        const t = setTimeout(measureHeight, 350);
         return () => clearTimeout(t);
     }, [selectedYear, selectedMonth, measureHeight]);
 
     useLayoutEffect(() => {
-        if (!activeContentRef.current) return;
-        const observer = new ResizeObserver(() => measureHeight());
-        observer.observe(activeContentRef.current);
-        return () => observer.disconnect();
+        const el = activeContentRef.current;
+        if (!el) return;
+        const obs = new ResizeObserver(() => {
+            requestAnimationFrame(measureHeight);
+        });
+        obs.observe(el);
+        return () => obs.disconnect();
     }, [measureHeight, selectedYear, selectedMonth]);
 
     const variants = {
@@ -127,6 +131,8 @@ export default function StatisticsPage() {
         return () => window.removeEventListener("keydown", onKey);
     }, [goToNext, goToPrev]);
 
+    const hasMeasured = containerHeight !== 'auto';
+
     return (
         <div ref={wrapperRef} className="min-h-screen flex flex-col items-center bg-base-100 px-4 mb-20">
             <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-center mb-3">Статистика</h1>
@@ -163,8 +169,8 @@ export default function StatisticsPage() {
             </form>
 
             <div
-                className="w-full relative overflow-hidden rounded-box transition-height duration-300"
-                style={{ height: containerHeight }}
+                className="w-full relative overflow-hidden rounded-box transition-[height] duration-300"
+                style={hasMeasured ? { height: containerHeight } : undefined}
             >
                 <AnimatePresence custom={direction} initial={false}>
                     <motion.div
@@ -175,7 +181,11 @@ export default function StatisticsPage() {
                         animate="center"
                         exit="exit"
                         transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                        className="absolute inset-0 w-full flex justify-center items-start"
+                        className={
+                            hasMeasured
+                                ? "absolute inset-0 w-full flex justify-center items-start"
+                                : "relative w-full flex justify-center items-start"
+                        }
                         drag="x"
                         dragConstraints={{ left: 0, right: 0 }}
                         dragElastic={0.2}
