@@ -115,8 +115,8 @@ export default function StatisticsPage() {
             if (e.key === 'ArrowLeft') goToPrev();
             if (e.key === 'ArrowRight') goToNext();
         };
-        window.addEventListener('keydown', onKey);
-        return () => window.removeEventListener('keydown', onKey);
+        window.addEventListener('keyup', onKey);
+        return () => window.removeEventListener('keyup', onKey);
     }, [goToNext, goToPrev]);
 
     const hasMeasured = containerHeight !== 'auto';
@@ -184,28 +184,6 @@ export default function StatisticsPage() {
                         </div>
                     </motion.div>
                 </AnimatePresence>
-
-                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center">
-                    <button
-                        type="button"
-                        onClick={goToPrev}
-                        aria-label="Previous month"
-                        className="pointer-events-auto btn btn-ghost btn-circle"
-                    >
-                        ‹
-                    </button>
-                </div>
-
-                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center">
-                    <button
-                        type="button"
-                        onClick={goToNext}
-                        aria-label="Next month"
-                        className="pointer-events-auto btn btn-ghost btn-circle"
-                    >
-                        ›
-                    </button>
-                </div>
             </div>
 
             <div style={{height: BOTTOM_SPACE}} aria-hidden />
