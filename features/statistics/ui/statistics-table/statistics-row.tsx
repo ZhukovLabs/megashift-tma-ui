@@ -1,5 +1,5 @@
 import type {StatisticItem} from "./index";
-import {calculatePercentage} from "@/features/statistics/model/calculate-percentage";
+import {calculatePercentage} from "../../model/calculate-percentage";
 
 type Props = {
     item: StatisticItem;

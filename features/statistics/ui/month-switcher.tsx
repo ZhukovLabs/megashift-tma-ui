@@ -72,7 +72,7 @@ export const MonthSwitcher = ({ year, month, onNext, onPrev, children }: MonthSw
                     dragConstraints={{ left: 0, right: 0 }}
                     dragElastic={0.15}
                     onDragEnd={handleDragEnd}
-                    className="relative w-full max-h-[70dvh] min-h-0 overflow-auto"
+                    className="relative w-full"
                 >
                     {children}
                 </motion.div>

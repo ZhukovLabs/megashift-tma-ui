@@ -35,7 +35,7 @@ export default function ShiftsList({
     return (
         <div className="relative w-full max-w-xl rounded-2xl overflow-hidden">
             <div
-                className="relative h-[80vh] max-h-[80vh] overflow-auto p-2 pr-4"
+                className="relative"
                 style={{WebkitOverflowScrolling: "touch"}}
             >
                 {isLoading && <ShiftsListSkeleton/>}
@@ -57,20 +57,6 @@ export default function ShiftsList({
                     </ul>
                 )}
             </div>
-
-            <TopFade/>
-            <BottomFade/>
         </div>
     );
 }
-
-
-const TopFade = () => (
-    <div
-        className="pointer-events-none absolute left-0 right-0 top-0 h-8 rounded-t-2xl bg-gradient-to-b from-base-100 via-base-100/50 to-transparent"/>
-)
-
-const BottomFade = () => (
-    <div
-        className="pointer-events-none absolute bottom-0 left-0 right-0 h-20 rounded-b-2xl bg-gradient-to-t from-base-100 via-base-100/50 to-transparent"/>
-)

@@ -49,7 +49,7 @@ const settingsSections = [
 
 export default function SettingsPage() {
     return (
-        <div className="flex min-h-screen flex-col bg-gradient-to-b from-base-100 via-base-200 to-base-100 px-4 pb-10">
+        <div className="flex flex-col">
             <h1 className="text-center text-2xl font-bold tracking-tight text-base-content">
                 Настройки
             </h1>

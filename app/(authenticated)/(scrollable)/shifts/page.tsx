@@ -40,7 +40,7 @@ export default function ShiftsPage() {
 
     return (
         <div
-            className="flex min-h-screen flex-col items-center bg-gradient-to-b from-base-100 via-base-200 to-base-100 px-4">
+            className="flex min-h-screen flex-col items-center bg-gradient-to-b px-4">
             <h1 className="mb-8 text-center text-2xl font-bold tracking-tight text-base-content sm:text-3xl">
                 Смены
             </h1>

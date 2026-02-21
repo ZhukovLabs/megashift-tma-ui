@@ -55,8 +55,7 @@ export default async function RootLayout({
                             width: '100vw',
                             maxWidth: '400px',
                             fontSize: '16px',
-                            borderRadius: '12px',
-                            padding: '12px 16px'
+                            borderRadius: '12px'
                         }}
                     />
                 </SafeContentArea>
