@@ -2,7 +2,7 @@ import {useQuery} from '@tanstack/react-query';
 import {api} from '@/lib/axios';
 import {useOwnerId} from "@/hooks/use-owner-id";
 
-export type ShiftStatisticsItem = {
+export type ShiftStatisticsHoursItem = {
     id: string;
     shiftName: string;
     hours: number;
@@ -15,10 +15,10 @@ const shiftStatisticsHoursKey = (year: number, month: number) =>
 export const useGetShiftStatisticsHours = (year: number, month: number) => {
     const ownerId = useOwnerId();
 
-    return useQuery<ShiftStatisticsItem[], Error>({
+    return useQuery<ShiftStatisticsHoursItem[], Error>({
         queryKey: shiftStatisticsHoursKey(year, month),
         queryFn: async ({signal}) => {
-            const {data} = await api.get<ShiftStatisticsItem[]>(
+            const {data} = await api.get<ShiftStatisticsHoursItem[]>(
                 '/api/statistics/shifts/hours',
                 {
                     params: {year, month, ownerId},

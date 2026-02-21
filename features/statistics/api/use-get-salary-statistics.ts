@@ -1,10 +1,11 @@
-import { useQuery } from '@tanstack/react-query';
-import { api } from '@/lib/axios';
-import { useOwnerId } from "@/hooks/use-owner-id";
+import {useQuery} from '@tanstack/react-query';
+import {api} from '@/lib/axios';
+import {useOwnerId} from "@/hooks/use-owner-id";
+import {SalaryType} from "@/entities/salary/model/types";
 
 export type SalaryStatistics = {
     salary: number;
-    typeSalary: 'HOURLY' | 'SHIFT' | 'MONTHLY' | 'UNKNOWN';
+    typeSalary: SalaryType;
     maxSalary: number;
 };
 
@@ -16,12 +17,12 @@ export const useGetSalaryStatistics = (year: number, month: number) => {
 
     return useQuery<SalaryStatistics, Error>({
         queryKey: salaryStatisticsKey(year, month),
-        queryFn: async ({ signal }) => {
+        queryFn: async ({signal}) => {
             const controller = new AbortController();
             signal.addEventListener('abort', () => controller.abort());
 
-            const { data } = await api.get<SalaryStatistics>('/api/statistics/salary', {
-                params: { year, month, ownerId },
+            const {data} = await api.get<SalaryStatistics>('/api/statistics/salary', {
+                params: {year, month, ownerId},
                 signal: controller.signal,
             });
 
