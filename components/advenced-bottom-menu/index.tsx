@@ -36,7 +36,8 @@ export function AdvancedBottomMenu() {
                 onClick={toggleMenu}
                 className={cn(
                     'fixed bottom-4 right-4 z-50 h-14 w-14 rounded-full flex items-center justify-center',
-                    'bg-base-100/90 backdrop-blur-xl shadow-lg shadow-black/10 border border-base-300/40',
+                    'bg-base-100/90 backdrop-blur-xl shadow-lg shadow-black/10',
+                    'border border-base-300',
                     'transition-all duration-300'
                 )}
             >
