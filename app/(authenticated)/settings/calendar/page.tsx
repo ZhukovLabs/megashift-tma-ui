@@ -12,6 +12,7 @@ export default function CalendarSettingsPage() {
     const userId = useUserStore((s) => s.user?.id ?? "");
     const ownerId = useUserStore((s) => s.ownerId);
     const setOwnerId = useUserStore((s) => s.setOwnerId);
+    const setCurrentClaims = useUserStore((s) => s.setCurrentClaims);
 
     const {data: accessData = [], isLoading} = useGetAvailableCalendars();
 
@@ -43,6 +44,16 @@ export default function CalendarSettingsPage() {
         () => accessibleUsers.find((u) => u.id === selectedUserId),
         [accessibleUsers, selectedUserId]
     );
+
+    useEffect(() => {
+        if (!selectedUser) return;
+
+        if (selectedUser.id === userId) {
+            setCurrentClaims(null);
+        } else {
+            setCurrentClaims(selectedUser.claims);
+        }
+    }, [selectedUser, userId, setCurrentClaims]);
 
     const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
         setOwnerId(e.target.value);

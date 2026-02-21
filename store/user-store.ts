@@ -1,4 +1,5 @@
-import { create } from 'zustand';
+import {create} from 'zustand';
+import {AccessClaim} from "@/constants/access-claim";
 
 export type User = {
     id: string;
@@ -15,10 +16,12 @@ type UserState = {
     status: AuthStatus;
     isInitialized: boolean;
     ownerId: string | null;
+    currentClaims: (keyof typeof AccessClaim)[] | null;
 
     initialize: () => void;
     setUser: (user: User) => void;
     setOwnerId: (id: string | null) => void;
+    setCurrentClaims: (claims: (keyof typeof AccessClaim)[] | null) => void,
     setUnauthenticated: () => void;
     logout: () => void;
 };
@@ -28,17 +31,20 @@ export const useUserStore = create<UserState>((set, get) => ({
     status: 'idle',
     isInitialized: false,
     ownerId: typeof window !== 'undefined' ? localStorage.getItem('ownerId') : null,
+    currentClaims: null,
 
     initialize: () => {
         if (!get().isInitialized && get().status !== 'initializing') {
-            set({ status: 'initializing', isInitialized: false });
+            set({status: 'initializing', isInitialized: false});
         }
     },
 
-    setUser: (user) => set({ user, status: 'authenticated', isInitialized: true }),
+    setCurrentClaims: (claims: (keyof typeof AccessClaim)[] | null) => set({currentClaims: claims}),
+
+    setUser: (user) => set({user, status: 'authenticated', isInitialized: true}),
 
     setOwnerId: (id: string | null) => {
-        set({ ownerId: id });
+        set({ownerId: id});
 
         if (typeof window !== 'undefined') {
             if (id !== null) {
@@ -49,7 +55,7 @@ export const useUserStore = create<UserState>((set, get) => ({
         }
     },
 
-    setUnauthenticated: () => set({ user: null, status: 'unauthenticated', isInitialized: true, ownerId: null }),
-    logout: () => set({ user: null, status: 'unauthenticated', isInitialized: true, ownerId: null }),
+    setUnauthenticated: () => set({user: null, status: 'unauthenticated', isInitialized: true, ownerId: null}),
+    logout: () => set({user: null, status: 'unauthenticated', isInitialized: true, ownerId: null}),
 }));
 
