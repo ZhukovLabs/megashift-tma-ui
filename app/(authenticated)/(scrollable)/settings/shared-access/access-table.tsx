@@ -82,6 +82,10 @@ export function AccessTable({users}: Props) {
 
     return (
         <div className="mt-8 space-y-5">
+            <h2
+                className="font-medium text-base-content mb-2 block">Пользователи имеющие доступ к вашему
+                расписанию:</h2>
+
             {users.map((user) => {
                 const currentClaims = edited[user.id] ?? user.claims;
                 const isOpen = openUser === user.id;
@@ -101,7 +105,8 @@ export function AccessTable({users}: Props) {
                             className="flex items-center justify-between p-4 cursor-pointer"
                         >
                             <div className="flex items-center gap-3">
-                                <div className="shrink-0 w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center text-sm font-semibold">
+                                <div
+                                    className="shrink-0 w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center text-sm font-semibold">
                                     {initials}
                                 </div>
 

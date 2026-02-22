@@ -54,8 +54,8 @@ export default function SharedAccessPage() {
                     control={control}
                     render={({field}) => (
                         <div>
-                            <span
-                                className="font-medium text-base-content mb-2 block">Права доступа для приглашённого:</span>
+                            <h2
+                                className="font-medium text-base-content mb-2 block">Права доступа для приглашённого:</h2>
                             <div className="flex flex-col gap-2">
                                 {Object.keys(AccessClaim).map((key) => {
                                     const claim = key as keyof typeof AccessClaim;
