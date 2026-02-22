@@ -3,6 +3,7 @@ import {api} from '@/lib/axios';
 import {useOwnerId} from '@/hooks/use-owner-id';
 import axios from "axios";
 import {useUserStore} from "@/store/user-store";
+import {ENDPOINTS} from "@/shared/config/api";
 
 export type ShiftDto = {
     id: string;
@@ -30,7 +31,7 @@ export const useGetShifts = ({year, month}: GetShiftsParams) => {
         queryKey: monthShiftsKey(year, month),
         queryFn: async ({signal}) => {
             try {
-                const {data} = await api.get<GetShiftsResponse>('/api/shifts/by-month', {
+                const {data} = await api.get<GetShiftsResponse>(ENDPOINTS.getShiftsByMonth, {
                     params: {year, month, ownerId},
                     signal,
                 });

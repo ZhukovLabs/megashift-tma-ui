@@ -1,5 +1,6 @@
 import {useQuery} from '@tanstack/react-query';
 import {api} from '@/lib/axios';
+import {ENDPOINTS} from "@/shared/config/api";
 
 export type ProfileResponse = {
     id: string;
@@ -14,7 +15,7 @@ export const useGetProfile = () => {
     return useQuery<ProfileResponse, void>({
         queryKey: ['profile'],
         queryFn: async () => {
-            const {data} = await api.get<ProfileResponse>('/api/profile');
+            const {data} = await api.get<ProfileResponse>(ENDPOINTS.getProfile);
             return data;
         },
     });

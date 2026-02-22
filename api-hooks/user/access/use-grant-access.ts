@@ -1,6 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 import { api } from '@/lib/axios';
 import {AccessClaim} from "@/constants/access-claim";
+import {ENDPOINTS} from "@/shared/config/api";
 
 export type GrantAccessRequest = {
     targetUserId: string;
@@ -18,7 +19,7 @@ export type GrantAccessResponse = {
 export const useGrantAccess = () => {
     return useMutation<GrantAccessResponse, Error, GrantAccessRequest>({
         mutationFn: async (body: GrantAccessRequest) => {
-            const { data } = await api.post<GrantAccessResponse>('/api/users/access/grant', body);
+            const { data } = await api.post<GrantAccessResponse>(ENDPOINTS.grantClaim, body);
             return data;
         },
     });

@@ -4,6 +4,7 @@ import {ShiftDto} from "@/api-hooks/shift/use-get-shifts";
 import {v4 as uuidv4} from 'uuid';
 import {scheduleCancelAndInvalidate} from '@/utils/react-query-utils';
 import {useOwnerId} from "@/hooks/use-owner-id";
+import {ENDPOINTS} from "@/shared/config/api";
 
 export type CreateShiftPayload = {
     date: string;
@@ -25,7 +26,7 @@ export const useCreateShift = () => {
         { previousShifts: ShiftDto[]; queryKey: readonly (string | number)[] }
     >({
         mutationFn: async (payload) => {
-            const {data} = await api.post<ShiftDto>('/api/shifts', {
+            const {data} = await api.post<ShiftDto>(ENDPOINTS.createShift, {
                 date: payload.date,
                 shiftTemplateId: payload.shiftTemplateId,
             }, {params: {ownerId}});

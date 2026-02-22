@@ -2,6 +2,7 @@ import {useMutation, useQueryClient} from '@tanstack/react-query';
 import {api} from '@/lib/axios';
 import {ShiftDto} from '@/api-hooks/shift/use-get-shifts';
 import {useOwnerId} from "@/hooks/use-owner-id";
+import {ENDPOINTS} from "@/shared/config/api";
 
 export type UpdateShiftPayload = {
     id: string;
@@ -14,10 +15,10 @@ export const useUpdateShift = () => {
     const queryClient = useQueryClient();
 
     return useMutation<ShiftDto, Error, UpdateShiftPayload>({
-        mutationFn: async (payload) => {
-            const {data} = await api.patch<ShiftDto>(`/api/shifts/${payload.id}`, {
-                actualStartTime: payload.actualStartTime,
-                actualEndTime: payload.actualEndTime,
+        mutationFn: async ({id, actualStartTime, actualEndTime}) => {
+            const {data} = await api.patch<ShiftDto>(ENDPOINTS.updateShift(id), {
+                actualStartTime,
+                actualEndTime,
             }, {params: {ownerId}});
             return data;
         },

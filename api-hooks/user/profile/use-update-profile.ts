@@ -1,6 +1,7 @@
 import {useMutation, useQueryClient} from '@tanstack/react-query';
 import {api} from '@/lib/axios';
 import {ProfileResponse} from './use-get-profile';
+import {ENDPOINTS} from "@/shared/config/api";
 
 export type UpdateProfilePayload = {
     surname?: string;
@@ -13,10 +14,7 @@ export const useUpdateProfile = () => {
 
     return useMutation({
         mutationFn: async (payload: UpdateProfilePayload) => {
-            const {data} = await api.patch<ProfileResponse>(
-                '/api/profile',
-                payload
-            );
+            const {data} = await api.patch<ProfileResponse>(ENDPOINTS.updateProfile, payload);
             return data;
         },
 

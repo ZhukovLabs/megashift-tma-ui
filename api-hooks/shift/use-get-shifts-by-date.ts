@@ -1,6 +1,7 @@
 import {useQuery} from '@tanstack/react-query';
 import {api} from '@/lib/axios';
 import {useOwnerId} from "@/hooks/use-owner-id";
+import {ENDPOINTS} from "@/shared/config/api";
 
 export type ShiftDto = {
     id: string;
@@ -24,7 +25,7 @@ export const useGetShiftsByDate = ({date}: GetShiftsByDayParams) => {
     return useQuery<GetShiftsByDayResponse>({
         queryKey: shiftsByDateKey(),
         queryFn: async () => {
-            const {data} = await api.get<GetShiftsByDayResponse>('/api/shifts/by-date', {
+            const {data} = await api.get<GetShiftsByDayResponse>(ENDPOINTS.getShiftsByDate, {
                 params: {date, ownerId},
             });
             return data;

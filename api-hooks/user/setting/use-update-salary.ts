@@ -1,5 +1,6 @@
 import {useMutation, useQueryClient} from '@tanstack/react-query';
 import {api} from '@/lib/axios';
+import {ENDPOINTS} from "@/shared/config/api";
 
 export enum SalaryType {
     HOURLY = 'HOURLY',
@@ -20,7 +21,7 @@ export const useUpdateSalary = () => {
 
     return useMutation<UpdateSalaryPayload, Error, UpdateSalaryPayload>({
         mutationFn: async (payload) => {
-            const {data} = await api.patch<UpdateSalaryPayload>('/api/settings/salary', payload);
+            const {data} = await api.patch<UpdateSalaryPayload>(ENDPOINTS.updateSalary, payload);
             return data;
         },
         onSuccess: () => {

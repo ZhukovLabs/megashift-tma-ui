@@ -1,6 +1,7 @@
 import {useQuery} from "@tanstack/react-query";
 import {api} from "@/lib/axios";
 import {useOwnerId} from "@/hooks/use-owner-id";
+import {ENDPOINTS} from "@/shared/config/api";
 
 type ShiftTemplateResponse = {
     id: string;
@@ -17,7 +18,7 @@ export const useGetShiftTemplate = (id: string) => {
         queryKey: ["shift-template", id],
         queryFn: async () => {
             const response = await api.get<ShiftTemplateResponse>(
-                `/api/shift-templates/${id}`,
+                ENDPOINTS.getShiftTemplateById(id),
                 {params: {ownerId}}
             );
             return response.data;

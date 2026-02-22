@@ -1,6 +1,7 @@
 import {useMutation} from '@tanstack/react-query';
 import {api} from '@/lib/axios';
 import { AccessClaim } from '@/constants/access-claim';
+import {ENDPOINTS} from "@/shared/config/api";
 
 export type CheckInviteResponse = {
     exists: true;
@@ -15,7 +16,7 @@ export type CheckInviteResponse = {
 export const useCheckInvite = () => {
     return useMutation<CheckInviteResponse, Error, string>({
         mutationFn: async (inviteId: string) => {
-            const {data} = await api.get<CheckInviteResponse>(`/api/users/invite/${inviteId}`);
+            const {data} = await api.get<CheckInviteResponse>(ENDPOINTS.checkInvite(inviteId));
 
             return data;
         }

@@ -3,6 +3,7 @@ import {api} from '@/lib/axios';
 import {ShiftDto} from "@/api-hooks/shift/use-get-shifts";
 import {scheduleCancelAndInvalidate} from '@/utils/react-query-utils';
 import {useOwnerId} from "@/hooks/use-owner-id";
+import {ENDPOINTS} from "@/shared/config/api";
 
 const monthShiftsKey = (year: number, month: number) => ['month-shifts', year, month] as const;
 
@@ -18,7 +19,7 @@ export const useDeleteShift = () => {
     >({
         mutationFn: async ({id}) => {
             if (!id.startsWith('temp-')) {
-                await api.delete(`/api/shifts/${id}`, {params: {ownerId}});
+                await api.delete(ENDPOINTS.deleteShift(id), {params: {ownerId}});
             }
         },
         onMutate: async ({id, year, month}) => {

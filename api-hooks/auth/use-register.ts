@@ -1,6 +1,7 @@
 import {useMutation} from '@tanstack/react-query';
 import {api} from '@/lib/axios';
 import {useUserStore} from "@/store/user-store";
+import {ENDPOINTS} from "@/shared/config/api";
 
 type CreateUserRequest = {
     surname: string;
@@ -19,7 +20,7 @@ export const useRegister = () => {
 
     return useMutation<CreateUserResponse, Error, CreateUserRequest>({
         mutationFn: async (userData) => {
-            const {data} = await api.post('/api/users/register', userData);
+            const {data} = await api.post(ENDPOINTS.register, userData);
             return data;
         },
         onSuccess: async (data) => {
