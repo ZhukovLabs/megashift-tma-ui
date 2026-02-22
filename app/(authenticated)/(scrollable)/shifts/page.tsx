@@ -20,22 +20,16 @@ export default function ShiftsPage() {
     const handleDelete = async (id: string, label: string) => {
         const confirmed = await popup.show({
             title: 'Удалить?',
-            message: `Удалить смену ${label}?`,
+            message: `Удалить шаблон "${label}"?\nЭто действие нельзя отменить`,
             buttons: [
-                {id: 'yes', type: 'destructive', text: 'Да'},
+                {id: 'one', type: 'destructive', text: 'Удалить только шаблон'},
+                {id: 'all', type: 'destructive', text: 'Удалить шаблон и смены'},
                 {id: 'no', type: 'cancel'},
             ],
         });
-        if (confirmed !== 'yes') return;
+        if (confirmed !== 'one') return;
 
-        try {
-            await removeShift(id);
-        } catch {
-            popup.show({
-                title: "Ошибка",
-                message: "Ошибка при удалении смены"
-            });
-        }
+        await removeShift(id);
     };
 
     return (
