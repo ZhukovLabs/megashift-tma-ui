@@ -7,7 +7,7 @@ export const useUpdateAccess = () => {
 
     return useMutation({
         mutationFn: async (dto: GrantOrUpdateAccessDto) => {
-            const {data} = await api.post("/api/users/access", dto);
+            const {data} = await api.post("/api/users/access/update", dto);
             return data;
         },
         onSuccess: () => {
