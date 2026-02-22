@@ -101,7 +101,7 @@ export const DayCell = ({ day, monthDate }: DayCellProps) => {
 
                     {extraCount > 0 && (
                         <div className="mt-0.5 rounded-sm px-1 py-0.5 text-[10px] text-center text-base-content/70 bg-base-300/70 leading-none">
-                            +{extraCount} ещё
+                            +{extraCount}
                         </div>
                     )}
                 </div>

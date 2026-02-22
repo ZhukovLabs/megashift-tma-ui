@@ -31,7 +31,13 @@ export const queryClient = new QueryClient({
 
     defaultOptions: {
         queries: {
-            retry: 3,
+            retry: (failureCount, error) => {
+                if (axios.isAxiosError(error) && error.response?.status === 429) {
+                    return false;
+                }
+                return failureCount < 3;
+            },
+            retryDelay: attemptIndex => Math.min(500 * 2 ** attemptIndex, 30000),
         },
     },
 });

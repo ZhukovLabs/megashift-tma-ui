@@ -17,7 +17,9 @@ export const useDeleteShift = () => {
         { previous: ShiftDto[]; queryKey: readonly (string | number)[] }
     >({
         mutationFn: async ({id}) => {
-            await api.delete(`/api/shifts/${id}`, {params: {ownerId}});
+            if (!id.startsWith('temp-')) {
+                await api.delete(`/api/shifts/${id}`, {params: {ownerId}});
+            }
         },
         onMutate: async ({id, year, month}) => {
             const queryKey = monthShiftsKey(year, month);
