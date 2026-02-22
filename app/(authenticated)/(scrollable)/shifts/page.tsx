@@ -22,14 +22,14 @@ export default function ShiftsPage() {
             title: 'Удалить?',
             message: `Удалить шаблон "${label}"?\nЭто действие нельзя отменить`,
             buttons: [
-                {id: 'one', type: 'destructive', text: 'Удалить только шаблон'},
-                {id: 'all', type: 'destructive', text: 'Удалить шаблон и смены'},
+                {id: 'onlyTemplate', type: 'destructive', text: 'Удалить только шаблон'},
+                {id: 'templateWithShifts', type: 'destructive', text: 'Удалить шаблон и смены'},
                 {id: 'no', type: 'cancel'},
             ],
         });
-        if (confirmed !== 'one') return;
+        if (!confirmed || confirmed === 'no') return;
 
-        await removeShift(id);
+        await removeShift({id, type: confirmed as 'onlyTemplate' | 'templateWithShifts'});
     };
 
     return (

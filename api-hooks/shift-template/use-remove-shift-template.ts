@@ -10,10 +10,10 @@ export const useRemoveShiftTemplate = () => {
     return useMutation<
         void,
         Error,
-        string
+        { id: string, type: 'onlyTemplate' | 'templateWithShifts' | 'templateWithShiftsAndEditedShifts' }
     >({
-        mutationFn: async (id: string) => {
-            await api.delete(`/api/shift-templates/${id}`, {params: {ownerId}});
+        mutationFn: async ({id, type}) => {
+            await api.delete(`/api/shift-templates/${id}`, {params: {ownerId, type}});
         },
         onSuccess: () => {
             queryClient.invalidateQueries({queryKey: ['shift-templates']});
