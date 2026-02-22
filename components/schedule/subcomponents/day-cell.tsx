@@ -1,9 +1,9 @@
-import { format, isSameDay, isSameMonth, isToday } from "date-fns";
+import {format, isSameDay, isSameMonth, isToday} from "date-fns";
 import cn from "classnames";
-import { useMemo } from "react";
-import { useSchedule } from "@/components/schedule/context";
-import { useGetShiftTemplates } from "@/api-hooks/shift-template";
-import { getContrastColor, lightenHex } from "@/utils/colors";
+import {useMemo} from "react";
+import {useSchedule} from "@/components/schedule/context";
+import {useGetShiftTemplates} from "@/api-hooks/shift-template";
+import {getContrastColor, lightenHex} from "@/utils/colors";
 
 type DayCellProps = {
     day: Date;
@@ -16,9 +16,9 @@ const DEFAULT_EVENT_COLOR = "#64748b";
 const DEFAULT_EVENT_LABEL = "(Без названия)";
 const TIME_FORMAT = "HH:mm";
 
-export const DayCell = ({ day, monthDate }: DayCellProps) => {
-    const { shifts, onDayClick, cellHeight } = useSchedule();
-    const { data: shiftTemplates = [] } = useGetShiftTemplates();
+export const DayCell = ({day, monthDate}: DayCellProps) => {
+    const {shifts, onDayClick, cellHeight} = useSchedule();
+    const {data: shiftTemplates = []} = useGetShiftTemplates();
 
     const isCurrentMonth = isSameMonth(day, monthDate);
     const isCurrentDay = isToday(day);
@@ -29,7 +29,7 @@ export const DayCell = ({ day, monthDate }: DayCellProps) => {
     );
 
     const dayEvents = useMemo(
-        () => shifts.filter(({ date }) => isSameDay(date, day)),
+        () => shifts.filter(({date}) => isSameDay(date, day)),
         [shifts, day]
     );
 
@@ -38,7 +38,7 @@ export const DayCell = ({ day, monthDate }: DayCellProps) => {
 
     return (
         <div
-            style={{ height: cellHeight }}
+            style={{height: cellHeight}}
             onClick={() => onDayClick?.(day, dayEvents)}
             className={cn(
                 "relative flex flex-col cursor-pointer select-none transition-colors duration-150",
@@ -49,7 +49,8 @@ export const DayCell = ({ day, monthDate }: DayCellProps) => {
             )}
         >
             {isCurrentDay && (
-                <div className="absolute inset-0 border-2 border-primary/60 rounded-sm pointer-events-none box-border z-0" />
+                <div
+                    className="absolute inset-0 border-2 border-primary/60 rounded-sm pointer-events-none box-border z-0"/>
             )}
 
             <div className="relative z-10 flex flex-col h-full p-[2px]">
@@ -74,24 +75,39 @@ export const DayCell = ({ day, monthDate }: DayCellProps) => {
 
                         const label = template?.label ?? DEFAULT_EVENT_LABEL;
                         const baseColor = template?.color ?? DEFAULT_EVENT_COLOR;
-                        const bgColor = lightenHex(baseColor, 10); // чуть светлее
-                        const textColor = getContrastColor(baseColor); // читаемый текст
+                        const textColor = getContrastColor(baseColor);
+                        const startTime = event.actualStartTime ?? template?.startTime;
 
-                        const startTime =
-                            event.actualStartTime ?? template?.startTime;
+                        const isActual = !!event.actualStartTime;
 
                         return (
                             <div
                                 key={event.id}
-                                className="rounded-sm shadow-sm overflow-hidden text-center"
-                                style={{ backgroundColor: bgColor, color: textColor }}
+                                className={`
+                                    rounded-sm shadow-sm overflow-hidden text-center
+                                    ${isActual ? 'bg-gradient-[repeating-linear-gradient(45deg,#eee,#eee_4px,#ccc_4px,#ccc_8px)]' : ''}
+                                `}
+                                style={{
+                                    backgroundColor: !isActual ? lightenHex(baseColor, 10) : undefined,
+                                    backgroundImage: isActual ? `repeating-linear-gradient(
+                                        45deg,
+                                        ${lightenHex(baseColor, 20)},
+                                        ${lightenHex(baseColor, 20)} 4px,
+                                        ${baseColor} 4px,
+                                        ${baseColor} 8px
+                                    )` : undefined,
+                                    color: textColor
+                                }}
                             >
                                 <div className="px-1 py-0.5 text-[10px] font-medium leading-none truncate">
                                     {label}
                                 </div>
 
                                 {startTime && (
-                                    <div className="px-1 pb-0.5 text-[9px] bg-black/20 leading-none" style={{ color: textColor }}>
+                                    <div
+                                        className="px-1 pb-0.5 text-[9px] bg-black/20 leading-none"
+                                        style={{color: textColor}}
+                                    >
                                         {format(new Date(startTime), TIME_FORMAT)}
                                     </div>
                                 )}
@@ -100,7 +116,8 @@ export const DayCell = ({ day, monthDate }: DayCellProps) => {
                     })}
 
                     {extraCount > 0 && (
-                        <div className="mt-0.5 rounded-sm px-1 py-0.5 text-[10px] text-center text-base-content/70 bg-base-300/70 leading-none">
+                        <div
+                            className="mt-0.5 rounded-sm px-1 py-0.5 text-[10px] text-center text-base-content/70 bg-base-300/70 leading-none">
                             +{extraCount}
                         </div>
                     )}
