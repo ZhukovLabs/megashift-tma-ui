@@ -52,8 +52,8 @@ export default async function RootLayout({
                         pauseOnHover
                         theme="dark"
                         style={{
-                            width: '100vw',
-                            maxWidth: '400px',
+                            maxWidth: '100vw',
+                            padding: '0 8px',
                             fontSize: '16px',
                             borderRadius: '12px'
                         }}
