@@ -8,6 +8,8 @@ import {Share2} from "lucide-react";
 import {toast} from 'react-toastify';
 import {ACCESS_CLAIM_LABELS} from "@/constants/access-claim-labels";
 import {AccessClaim} from "@/constants/access-claim";
+import {AccessTable} from "@/app/(authenticated)/(scrollable)/settings/shared-access/access-table";
+import {useAvailableAccess} from "@/api-hooks/user/access/use-avaliable-access";
 
 type FormValues = {
     claims: (keyof typeof AccessClaim)[];
@@ -15,6 +17,7 @@ type FormValues = {
 
 export default function SharedAccessPage() {
     const {mutateAsync: createInvite, isPending} = useCreateInvite();
+    const {data: accessUsers = []} = useAvailableAccess();
     const [error, setError] = useState<string | null>(null);
 
     const {control, handleSubmit, formState: {errors}} = useForm<FormValues>({
@@ -109,6 +112,8 @@ export default function SharedAccessPage() {
                     Отправьте приглашение и позвольте другим следить за вашим расписанием
                 </p>
             </form>
+
+            <AccessTable users={accessUsers}/>
         </div>
     );
 }
