@@ -14,7 +14,7 @@ export default function RootPage() {
     const startapp = searchParams.get('startapp');
     const redirectParam = searchParams.get('redirect');
 
-    const {user, isFetching} = useSyncRegisteredUser();
+    const {user, isFetching, isError} = useSyncRegisteredUser();
     const initialize = useUserStore((s) => s.initialize);
 
     useEffect(() => {
@@ -23,7 +23,7 @@ export default function RootPage() {
     }, []);
 
     useEffect(() => {
-        if (isFetching) return;
+        if (isFetching || isError) return;
 
         if (user) {
             const target = redirectParam || ROUTES.schedule;

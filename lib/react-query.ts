@@ -37,7 +37,7 @@ export const queryClient = new QueryClient({
                 }
                 return failureCount < 3;
             },
-            retryDelay: attemptIndex => Math.min(500 * 2 ** attemptIndex, 30000),
+            retryDelay: attemptIndex => Math.min(500 * 2 ** attemptIndex, 10000),
         },
     },
 });

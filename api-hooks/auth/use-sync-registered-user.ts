@@ -25,5 +25,6 @@ export const useSyncRegisteredUser = () => {
         user,
         isFetching,
         isInitialized,
+        isError
     };
 };
