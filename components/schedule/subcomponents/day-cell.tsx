@@ -1,9 +1,11 @@
 import {format, isSameDay, isSameMonth, isToday} from "date-fns";
+import {formatInTimeZone} from "date-fns-tz";
 import cn from "classnames";
 import {useMemo} from "react";
 import {useSchedule} from "@/components/schedule/context";
 import {useGetShiftTemplates} from "@/api-hooks/shift-template";
 import {getContrastColor, lightenHex} from "@/utils/colors";
+import {useUserStore} from "@/store/user-store";
 
 type DayCellProps = {
     day: Date;
@@ -19,6 +21,7 @@ const TIME_FORMAT = "HH:mm";
 export const DayCell = ({day, monthDate}: DayCellProps) => {
     const {shifts, onDayClick, cellHeight} = useSchedule();
     const {data: shiftTemplates = []} = useGetShiftTemplates();
+    const tz = useUserStore(s=>s.user?.timezone || 'UTC');
 
     const isCurrentMonth = isSameMonth(day, monthDate);
     const isCurrentDay = isToday(day);
@@ -62,7 +65,7 @@ export const DayCell = ({day, monthDate}: DayCellProps) => {
                             "text-base-content/50": !isCurrentMonth,
                         })}
                     >
-                        {format(day, "d")}
+                        {format(day,"d")}
                     </div>
                 </div>
 
@@ -108,7 +111,7 @@ export const DayCell = ({day, monthDate}: DayCellProps) => {
                                         className="px-1 pb-0.5 text-[9px] bg-black/20 leading-none"
                                         style={{color: textColor}}
                                     >
-                                        {format(new Date(startTime), TIME_FORMAT)}
+                                        {formatInTimeZone(new Date(startTime), tz, TIME_FORMAT)}
                                     </div>
                                 )}
                             </div>

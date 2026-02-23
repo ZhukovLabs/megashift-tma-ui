@@ -8,6 +8,7 @@ export type ProfileResponse = {
     name: string;
     patronymic?: string | null;
     createdAt: string;
+    timezone: string;
 };
 
 
