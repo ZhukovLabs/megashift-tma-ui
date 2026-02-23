@@ -1,6 +1,7 @@
 import {useMutation, useQueryClient} from '@tanstack/react-query';
 import {api} from '@/lib/axios';
 import {ENDPOINTS} from "@/shared/config/api";
+import {Currency} from "@/app/(authenticated)/(scrollable)/settings/compensation/page";
 
 export enum SalaryType {
     HOURLY = 'HOURLY',
@@ -12,6 +13,7 @@ export type UpdateSalaryPayload = {
     typeSalary: 'HOURLY' | 'SHIFT' | 'MONTHLY';
     salary: number;
     maxSalary?: number;
+    currency: Currency
 };
 
 export const userSettingsKey = ['settings'] as const;
