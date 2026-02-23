@@ -1,127 +1,109 @@
-import {format, isSameDay, isSameMonth, isToday} from "date-fns";
-import {formatInTimeZone} from "date-fns-tz";
+import { format, isSameDay, isSameMonth, isToday } from "date-fns";
+import { formatInTimeZone } from "date-fns-tz";
 import cn from "classnames";
-import {useMemo} from "react";
-import {useSchedule} from "@/components/schedule/context";
-import {useGetShiftTemplates} from "@/api-hooks/shift-template";
-import {getContrastColor, lightenHex} from "@/utils/colors";
-import {useUserStore} from "@/store/user-store";
+import { useMemo } from "react";
+import { useSchedule } from "@/components/schedule/context";
+import { useGetShiftTemplates } from "@/api-hooks/shift-template";
+import { getContrastColor, lightenHex } from "@/utils/colors";
+import { useUserStore } from "@/store/user-store";
 
 type DayCellProps = {
     day: Date;
     monthDate: Date;
 };
 
-const MAX_VISIBLE_EVENTS = 2;
-
-const DEFAULT_EVENT_COLOR = "#64748b";
-const DEFAULT_EVENT_LABEL = "(Без названия)";
+const MAX_VISIBLE = 2;
+const DEFAULT_COLOR = "#64748b";
+const DEFAULT_LABEL = "(Без названия)";
 const TIME_FORMAT = "HH:mm";
 
-export const DayCell = ({day, monthDate}: DayCellProps) => {
-    const {shifts, onDayClick, cellHeight} = useSchedule();
-    const {data: shiftTemplates = []} = useGetShiftTemplates();
-    const tz = useUserStore(s=>s.user?.timezone || 'UTC');
+export const DayCell = ({ day, monthDate }: DayCellProps) => {
+    const { shifts, onDayClick, cellHeight } = useSchedule();
+    const { data: templates = [] } = useGetShiftTemplates();
+    const tz = useUserStore(s => s.user?.timezone || "UTC");
 
     const isCurrentMonth = isSameMonth(day, monthDate);
-    const isCurrentDay = isToday(day);
+    const isTodayDay = isToday(day);
 
-    const templateMap = useMemo<Record<string, typeof shiftTemplates[number]>>(
-        () => Object.fromEntries(shiftTemplates.map(t => [t.id, t])),
-        [shiftTemplates]
+    const templateMap = useMemo(
+        () => Object.fromEntries(templates.map(t => [t.id, t])),
+        [templates]
     );
 
-    const dayEvents = useMemo(
-        () => shifts.filter(({date}) => isSameDay(date, day)),
+    const events = useMemo(
+        () => shifts.filter(s => isSameDay(s.date, day)),
         [shifts, day]
     );
 
-    const visibleEvents = dayEvents.slice(0, MAX_VISIBLE_EVENTS);
-    const extraCount = dayEvents.length - visibleEvents.length;
+    const visible = events.slice(0, MAX_VISIBLE);
+    const more = events.length - visible.length;
 
     return (
         <div
-            style={{height: cellHeight}}
-            onClick={() => onDayClick?.(day, dayEvents)}
+            style={{ height: cellHeight }}
+            onClick={() => onDayClick?.(day, events)}
             className={cn(
-                "relative flex flex-col cursor-pointer select-none transition-colors duration-150",
-                {
-                    "bg-base-100": isCurrentMonth,
-                    "bg-base-200/40 opacity-70": !isCurrentMonth,
-                }
+                "relative cursor-pointer select-none transition-colors",
+                isCurrentMonth ? "bg-base-100" : "bg-base-200/30 opacity-70"
             )}
         >
-            {isCurrentDay && (
-                <div
-                    className="absolute inset-0 border-2 border-primary/60 rounded-sm pointer-events-none box-border z-0"/>
+            {isTodayDay && (
+                <div className="absolute inset-0 border-2 border-primary/50 rounded pointer-events-none z-0" />
             )}
 
-            <div className="relative z-10 flex flex-col h-full p-[2px]">
-                <div className="flex justify-center pt-1">
-                    <div
-                        className={cn("text-xs font-semibold", {
-                            "text-primary": isCurrentDay,
-                            "text-base-content": isCurrentMonth && !isCurrentDay,
-                            "text-base-content/50": !isCurrentMonth,
-                        })}
-                    >
-                        {format(day,"d")}
-                    </div>
+            <div className="relative z-10 flex flex-col h-full p-0.5">
+                <div className="text-center pt-0.5">
+          <span
+              className={cn("text-xs font-medium", {
+                  "text-primary": isTodayDay,
+                  "text-base-content": isCurrentMonth && !isTodayDay,
+                  "text-base-content/50": !isCurrentMonth
+              })}
+          >
+            {format(day, "d")}
+          </span>
                 </div>
 
-                <div className="flex-1 px-1 pb-1 mt-0.5 flex flex-col gap-0.5 overflow-hidden">
-                    {visibleEvents.map(event => {
-                        const template =
-                            event.shiftTemplateId
-                                ? templateMap[event.shiftTemplateId] ?? null
-                                : null;
-
-                        const label = template?.label ?? DEFAULT_EVENT_LABEL;
-                        const baseColor = template?.color ?? DEFAULT_EVENT_COLOR;
-                        const textColor = getContrastColor(baseColor);
-                        const startTime = event.actualStartTime ?? template?.startTime;
-
+                <div className="flex-1 px-0.5 pb-0.5 flex flex-col gap-0.5 overflow-hidden">
+                    {visible.map(event => {
+                        const tpl = event.shiftTemplateId ? templateMap[event.shiftTemplateId] : null;
+                        const label = tpl?.label ?? DEFAULT_LABEL;
+                        const color = tpl?.color ?? DEFAULT_COLOR;
+                        const textColor = getContrastColor(color);
+                        const time = event.actualStartTime ?? tpl?.startTime;
                         const isActual = !!event.actualStartTime;
 
                         return (
                             <div
                                 key={event.id}
-                                className={`
-                                    rounded-sm shadow-sm overflow-hidden text-center
-                                    ${isActual ? 'bg-gradient-[repeating-linear-gradient(45deg,#eee,#eee_4px,#ccc_4px,#ccc_8px)]' : ''}
-                                `}
+                                className={cn(
+                                    "rounded text-[10px] font-medium text-center truncate shadow-sm",
+                                    isActual ? "striped-bg" : ""
+                                )}
                                 style={{
-                                    backgroundColor: !isActual ? lightenHex(baseColor, 10) : undefined,
-                                    backgroundImage: isActual ? `repeating-linear-gradient(
-                                        45deg,
-                                        ${lightenHex(baseColor, 20)},
-                                        ${lightenHex(baseColor, 20)} 4px,
-                                        ${baseColor} 4px,
-                                        ${baseColor} 8px
-                                    )` : undefined,
+                                    backgroundColor: isActual ? undefined : lightenHex(color, 12),
+                                    backgroundImage: isActual
+                                        ? `repeating-linear-gradient(45deg, ${lightenHex(color, 25)}, ${lightenHex(color, 25)} 4px, ${color} 4px, ${color} 8px)`
+                                        : undefined,
                                     color: textColor
                                 }}
                             >
-                                <div className="px-1 py-0.5 text-[10px] font-medium leading-none truncate">
-                                    {label}
-                                </div>
-
-                                {startTime && (
+                                <div className="px-1.5 py-0.5 leading-tight">{label}</div>
+                                {time && (
                                     <div
-                                        className="px-1 pb-0.5 text-[9px] bg-black/20 leading-none"
-                                        style={{color: textColor}}
+                                        className="px-1.5 pb-0.5 text-[9px] bg-black/15 leading-none"
+                                        style={{ color: textColor }}
                                     >
-                                        {formatInTimeZone(new Date(startTime), tz, TIME_FORMAT)}
+                                        {formatInTimeZone(new Date(time), tz, TIME_FORMAT)}
                                     </div>
                                 )}
                             </div>
                         );
                     })}
 
-                    {extraCount > 0 && (
-                        <div
-                            className="mt-0.5 rounded-sm px-1 py-0.5 text-[10px] text-center text-base-content/70 bg-base-300/70 leading-none">
-                            +{extraCount}
+                    {more > 0 && (
+                        <div className="mt-0.5 rounded text-[10px] text-center text-base-content/60 bg-base-300/60 py-0.5 leading-none">
+                            +{more} ещё
                         </div>
                     )}
                 </div>
