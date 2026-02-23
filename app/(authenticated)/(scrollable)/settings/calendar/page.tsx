@@ -1,7 +1,6 @@
 'use client';
-
-import {ChangeEvent, useEffect, useMemo} from "react";
-import {Check, X} from "lucide-react";
+import {useEffect, useMemo} from "react";
+import {Check, X, Trash2} from "lucide-react";
 import {useUserStore} from "@/store/user-store";
 import {useGetAvailableCalendars} from "@/api-hooks/user/calendar";
 import {AccessUser} from "@/api-hooks/user/calendar/use-get-available-calendars";
@@ -34,7 +33,6 @@ export default function CalendarSettingsPage() {
     useEffect(() => {
         const ownerIsValid = ownerId && accessibleUsers.some((u) => u.id === ownerId);
         const desiredOwner = ownerIsValid ? ownerId : userId;
-
         if (ownerId !== desiredOwner) {
             setOwnerId(desiredOwner);
         }
@@ -47,7 +45,6 @@ export default function CalendarSettingsPage() {
 
     useEffect(() => {
         if (!selectedUser) return;
-
         if (selectedUser.id === userId) {
             setCurrentClaims(null);
         } else {
@@ -55,55 +52,103 @@ export default function CalendarSettingsPage() {
         }
     }, [selectedUser, userId, setCurrentClaims]);
 
-    const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
-        setOwnerId(e.target.value);
+    const handleSelect = (userId: string) => {
+        setOwnerId(userId);
+    };
+
+    const handleUnsubscribe = (userId: string) => {
+        // TODO: отписка от чужого календаря
+        console.log("Отписаться от календаря:", userId);
     };
 
     const allClaims = Object.values(AccessClaim);
 
     return (
-        <div className="flex min-h-screen flex-col bg-gradient-to-b from-base-100 via-base-200 to-base-100 px-4 pb-10">
-            <h1 className="text-center text-2xl font-bold tracking-tight mb-6">
-                Настройка календаря
+        <div className="mx-auto w-full max-w-md px-4 pt-6">
+            <h1 className="mb-7 text-center text-2xl font-bold tracking-tight text-base-content/90">
+                Календари
             </h1>
 
-            <div className="rounded-2xl bg-base-100 p-6 shadow max-w-md mx-auto space-y-4">
-                <label className="block text-base font-medium">
-                    Выберите календарь для просмотра:
-                </label>
+            <div className="space-y-2.5">
+                {accessibleUsers.map((user) => {
+                    const isSelected = user.id === selectedUserId;
+                    const isMyCalendar = user.id === userId;
 
-                <select
-                    className="select select-bordered w-full"
-                    value={selectedUserId}
-                    onChange={handleChange}
-                    disabled={isLoading}
-                >
-                    {accessibleUsers.map((user) => (
-                        <option key={user.id} value={user.id}>
-                            {user.name} {user.surname}
-                        </option>
-                    ))}
-                </select>
-
-                <div className="mt-4 space-y-2">
-                    {allClaims.map((claim) => {
-                        const hasAccess = selectedUser?.claims.includes(claim);
-                        return (
-                            <div
-                                key={claim}
-                                className="flex items-center gap-2 text-sm text-base-content"
-                            >
-                                {hasAccess ? (
-                                    <Check size={16} className="text-green-500"/>
-                                ) : (
-                                    <X size={16} className="text-red-500"/>
+                    return (
+                        <div
+                            key={user.id}
+                            onClick={() => handleSelect(user.id)}
+                            className={`
+                  group relative flex cursor-pointer items-center gap-3.5 
+                  rounded-xl border px-4 py-3.5 transition-all
+                  ${isSelected
+                                ? "border-primary bg-primary/5 shadow-sm"
+                                : "border-base-300 bg-base-100 hover:border-base-300/80 hover:bg-base-100/70"}
+                `}
+                        >
+                            <div className="flex-1 min-w-0">
+                                <div className="font-medium leading-tight">
+                                    {user.name} {user.surname}
+                                </div>
+                                {isMyCalendar && (
+                                    <div className="mt-0.5 text-xs text-base-content/50">
+                                        мой календарь
+                                    </div>
                                 )}
-                                <span>{ACCESS_CLAIM_LABELS[claim]}</span>
                             </div>
-                        );
-                    })}
-                </div>
+
+                            {isSelected && (
+                                <Check size={18} className="text-primary shrink-0"/>
+                            )}
+
+                            {!isMyCalendar && (
+                                <button
+                                    type="button"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleUnsubscribe(user.id);
+                                    }}
+                                    className="btn btn-ghost btn-xs text-error opacity-40 hover:opacity-100 group-hover:opacity-70"
+                                    aria-label="Отписаться от календаря"
+                                >
+                                    <Trash2 size={18}/>
+                                </button>
+                            )}
+                        </div>
+                    );
+                })}
             </div>
+
+            {selectedUser && selectedUser.id !== userId && (
+                <div className="mt-8 rounded-xl bg-base-100 p-5 shadow-sm">
+                    <h2 className="mb-3 text-lg font-semibold">
+                        Доступные права
+                    </h2>
+                    <div className="space-y-2.5 text-sm">
+                        {allClaims.map((claim) => {
+                            const hasAccess = selectedUser.claims.includes(claim);
+                            return (
+                                <div key={claim} className="flex items-center gap-2.5">
+                                    {hasAccess ? (
+                                        <Check size={16} className="text-success"/>
+                                    ) : (
+                                        <X size={16} className="text-error/70"/>
+                                    )}
+                                    <span className={hasAccess ? "" : "text-base-content/60"}>
+                      {ACCESS_CLAIM_LABELS[claim]}
+                    </span>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+            )}
+
+            {isLoading && (
+                <div className="mt-10 text-center text-base-content/50">
+                    Загрузка календарей...
+                </div>
+            )}
         </div>
     );
 }
