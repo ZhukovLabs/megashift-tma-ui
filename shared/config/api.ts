@@ -22,6 +22,7 @@ export const ENDPOINTS = {
     revokeAllRights: (userId: string) => `/users/access/${userId}`,
 
     getAvailableCalendars: '/users/access/available-calendars',
+    unsubscribeFromCalendar: (ownerId: string) => `/users/access/unsubscribe/${ownerId}`,
 
     createInvite: '/users/invite',
     checkInvite: (inviteId: string) => `/users/invite/${inviteId}`,

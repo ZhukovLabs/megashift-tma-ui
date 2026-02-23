@@ -6,6 +6,8 @@ import {useGetAvailableCalendars} from "@/api-hooks/user/calendar";
 import {AccessUser} from "@/api-hooks/user/calendar/use-get-available-calendars";
 import {ACCESS_CLAIM_LABELS} from "@/constants/access-claim-labels";
 import {AccessClaim} from "@/constants/access-claim";
+import {useUnsubscribeFromCalendar} from "@/api-hooks/user/calendar/use-unsubscribe-from-calendar";
+import {popup} from "@tma.js/sdk";
 
 export default function CalendarSettingsPage() {
     const userId = useUserStore((s) => s.user?.id ?? "");
@@ -14,6 +16,9 @@ export default function CalendarSettingsPage() {
     const setCurrentClaims = useUserStore((s) => s.setCurrentClaims);
 
     const {data: accessData = [], isLoading} = useGetAvailableCalendars();
+
+    const {mutate: unsubscribe, isPending: isUnsubscribing} =
+        useUnsubscribeFromCalendar();
 
     const accessibleUsers: AccessUser[] = useMemo(() => {
         const me: AccessUser = {
@@ -52,13 +57,28 @@ export default function CalendarSettingsPage() {
         }
     }, [selectedUser, userId, setCurrentClaims]);
 
-    const handleSelect = (userId: string) => {
-        setOwnerId(userId);
+    const handleSelect = (id: string) => {
+        setOwnerId(id);
     };
 
-    const handleUnsubscribe = (userId: string) => {
-        // TODO: отписка от чужого календаря
-        console.log("Отписаться от календаря:", userId);
+    const handleUnsubscribe = async (ownerUserId: string) => {
+        const user = accessibleUsers.find((u) => u.id === ownerUserId);
+        if (!user) return;
+
+        const name = [user.name, user.surname].filter(Boolean).join(" ") || "этого пользователя";
+
+        const confirmed = await popup.show({
+            title: "Отписаться от календаря?",
+            message: `Вы действительно хотите отписаться от календаря ${name}?\nДоступ будет полностью удалён.`,
+            buttons: [
+                {id: "cancel", type: "cancel"},
+                {id: "confirm", type: "destructive", text: "Отписаться"},
+            ],
+        });
+
+        if (!confirmed || confirmed === "cancel") return;
+
+        unsubscribe(ownerUserId);
     };
 
     const allClaims = Object.values(AccessClaim);
@@ -79,12 +99,12 @@ export default function CalendarSettingsPage() {
                             key={user.id}
                             onClick={() => handleSelect(user.id)}
                             className={`
-                  group relative flex cursor-pointer items-center gap-3.5 
-                  rounded-xl border px-4 py-3.5 transition-all
-                  ${isSelected
+                group relative flex cursor-pointer items-center gap-3.5 
+                rounded-xl border px-4 py-3.5 transition-all
+                ${isSelected
                                 ? "border-primary bg-primary/5 shadow-sm"
                                 : "border-base-300 bg-base-100 hover:border-base-300/80 hover:bg-base-100/70"}
-                `}
+              `}
                         >
                             <div className="flex-1 min-w-0">
                                 <div className="font-medium leading-tight">
@@ -108,7 +128,11 @@ export default function CalendarSettingsPage() {
                                         e.stopPropagation();
                                         handleUnsubscribe(user.id);
                                     }}
-                                    className="btn btn-ghost btn-xs text-error opacity-40 hover:opacity-100 group-hover:opacity-70"
+                                    disabled={isUnsubscribing}
+                                    className={`
+                    btn btn-ghost btn-xs text-error 
+                    ${isUnsubscribing ? "opacity-50 cursor-not-allowed" : "opacity-40 hover:opacity-100 group-hover:opacity-70"}
+                  `}
                                     aria-label="Отписаться от календаря"
                                 >
                                     <Trash2 size={18}/>
@@ -121,9 +145,7 @@ export default function CalendarSettingsPage() {
 
             {selectedUser && selectedUser.id !== userId && (
                 <div className="mt-8 rounded-xl bg-base-100 p-5 shadow-sm">
-                    <h2 className="mb-3 text-lg font-semibold">
-                        Доступные права
-                    </h2>
+                    <h2 className="mb-3 text-lg font-semibold">Доступные права</h2>
                     <div className="space-y-2.5 text-sm">
                         {allClaims.map((claim) => {
                             const hasAccess = selectedUser.claims.includes(claim);
@@ -135,8 +157,8 @@ export default function CalendarSettingsPage() {
                                         <X size={16} className="text-error/70"/>
                                     )}
                                     <span className={hasAccess ? "" : "text-base-content/60"}>
-                      {ACCESS_CLAIM_LABELS[claim]}
-                    </span>
+                    {ACCESS_CLAIM_LABELS[claim]}
+                  </span>
                                 </div>
                             );
                         })}
@@ -147,6 +169,12 @@ export default function CalendarSettingsPage() {
             {isLoading && (
                 <div className="mt-10 text-center text-base-content/50">
                     Загрузка календарей...
+                </div>
+            )}
+
+            {isUnsubscribing && (
+                <div className="mt-6 text-center text-base-content/60">
+                    Отписываемся...
                 </div>
             )}
         </div>
