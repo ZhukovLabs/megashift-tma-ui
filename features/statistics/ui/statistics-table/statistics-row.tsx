@@ -1,5 +1,6 @@
 import type {StatisticItem} from "./index";
 import {calculatePercentage} from "../../model/calculate-percentage";
+import {motion} from "framer-motion";
 
 type Props = {
     item: StatisticItem;
@@ -20,7 +21,13 @@ export const StatisticsRow = ({ item, total, formatNumber }: Props) => {
                 <div className="flex flex-col flex-1">
                     <span className="font-medium">{item.label}</span>
                     <div className="mt-1.5 h-1.5 bg-base-200 rounded-full overflow-hidden">
-                        <div className="h-full rounded-full" style={{ width: `${pct}%`, backgroundColor: item.color }} />
+                        <motion.div
+                            className="h-full rounded-full"
+                            style={{ backgroundColor: item.color }}
+                            initial={{ width: 0 }}
+                            animate={{ width: `${pct}%` }}
+                            transition={{ duration: 0.5, ease: "easeOut" }}
+                        />
                     </div>
                 </div>
                 <span className="px-3 py-0.5 rounded-full bg-base-200 font-semibold text-sm">
