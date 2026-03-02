@@ -1,4 +1,26 @@
 {
+  "profile": {
+    "title": "Profile",
+    "registered": "Registered"
+  },
+  "settings": {
+    "app": {
+      "title": "App settings",
+      "language": "Language"
+    }
+  },
+  "statistics": {
+    "title": "Statistics",
+    "total": "Total",
+    "noData": "No data",
+    "yearPlaceholder": "Year",
+    "salaryTypes": {
+      "HOURLY": "Hourly",
+      "SHIFT": "Shift",
+      "MONTHLY": "Monthly",
+      "UNKNOWN": "Unknown"
+    }
+  },
   "start-form": {
     "welcome-step": {
       "title": "Hello",

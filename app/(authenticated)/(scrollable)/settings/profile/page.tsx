@@ -11,6 +11,7 @@ import {useForm, useWatch} from 'react-hook-form';
 import {z} from 'zod';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {toast} from 'react-toastify';
+import {useTranslations} from 'next-intl';
 
 const schema = z.object({
     surname: z.string().min(1, 'Фамилия обязательна').max(50),
@@ -87,6 +88,7 @@ function formatRegDate(dateStr: string, tz?: string) {
 export default function ProfilePage() {
     const {data: user, isLoading} = useGetProfile();
     const {mutateAsync: update, isPending} = useUpdateProfile();
+    const t = useTranslations('profile');
 
     const lp = useLaunchParams(true);
     const photo = lp.tgWebAppData?.user?.photoUrl;
@@ -155,7 +157,7 @@ export default function ProfilePage() {
 
     return (
         <div className="min-h-screen">
-            <h1 className="text-2xl font-bold text-center pt-6 pb-5">Профиль</h1>
+            <h1 className="text-2xl font-bold text-center pt-6 pb-5">{t('title')}</h1>
 
             <div className="space-y-5 max-w-lg mx-auto">
                 <div className="card bg-base-100 shadow-xl rounded-2xl overflow-hidden relative">
@@ -294,7 +296,7 @@ export default function ProfilePage() {
                     <div className="flex items-center gap-3 opacity-85">
                         <CalendarDays size={18} className="text-primary"/>
                         <div className="flex-1">
-                            <div className="text-base-content/60 text-xs">Зарегистрирован</div>
+                            <div className="text-base-content/60 text-xs">{t('registered')}</div>
                             <div className="font-medium">
                                 {user?.createdAt ? formatRegDate(user.createdAt, user.timezone) : '—'}
                             </div>

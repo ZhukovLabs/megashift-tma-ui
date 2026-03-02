@@ -1,4 +1,14 @@
 {
+  "profile": {
+    "title": "Профиль",
+    "registered": "Зарегистрирован"
+  },
+  "settings": {
+    "app": {
+      "title": "Настройки приложения",
+      "language": "Язык"
+    }
+  },
   "statistics": {
     "title": "Статистика",
     "total": "Всего",

@@ -6,7 +6,8 @@ import {
     CalendarCog,
     ChevronRight,
     Wallet,
-    Users
+    Users,
+    AppWindow
 } from "lucide-react";
 import { ROUTES } from "@/constants/routes";
 
@@ -31,6 +32,17 @@ const settingsSections = [
                 description: "Выберите календарь для отображения",
                 href: ROUTES.settingsCalendar,
                 icon: CalendarCog,
+            },
+        ],
+    },
+    {
+        title: "Приложение",
+        items: [
+            {
+                label: "Настройки приложения",
+                description: "Язык, уведомления",
+                href: ROUTES.settingsApp,
+                icon: AppWindow,
             },
         ],
     },

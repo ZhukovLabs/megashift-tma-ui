@@ -11,4 +11,5 @@ export const ROUTES = {
     settingsSharedAccess: '/settings/shared-access',
     settingsCalendar: '/settings/calendar',
     settingsCompensation: '/settings/compensation',
+    settingsApp: '/settings/app',
 } as const;
