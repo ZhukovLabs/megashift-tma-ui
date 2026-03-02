@@ -9,6 +9,7 @@ type MonthSelectorProps = {
     onChange: (year: number, month: number) => void;
     minYear?: number;
     maxYear?: number;
+    yearPlaceholder?: string;
 };
 
 export function MonthSelector({
@@ -17,6 +18,7 @@ export function MonthSelector({
                                   onChange,
                                   minYear = 1900,
                                   maxYear = 2200,
+                                  yearPlaceholder = 'Год',
                               }: MonthSelectorProps) {
     const handleYearChange = (value: number) => {
         onChange(value, month);
@@ -35,7 +37,7 @@ export function MonthSelector({
                 max={maxYear}
                 onChange={(e) => handleYearChange(Number(e.target.value))}
                 className="input input-bordered w-32 mb-3"
-                placeholder="Год"
+                placeholder={yearPlaceholder}
             />
 
             <select

@@ -36,5 +36,6 @@ export const ENDPOINTS = {
 
     getSalaryStatistic: '/statistics/salary',
     getShiftStatisticCount: '/statistics/shifts',
-    getShiftStatisticHours: '/statistics/shifts/hours'
+    getShiftStatisticHours: '/statistics/shifts/hours',
+    getStatisticsCombined: '/statistics/combined'
 } as const;

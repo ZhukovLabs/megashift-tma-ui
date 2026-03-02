@@ -1,4 +1,16 @@
 {
+  "statistics": {
+    "title": "Статистика",
+    "total": "Всего",
+    "noData": "Нет данных",
+    "yearPlaceholder": "Год",
+    "salaryTypes": {
+      "HOURLY": "Почасовая",
+      "SHIFT": "Посменная",
+      "MONTHLY": "Месячная",
+      "UNKNOWN": "Неизвестно"
+    }
+  },
   "start-form": {
     "welcome-step": {
       "title": "Привет",

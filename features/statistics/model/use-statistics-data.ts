@@ -1,53 +1,34 @@
-import { useMemo } from 'react';
-import {
-    useGetSalaryStatistics,
-    useGetShiftStatisticsCount,
-    useGetShiftStatisticsHours,
-} from '../api';
-import { mapShiftToStatisticItems } from './map-shift-to-statistic-item';
-import { mapShiftHoursToStatisticItems } from './map-shift-hours-to-statistic-item';
-import { SalaryType } from '@/entities/salary/model/types';
+import {useMemo} from 'react';
+import {useGetStatisticsCombined} from '../api/use-get-statistics-combined';
+import {mapShiftToStatisticItems} from './map-shift-to-statistic-item';
+import {mapShiftHoursToStatisticItems} from './map-shift-hours-to-statistic-item';
+import {SalaryType} from '@/entities/salary/model/types';
 
 export function useStatisticsData(year: number, month: number) {
-    const {
-        data: shiftCount,
-        isLoading: shiftCountLoading,
-    } = useGetShiftStatisticsCount(year, month);
-
-    const {
-        data: shiftHours,
-        isLoading: shiftHoursLoading,
-    } = useGetShiftStatisticsHours(year, month);
-
-    const {
-        data: salaryData,
-        isLoading: salaryLoading,
-    } = useGetSalaryStatistics(year, month);
+    const {data, isLoading} = useGetStatisticsCombined(year, month);
 
     const itemsCount = useMemo(
-        () => (shiftCount ? mapShiftToStatisticItems(shiftCount) : []),
-        [shiftCount]
+        () => (data?.shifts ? mapShiftToStatisticItems(data.shifts) : []),
+        [data?.shifts]
     );
 
     const itemsHours = useMemo(
-        () => (shiftHours ? mapShiftHoursToStatisticItems(shiftHours) : []),
-        [shiftHours]
+        () => (data?.hours ? mapShiftHoursToStatisticItems(data.hours) : []),
+        [data?.hours]
     );
 
     return {
+        isLoading,
         shiftCount: {
             items: itemsCount,
-            isLoading: shiftCountLoading,
         },
         shiftHours: {
             items: itemsHours,
-            isLoading: shiftHoursLoading,
         },
         salary: {
-            typeSalary: salaryData?.typeSalary ?? SalaryType.UNKNOWN,
-            salary: salaryData?.salary ?? 0,
-            maxSalary: salaryData?.maxSalary ?? 0.01,
-            isLoading: salaryLoading,
+            typeSalary: data?.salary?.typeSalary ?? SalaryType.UNKNOWN,
+            salary: data?.salary?.salary ?? 0,
+            maxSalary: data?.salary?.maxSalary ?? 0.01,
         },
     };
 }

@@ -1,3 +1,3 @@
-import {StatisticsPage} from "@/features/statistics/statistics-page";
+import {StatisticsPage} from "@/views/statistics";
 
 export default StatisticsPage;

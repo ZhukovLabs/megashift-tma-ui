@@ -13,14 +13,16 @@ type SalaryProgressProps = {
     maxSalary: number;
     currencySymbol?: string;
     isLoading?: boolean;
+    salaryTypeLabel?: string;
 };
 
-export const SalaryProgress = ({typeSalary, salary, maxSalary, currencySymbol, isLoading}: SalaryProgressProps) => {
+export const SalaryProgress = ({typeSalary, salary, maxSalary, currencySymbol, isLoading, salaryTypeLabel}: SalaryProgressProps) => {
     if (isLoading) {
         return <LoaderLarge/>
     }
 
-    const {label, color} = salaryTypeConfig[typeSalary];
+    const {color} = salaryTypeConfig[typeSalary];
+    const label = salaryTypeLabel || salaryTypeConfig[typeSalary].label;
     const pct = calculateSalaryPercentage(salary, maxSalary);
 
     return (
