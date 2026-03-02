@@ -8,7 +8,7 @@ import {popup} from '@tma.js/sdk';
 
 import {useGetShiftsByDate, useUpdateShift, useDeleteShift} from '@/api-hooks/shift';
 import {useGetShiftTemplates} from '@/api-hooks/shift-template';
-import {useUserStore} from '@/store/user-store';
+import {useUserStore} from '@/entities/user';
 import {ModalSheet} from '@/components/modal-sheet';
 import {ShiftRow} from './shift-row';
 import * as timeUtils from '@/utils/time';

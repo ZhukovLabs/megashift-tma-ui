@@ -2,7 +2,7 @@
 
 import {motion, AnimatePresence} from 'framer-motion';
 import cn from 'classnames';
-import {useUserStore} from '@/store/user-store';
+import {useUserStore} from '@/entities/user';
 import {useScheduleStore} from '@/store/schedule-store';
 import {useGetShiftTemplates} from '@/api-hooks/shift-template';
 import {formatInTimeZone} from 'date-fns-tz';

@@ -4,7 +4,7 @@ import ShiftCard from "@/components/shift-card";
 import {ShiftsListSkeleton} from "./skeleton";
 import {EmptyState} from "./empty-list";
 import {formatInTimeZone} from "date-fns-tz";
-import {useUserStore} from "@/store/user-store";
+import {useUserStore} from "@/entities/user";
 
 type Shift = {
     id: string;

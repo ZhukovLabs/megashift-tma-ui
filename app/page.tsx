@@ -4,7 +4,7 @@ import {useEffect} from 'react';
 import {useSearchParams, useRouter} from 'next/navigation';
 import {ROUTES} from '@/constants/routes';
 import {useSyncRegisteredUser} from '@/api-hooks/auth';
-import {useUserStore} from '@/store/user-store';
+import {useUserStore} from '@/entities/user';
 import {SkeletonPage} from "@/components/skeleton-page";
 
 export default function RootPage() {

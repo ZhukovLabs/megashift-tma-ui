@@ -2,7 +2,7 @@ import {useQuery, keepPreviousData} from '@tanstack/react-query';
 import {api} from '@/lib/axios';
 import {useOwnerId} from '@/hooks/use-owner-id';
 import axios from "axios";
-import {useUserStore} from "@/store/user-store";
+import {useUserStore} from "@/entities/user";
 import {ENDPOINTS} from "@/shared/config/api";
 
 export type ShiftDto = {

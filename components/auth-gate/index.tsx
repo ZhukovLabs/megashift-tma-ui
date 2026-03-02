@@ -2,7 +2,7 @@
 
 import { ReactNode, useEffect } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
-import { useUserStore } from '@/store/user-store';
+import {useUserStore} from '@/entities/user';
 import { ROUTES } from '@/constants/routes';
 import { SkeletonPage } from '@/components/skeleton-page';
 

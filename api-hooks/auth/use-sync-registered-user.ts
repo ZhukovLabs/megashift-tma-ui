@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useCheckRegistration } from './use-check-registration';
-import { useUserStore } from '@/store/user-store';
+import { useUserStore } from '@/entities/user';
 
 export const useSyncRegisteredUser = () => {
     const { data: user, isFetching, isError } = useCheckRegistration();
@@ -17,8 +17,8 @@ export const useSyncRegisteredUser = () => {
             return;
         }
 
-        const { id, name, surname, patronymic, timezone } = user;
-        setUser({ id, name, surname, patronymic, timezone });
+        const { id, name, surname, patronymic, timezone, currency } = user;
+        setUser({ id, name, surname, patronymic, timezone, currency });
     }, [user, isFetching, isError, setUser, setUnauthenticated]);
 
     return {

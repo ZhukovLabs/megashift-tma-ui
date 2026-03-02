@@ -6,7 +6,7 @@ import {ROUTES} from '@/constants/routes';
 import {Calendar, ChartNoAxesCombined, ClipboardClock, Settings2} from 'lucide-react';
 import {AuthGate} from '@/components/auth-gate';
 import {InviteGate} from '@/components/invite-gate';
-import {useUserStore} from '@/store/user-store';
+import {useUserStore} from '@/entities/user';
 
 type Props = {
     children: ReactNode;

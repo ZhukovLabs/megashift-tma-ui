@@ -7,9 +7,14 @@ import {MonthSwitcher} from './ui/month-switcher';
 import {useStatisticsData} from './model/use-statistics-data';
 import {useStatisticsDate} from "./model/use-statistics-date";
 import {formatNumberRU} from '@/shared/lib/format/format-number';
+import {getCurrencySymbol} from "@/entities/currency";
+import {useUserStore} from "@/entities/user/model/store";
 
 export function StatisticsPage() {
     const {year, month, next, prev, set} = useStatisticsDate();
+    const currency = useUserStore(s => s.user?.currency);
+    const currencySymbol = getCurrencySymbol(currency);
+
 
     const {shiftCount, shiftHours, salary} = useStatisticsData(year, month);
 
@@ -45,7 +50,7 @@ export function StatisticsPage() {
                     typeSalary={salary.typeSalary}
                     salary={salary.salary}
                     maxSalary={salary.maxSalary}
-                    currencySymbol="BYN"
+                    currencySymbol={currencySymbol?.symbol}
                     isLoading={salary.isLoading}
                 />
             </MonthSwitcher>

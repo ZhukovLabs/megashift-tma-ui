@@ -1,6 +1,6 @@
 import {useMutation} from '@tanstack/react-query';
 import {api} from '@/lib/axios';
-import {useUserStore} from "@/store/user-store";
+import {useUserStore} from "@/entities/user";
 import {ENDPOINTS} from "@/shared/config/api";
 
 type CreateUserRequest = {

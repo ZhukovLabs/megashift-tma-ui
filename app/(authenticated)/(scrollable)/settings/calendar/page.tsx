@@ -1,7 +1,7 @@
 'use client';
 import {useEffect, useMemo} from "react";
 import {Check, X, Trash2} from "lucide-react";
-import {useUserStore} from "@/store/user-store";
+import {useUserStore} from "@/entities/user";
 import {useGetAvailableCalendars} from "@/api-hooks/user/calendar";
 import {AccessUser} from "@/api-hooks/user/calendar/use-get-available-calendars";
 import {ACCESS_CLAIM_LABELS} from "@/constants/access-claim-labels";

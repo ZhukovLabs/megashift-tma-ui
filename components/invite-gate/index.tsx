@@ -5,7 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import { useLaunchParams } from '@tma.js/sdk-react';
 import { popup } from '@tma.js/sdk';
 import { useInviteProcessor } from '@/hooks/use-invite-processor';
-import { useUserStore } from '@/store/user-store';
+import {useUserStore} from '@/entities/user';
 import { ACCESS_CLAIM_LABELS } from '@/constants/access-claim-labels';
 
 type PopupChoice = 'accept' | 'decline' | string | null;

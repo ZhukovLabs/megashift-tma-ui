@@ -4,7 +4,7 @@ import {useRouter, useSearchParams} from "next/navigation";
 import {formatInTimeZone} from "date-fns-tz";
 import {BaseShiftModal, ShiftFormValues} from "./base-shift-modal";
 import {useUpdateShiftTemplate, useGetShiftTemplate} from "@/api-hooks/shift-template";
-import {useUserStore} from "@/store/user-store";
+import {useUserStore} from "@/entities/user";
 
 export function UpdateShiftModal() {
     const router = useRouter();

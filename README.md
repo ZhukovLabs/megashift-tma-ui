@@ -1,36 +1,93 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# MegaShift TMA UI
 
-## Getting Started
+Telegram Mini App для управления рабочими сменами. Позволяет сотрудникам планировать, отслеживать смены и просматривать статистику зарплат.
 
-First, run the development server:
+## Технологии
+
+- **Next.js 16** — фреймворк
+- **React 19** — UI
+- **TypeScript** — типизация
+- **Tailwind CSS 4** + DaisyUI — стили
+- **Zustand** — управление состоянием
+- **React Query** — серверное состояние
+- **React Hook Form + Zod** — формы и валидация
+- **TMA SDK** — интеграция с Telegram
+- **next-intl** — интернационализация (ru/en)
+- **Framer Motion** — анимации
+
+## Структура проекта
+
+```
+├── app/                    # Next.js App Router страницы
+│   ├── (authenticated)/    # Защищённые маршруты
+│   │   ├── schedule/       # График смен
+│   │   ├── shifts/         # Управление сменами
+│   │   ├── statistics/     # Статистика и графики
+│   │   └── settings/       # Настройки профиля
+│   ├── onboarding/        # Онбординг
+│   └── layout.tsx          # Корневой layout
+├── components/            # UI компоненты
+├── entities/              # Доменные сущности
+│   ├── user/              # Пользователь
+│   ├── currency/          # Валюты
+│   └── salary/            # Зарплата
+├── hooks/                 # Кастомные React хуки
+├── store/                 # Zustand stores
+├── lib/                   # Утилиты (axios, react-query)
+└── i18n/                  # Интернационализация
+```
+
+## Установка
+
+```bash
+npm install
+```
+
+## Запуск
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Скрипты
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- `npm run dev` — разработка
+- `npm run build` — сборка
+- `npm run start` — продакшен запуск
+- `npm run lint` — линтинг
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Docker
 
-## Learn More
+```bash
+# Сборка
+docker build -t planner .
 
-To learn more about Next.js, take a look at the following resources:
+# Запуск
+docker run -p 3000:3000 planner
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Переменные окружения
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Создайте `.env.local`:
 
-## Deploy on Vercel
+```
+# API URL (обязательно)
+NEXT_PUBLIC_API_URL=
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+# Опционально
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Доступные языки
+
+- 🇷🇺 Русский (по умолчанию)
+- 🇬🇧 English
+
+## Разработка
+
+Проект использует feature-based архитектуру. При добавлении новой функциональности:
+
+1. Создайте компоненты в `components/`
+2. Добавьте типы в соответствующую сущность в `entities/`
+3. Используйте Zustand для локального состояния
+4. React Query — для серверного состояния

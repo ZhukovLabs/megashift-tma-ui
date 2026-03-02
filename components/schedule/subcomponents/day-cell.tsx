@@ -5,7 +5,7 @@ import { useMemo } from "react";
 import { useSchedule } from "@/components/schedule/context";
 import { useGetShiftTemplates } from "@/api-hooks/shift-template";
 import { getContrastColor, lightenHex } from "@/utils/colors";
-import { useUserStore } from "@/store/user-store";
+import {useUserStore} from "@/entities/user";
 
 type DayCellProps = {
     day: Date;
