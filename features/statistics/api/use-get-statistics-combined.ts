@@ -3,6 +3,7 @@ import {api} from '@/lib/axios';
 import {useOwnerId} from '@/hooks/use-owner-id';
 import {ENDPOINTS} from '@/shared/config/api';
 import {SalaryType} from '@/entities/salary/model/types';
+import {keepPreviousData} from '@tanstack/react-query';
 
 export type ShiftStatisticsCountItem = {
     id: string;
@@ -48,6 +49,7 @@ export const useGetStatisticsCombined = (year: number, month: number) => {
             );
             return data;
         },
+        placeholderData: keepPreviousData,
         enabled: Number.isFinite(year) && Number.isFinite(month),
     });
 };
