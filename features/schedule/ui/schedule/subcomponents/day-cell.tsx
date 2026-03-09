@@ -1,11 +1,11 @@
-import { format, isSameDay, isSameMonth, isToday } from "date-fns";
-import { formatInTimeZone } from "date-fns-tz";
+import {format, isSameDay, isSameMonth, isToday} from "date-fns";
+import {formatInTimeZone} from "date-fns-tz";
 import cn from "classnames";
-import { useMemo, memo } from "react";
-import { useSchedule } from "../context";
-import { useGetShiftTemplates } from "@/features/shift-template/api";
-import { getContrastColor, lightenHex } from "@/shared/lib";
-import { useUserStore } from "@/entities/user";
+import {useMemo, memo} from "react";
+import {useSchedule} from "../context";
+import {useGetShiftTemplates} from "@/features/shift-template/api";
+import {getContrastColor, lightenHex} from "@/shared/lib";
+import {useUserStore} from "@/entities/user";
 
 type DayCellProps = {
     day: Date;
@@ -39,9 +39,9 @@ function hashStringToIndex(s: string | number | undefined, modulo = TEMPLATE_PAL
     return Math.abs(h) % modulo;
 }
 
-export const DayCell = memo(function DayCell({ day, monthDate, isLastInRow }: DayCellProps) {
-    const { shifts, onDayClick, config, isHoliday, isWeekend } = useSchedule();
-    const { data: templates = [] } = useGetShiftTemplates();
+export const DayCell = memo(function DayCell({day, monthDate, isLastInRow}: DayCellProps) {
+    const {shifts, onDayClick, config, isHoliday, isWeekend} = useSchedule();
+    const {data: templates = []} = useGetShiftTemplates();
     const tz = useUserStore(s => s.user?.timezone || "UTC");
 
     const isCurrentMonth = isSameMonth(day, monthDate);
@@ -170,7 +170,8 @@ export const DayCell = memo(function DayCell({ day, monthDate, isLastInRow }: Da
                     })}
 
                     {more > 0 && (
-                        <div className="mt-auto shrink-0 rounded text-[9px] text-center text-base-content/50 bg-base-300/40 py-0.5 leading-none font-medium">
+                        <div
+                            className="mt-auto shrink-0 rounded text-[9px] text-center text-base-content/50 bg-base-300/40 py-0.5 leading-none font-medium">
                             +{more}
                         </div>
                     )}

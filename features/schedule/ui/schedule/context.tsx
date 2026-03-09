@@ -1,8 +1,18 @@
 'use client';
 
 import {createContext, useContext, ReactNode, useCallback, useMemo} from "react";
-import {addMonths, subMonths, format, getDay, startOfMonth, endOfMonth, eachDayOfInterval, startOfWeek as startOfWeekFn, endOfWeek as endOfWeekFn} from "date-fns";
-import type { ShiftDto } from '@/features/shift/model';
+import {
+    addMonths,
+    subMonths,
+    format,
+    getDay,
+    startOfMonth,
+    endOfMonth,
+    eachDayOfInterval,
+    startOfWeek as startOfWeekFn,
+    endOfWeek as endOfWeekFn
+} from "date-fns";
+import type {ShiftDto} from '@/features/shift/model';
 
 export type CalendarEvent = ShiftDto;
 
@@ -51,7 +61,9 @@ const DEFAULT_PROPS: ScheduleProps = {
     showWeekends: true,
     weekendHighlight: 'background',
     startOfWeek: 1,
-    holidays: [],
+    holidays: [
+        {date: new Date(2026, 2, 8), name: 'Women\' Day', type: 'holiday'}
+    ],
     highlightToday: true,
     showWeekNumbers: false,
 };
@@ -98,7 +110,9 @@ export const ScheduleProvider = ({
 
     const isHoliday = useCallback((day: Date) => {
         const dayStr = format(day, 'yyyy-MM-dd');
-        return (holidays || []).find(h => format(h.date, 'yyyy-MM-dd') === dayStr);
+        return (holidays || []).find(h => {
+            return format(h.date, 'yyyy-MM-dd') === dayStr;
+        });
     }, [holidays]);
 
     const isWeekend = useCallback((day: Date) => {
@@ -109,12 +123,12 @@ export const ScheduleProvider = ({
     const getCalendarDays = useCallback((monthDate: Date): Date[] => {
         const monthStart = startOfMonth(monthDate);
         const weekStart = config.startOfWeek ?? 1;
-        const calendarStart = startOfWeekFn(monthStart, { weekStartsOn: weekStart });
-        
+        const calendarStart = startOfWeekFn(monthStart, {weekStartsOn: weekStart});
+
         const calendarEnd = new Date(calendarStart);
         calendarEnd.setDate(calendarEnd.getDate() + 41);
-        
-        return eachDayOfInterval({ start: calendarStart, end: calendarEnd });
+
+        return eachDayOfInterval({start: calendarStart, end: calendarEnd});
     }, [config.startOfWeek]);
 
     return (
