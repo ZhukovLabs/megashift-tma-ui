@@ -14,7 +14,6 @@ type DayCellProps = {
 };
 
 const MAX_VISIBLE = 2;
-const DEFAULT_COLOR = "#2563eb";
 const DEFAULT_LABEL = "(Без названия)";
 const TIME_FORMAT = "HH:mm";
 
