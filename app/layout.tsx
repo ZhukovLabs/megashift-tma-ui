@@ -35,7 +35,7 @@ export default async function RootLayout({
 
     return (
         <html lang={locale}>
-        <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-base-100`}>
         <QueryClientProvider client={queryClient}>
             <I18nProvider>
                 <SafeContentArea>
