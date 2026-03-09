@@ -106,7 +106,9 @@ export const Schedule = () => {
         <div
             className="flex flex-col w-full min-w-0 overflow-hidden bg-base-100 box-border"
             style={{
-                height: `calc(100dvh - ${top}px - ${bottom}px - 16px)`
+                height: `calc(100dvh - ${top}px - ${bottom}px)`,
+                maxHeight: `calc(100dvh - ${top}px - ${bottom}px)`,
+                minHeight: `calc(100dvh - ${top}px - ${bottom}px)`
             }}
         >
             <CalendarHeader/>

@@ -53,7 +53,7 @@ export default async function RootLayout({
                         theme="dark"
                         style={{
                             maxWidth: '100vw',
-                            padding: '0 8px 32px 8px',
+                            padding: '0 8px 0 8px',
                             fontSize: '16px',
                             borderRadius: '12px'
                         }}
