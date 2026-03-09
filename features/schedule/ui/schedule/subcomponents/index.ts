@@ -4,3 +4,4 @@ export { MonthGrid } from './month-grid';
 export { MonthStack } from './month-stack';
 export { WeekRow } from './week-row';
 export { WeekdaysHeader } from './weekdays-header';
+export { getDayNames } from '../context';

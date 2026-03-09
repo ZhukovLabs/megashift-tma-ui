@@ -62,7 +62,7 @@ export function SchedulePage() {
     };
 
     return (
-        <>
+        <div className="h-full w-full overflow-hidden">
             <ScheduleProvider
                 currentDate={currentDate}
                 onDateChange={setCurrentDate}
@@ -75,6 +75,6 @@ export function SchedulePage() {
             <AdvancedBottomMenu/>
 
             <ShiftModal/>
-        </>
+        </div>
     );
 }
