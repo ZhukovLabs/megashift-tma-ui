@@ -14,7 +14,7 @@ export const CalendarHeader = () => {
 
     return (
         <div
-            className="flex items-center justify-between px-1 py-2 bg-base-100 box-border w-full flex-shrink-0 relative z-20">
+            className="flex items-center justify-center gap-2 px-1 py-2 bg-base-100 box-border w-full flex-shrink-0 relative z-20">
             <button
                 onClick={prevMonth}
                 className="btn btn-ghost btn-sm btn-circle min-h-0 h-8 w-8 p-0 hover:bg-base-200"
@@ -26,7 +26,7 @@ export const CalendarHeader = () => {
                 </svg>
             </button>
 
-            <div className="flex flex-col items-center">
+            <div className="flex flex-col items-center w-[125px]">
                 <h1 className="text-base font-bold tracking-tight text-base-content">
                     {capitalizedMonth} {year}
                 </h1>
