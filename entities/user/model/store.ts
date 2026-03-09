@@ -1,4 +1,4 @@
-import {AccessClaim} from "@/constants/access-claim";
+import { AccessClaim } from '@/entities/access';
 import {create} from "zustand/index";
 import {User} from "./types";
 

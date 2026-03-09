@@ -1,11 +1,11 @@
 'use client';
 
 import {ReactNode, useMemo} from 'react';
-import {BottomMenu} from '@/components/bottom-menu';
-import {ROUTES} from '@/constants/routes';
+import {BottomMenu} from '@/widgets/bottom-menu';
+import {ROUTES} from '@/shared/constants/routes';
 import {Calendar, ChartNoAxesCombined, ClipboardClock, Settings2} from 'lucide-react';
-import {AuthGate} from '@/components/auth-gate';
-import {InviteGate} from '@/components/invite-gate';
+import {AuthGate} from '@/features/auth/ui/auth-gate';
+import {InviteGate} from '@/features/invite/ui/invite-gate';
 import {useUserStore} from '@/entities/user';
 
 type Props = {

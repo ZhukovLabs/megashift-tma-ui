@@ -12,7 +12,7 @@ import {
 import {formatNumberRU} from '@/shared/lib/format/format-number';
 import {getCurrencySymbol} from '@/entities/currency';
 import {useUserStore} from '@/entities/user/model/store';
-import {StatisticsSkeleton} from '@/components/statistics-skeleton';
+import {StatisticsSkeleton} from '@/features/statistics/ui/skeleton';
 
 export function StatisticsPage() {
     const t = useTranslations('statistics');

@@ -1,10 +1,5 @@
-import {telegramInit} from '@/utils/telegram-init';
-import {mockEnv} from '@/mocks/mock-env';
+import { telegramInit } from '@/shared/lib';
+import { mockEnv } from '@/shared/lib/mock-env';
 
-mockEnv().then(() => {
-    try {
-        telegramInit({debug: true});
-    } catch (e) {
-        console.log(e);
-    }
-});
+mockEnv();
+telegramInit({ debug: process.env.NODE_ENV === 'development' });

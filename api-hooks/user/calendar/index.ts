@@ -1,1 +1,0 @@
-export {useGetAvailableCalendars} from './use-get-available-calendars';

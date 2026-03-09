@@ -5,7 +5,7 @@ import {salaryTypeConfig} from "./config";
 import {SalaryType} from "@/entities/salary/model/types";
 import {calculateSalaryPercentage} from "@/features/statistics/model/calculate-salary-percentage";
 import {formatMoney} from "@/shared/lib/format/format-money";
-import {LoaderLarge} from "@/components/loader-large";
+import {LoaderLarge} from "@/shared/ui/loader-large";
 
 type SalaryProgressProps = {
     typeSalary: SalaryType;

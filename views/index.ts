@@ -1,0 +1,10 @@
+export { OnboardingPage } from './onboarding';
+export { SchedulePage } from './schedule';
+export { ShiftsPage } from './shifts';
+export { StatisticsPage } from './statistics';
+export { SettingsPage } from './settings';
+export { AppSettingsPage } from './settings/app';
+export { CalendarSettingsPage } from './settings/calendar';
+export { CompensationSettingsPage } from './settings/compensation';
+export { ProfileSettingsPage } from './settings/profile';
+export { SharedAccessPage } from './settings/shared-access';

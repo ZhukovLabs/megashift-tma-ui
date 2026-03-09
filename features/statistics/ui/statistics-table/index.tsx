@@ -1,7 +1,7 @@
 import type {ReactNode} from "react";
 import {calculatePercentage} from "@/features/statistics/model/calculate-percentage";
 import {StatisticsRow} from "./statistics-row";
-import {LoaderLarge} from "@/components/loader-large";
+import {LoaderLarge} from "@/shared/ui/loader-large";
 
 export type StatisticItem = {
     id: string;

@@ -1,14 +1,14 @@
 import type {Metadata} from "next";
 import {Geist, Geist_Mono} from "next/font/google";
-import {SafeContentArea} from "@/components/safe-content-area";
-import {I18nProvider} from "@/i18n/provider";
-import {getLocale} from "@/i18n/locale";
+import {SafeContentArea} from '@/shared/ui/safe-content-area';
+import { I18nProvider } from '@/shared/i18n/provider';
+import { getLocale } from '@/shared/i18n/locale';
 
 import "./globals.css";
 import 'react-toastify/dist/ReactToastify.css';
 
 import {QueryClientProvider} from "@tanstack/react-query";
-import {queryClient} from "@/lib/react-query";
+import { queryClient } from '@/shared/config/react-query';
 import {ToastContainer} from "react-toastify";
 
 const geistSans = Geist({

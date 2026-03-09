@@ -1,6 +1,6 @@
 import {useQuery} from '@tanstack/react-query';
-import {api} from '@/lib/axios';
-import {useOwnerId} from "@/hooks/use-owner-id";
+import {api} from '@/shared/config/axios';
+import {useOwnerId} from "@/entities/user";
 import {SalaryType} from "@/entities/salary/model/types";
 import {ENDPOINTS} from "@/shared/config/api";
 

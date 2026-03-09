@@ -1,7 +1,7 @@
 'use client';
 
 import Link from "next/link";
-import {ROUTES} from "@/constants/routes";
+import {ROUTES} from "@/shared/constants/routes";
 
 interface ErrorProps {
     error: Error;

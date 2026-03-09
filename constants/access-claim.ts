@@ -1,8 +1,0 @@
-export enum AccessClaim {
-    READ = 'READ',
-    EDIT_SELF = 'EDIT_SELF',
-    DELETE_SELF = 'DELETE_SELF',
-    EDIT_ALL = 'EDIT_ALL',
-    DELETE_ALL = 'DELETE_ALL',
-    READ_STATISTICS='READ_STATISTICS'
-}

@@ -2,10 +2,10 @@
 
 import {useEffect} from 'react';
 import {useSearchParams, useRouter} from 'next/navigation';
-import {ROUTES} from '@/constants/routes';
-import {useSyncRegisteredUser} from '@/api-hooks/auth';
+import {ROUTES} from '@/shared/constants/routes';
+import {useSyncRegisteredUser} from '@/features/auth/api';
 import {useUserStore} from '@/entities/user';
-import {SkeletonPage} from "@/components/skeleton-page";
+import {SkeletonPage} from "@/shared/ui/skeleton-page";
 
 export default function RootPage() {
     const searchParams = useSearchParams();
@@ -37,7 +37,7 @@ export default function RootPage() {
         if (redirectParam) onboardingUrl.searchParams.set('redirect', redirectParam);
         if (startapp) onboardingUrl.searchParams.set('startapp', startapp);
         router.replace(onboardingUrl.pathname + onboardingUrl.search);
-    }, [user, isFetching, redirectParam, startapp, router]);
+    }, [user, isFetching, redirectParam, startapp, router, isError]);
 
     return <SkeletonPage/>;
 }
