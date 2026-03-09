@@ -14,9 +14,31 @@ type DayCellProps = {
 };
 
 const MAX_VISIBLE = 2;
-const DEFAULT_COLOR = "#64748b";
+const DEFAULT_COLOR = "#2563eb";
 const DEFAULT_LABEL = "(Без названия)";
 const TIME_FORMAT = "HH:mm";
+
+const TEMPLATE_PALETTE = [
+    "#2563eb",
+    "#16a34a",
+    "#d97706",
+    "#ef4444",
+    "#7c3aed",
+    "#0ea5a4",
+    "#f97316",
+    "#06b6d4",
+];
+
+function hashStringToIndex(s: string | number | undefined, modulo = TEMPLATE_PALETTE.length) {
+    if (s == null) return 0;
+    const str = String(s);
+    let h = 0;
+    for (let i = 0; i < str.length; i++) {
+        h = (h << 5) - h + str.charCodeAt(i);
+        h |= 0;
+    }
+    return Math.abs(h) % modulo;
+}
 
 export const DayCell = memo(function DayCell({ day, monthDate, isLastInRow }: DayCellProps) {
     const { shifts, onDayClick, config, isHoliday, isWeekend } = useSchedule();
@@ -42,16 +64,18 @@ export const DayCell = memo(function DayCell({ day, monthDate, isLastInRow }: Da
     const more = events.length - visible.length;
 
     const getDayClasses = () => {
-        const classes: string[] = [
-            "flex flex-col flex-1 min-h-0 cursor-pointer select-none transition-colors duration-150"
-        ];
+        const classes: string[] = ["flex flex-col flex-1 min-h-0 cursor-pointer select-none transition-all duration-150"];
 
-        if (!isCurrentMonth) {
-            classes.push("bg-base-200");
-        } else if (holiday) {
-            classes.push("bg-error/15");
+        if (holiday) {
+            classes.push("bg-error/5");
         } else if (config.showWeekends && weekend) {
-            classes.push("bg-warning/10");
+            if (config.weekendHighlight === "background" || config.weekendHighlight === "both") {
+                classes.push("bg-error/10");
+            } else {
+                classes.push("bg-base-100");
+            }
+        } else if (!isCurrentMonth) {
+            classes.push("bg-base-200/20");
         } else {
             classes.push("bg-base-100");
         }
@@ -64,16 +88,16 @@ export const DayCell = memo(function DayCell({ day, monthDate, isLastInRow }: Da
 
         if (isTodayDay) {
             classes.push("text-primary font-bold");
-        } else if (isCurrentMonth) {
-            if (holiday) {
-                classes.push("text-error font-semibold");
-            } else if (config.showWeekends && weekend) {
-                classes.push("text-warning font-semibold");
+        } else if (holiday) {
+            classes.push("text-error font-bold");
+        } else if (config.showWeekends && weekend) {
+            if (config.weekendHighlight === "text" || config.weekendHighlight === "both") {
+                classes.push("text-warning font-bold");
             } else {
-                classes.push("text-base-content");
+                classes.push(isCurrentMonth ? "text-base-content" : "text-base-content/30");
             }
         } else {
-            classes.push("text-base-content/40");
+            classes.push(isCurrentMonth ? "text-base-content" : "text-base-content/30");
         }
 
         return classes;
@@ -84,12 +108,12 @@ export const DayCell = memo(function DayCell({ day, monthDate, isLastInRow }: Da
             onClick={() => onDayClick?.(day, events)}
             className={cn(
                 getDayClasses(),
-                "border-r border-b border-base-300",
+                "border-r border-b border-base-300/30",
                 isLastInRow && "border-r-0",
                 "w-full min-w-0 box-border"
             )}
         >
-            <div className="flex flex-col h-full p-1 min-h-0">
+            <div className="relative z-10 flex flex-col h-full p-1 min-h-0">
                 <div className="text-center shrink-0">
                     <span className={cn("text-sm font-semibold", getTextClasses())}>
                         {format(day, "d")}
@@ -100,29 +124,44 @@ export const DayCell = memo(function DayCell({ day, monthDate, isLastInRow }: Da
                     {visible.map(event => {
                         const tpl = event.shiftTemplateId ? templateMap.get(event.shiftTemplateId) : null;
                         const label = tpl?.label ?? DEFAULT_LABEL;
-                        const color = tpl?.color ?? DEFAULT_COLOR;
-                        const textColor = getContrastColor(color);
+                        const color = (tpl?.color && tpl.color.trim()) ?? TEMPLATE_PALETTE[hashStringToIndex(event.shiftTemplateId ?? event.id)];
+                        const textColor = getContrastColor(color) ?? "#000000";
                         const time = event.actualStartTime ?? tpl?.startTime;
                         const isActual = !!event.actualStartTime;
+
+                        const cardBackground = isActual
+                            ? undefined
+                            : lightenHex(color, 22);
+
+                        const cardBackgroundImage = isActual
+                            ? `repeating-linear-gradient(45deg, ${lightenHex(color, 28)}, ${lightenHex(color, 28)} 3px, ${color} 3px, ${color} 6px)`
+                            : undefined;
+
+                        const timeBg = "rgba(0,0,0,0.06)";
 
                         return (
                             <div
                                 key={event.id}
-                                className={cn(
-                                    "rounded-sm text-[9px] font-medium text-center truncate shrink-0"
-                                )}
+                                className="rounded-sm text-[9px] font-medium text-center truncate transition-transform hover:scale-[1.02] shrink-0"
                                 style={{
-                                    backgroundColor: lightenHex(color, isActual ? 10 : 20),
+                                    backgroundColor: cardBackground,
+                                    backgroundImage: cardBackgroundImage,
                                     color: textColor,
                                     lineHeight: 1.2,
                                 }}
+                                title={label}
                             >
                                 <div className="px-1 py-0.5 leading-tight">{label}</div>
 
                                 {time && (
                                     <div
-                                        className="px-1 pb-0.5 text-[8px] bg-black/10 leading-none"
-                                        style={{ color: textColor }}
+                                        className="px-1 pb-0.5 text-[8px] leading-none"
+                                        style={{
+                                            color: textColor,
+                                            background: timeBg,
+                                            borderTopLeftRadius: 4,
+                                            borderTopRightRadius: 4,
+                                        }}
                                     >
                                         {formatInTimeZone(new Date(time), tz, TIME_FORMAT)}
                                     </div>
@@ -132,7 +171,7 @@ export const DayCell = memo(function DayCell({ day, monthDate, isLastInRow }: Da
                     })}
 
                     {more > 0 && (
-                        <div className="mt-auto shrink-0 rounded text-[9px] text-center text-base-content/60 bg-base-200 py-0.5 leading-none font-medium">
+                        <div className="mt-auto shrink-0 rounded text-[9px] text-center text-base-content/50 bg-base-300/40 py-0.5 leading-none font-medium">
                             +{more}
                         </div>
                     )}
