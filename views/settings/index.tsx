@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import {useTranslations} from "next-intl";
 import {
     User,
     CalendarCog,
@@ -12,64 +13,70 @@ import {
 import {ROUTES} from "@/shared/constants/routes";
 import {motion} from "framer-motion";
 
-const settingsSections = [
-    {
-        title: "Аккаунт",
-        items: [
-            {
-                label: "Профиль",
-                description: "Имя, фото, личные данные",
-                icon: User,
-                href: ROUTES.settingsProfile,
-            },
-            {
-                label: "Общий доступ",
-                description: "Доступ к вашему расписанию",
-                icon: Users,
-                href: ROUTES.settingsSharedAccess,
-            },
-            {
-                label: "Выбор календаря",
-                description: "Календарь для отображения",
-                icon: CalendarCog,
-                href: ROUTES.settingsCalendar,
-            },
-        ],
-    },
-    {
-        title: "Приложение",
-        items: [
-            {
-                label: "Настройки приложения",
-                description: "Язык, уведомления",
-                icon: AppWindow,
-                href: ROUTES.settingsApp,
-            },
-        ],
-    },
-    {
-        title: "Работа",
-        items: [
-            {
-                label: "Оплата труда",
-                description: "Тип оплаты, ставка и лимиты",
-                icon: Wallet,
-                href: ROUTES.settingsCompensation,
-            }
-        ],
-    }
-];
-
 export function SettingsPage() {
+    const t = useTranslations('settings.main');
+    const tProfile = useTranslations('settings.profile');
+    const tCalendar = useTranslations('settings.calendar');
+    const tApp = useTranslations('settings.app');
+    const tCompensation = useTranslations('settings.compensation');
+
+    const settingsSections = [
+        {
+            title: t('account'),
+            items: [
+                {
+                    label: tProfile('title'),
+                    description: t('profileDesc'),
+                    icon: User,
+                    href: ROUTES.settingsProfile,
+                },
+                {
+                    label: t('sharedAccess'),
+                    description: t('sharedAccessDesc'),
+                    icon: Users,
+                    href: ROUTES.settingsSharedAccess,
+                },
+                {
+                    label: tCalendar('title'),
+                    description: t('calendarDesc'),
+                    icon: CalendarCog,
+                    href: ROUTES.settingsCalendar,
+                },
+            ],
+        },
+        {
+            title: t('app'),
+            items: [
+                {
+                    label: tApp('title'),
+                    description: t('appDesc'),
+                    icon: AppWindow,
+                    href: ROUTES.settingsApp,
+                },
+            ],
+        },
+        {
+            title: t('work'),
+            items: [
+                {
+                    label: tCompensation('title'),
+                    description: t('compensationDesc'),
+                    icon: Wallet,
+                    href: ROUTES.settingsCompensation,
+                }
+            ],
+        }
+    ];
+
     return (
         <div className="flex flex-col items-center w-full min-h-full bg-base-100">
             <header className="w-full pt-3 pb-5 px-6 sticky top-0 z-30 bg-base-100/80 backdrop-blur-md border-b border-base-200/50 mb-6">
                 <div className="flex flex-col items-center justify-center max-w-xl mx-auto text-center">
                     <h1 className="text-3xl font-black tracking-tight text-base-content leading-none">
-                        Настройки
+                        {t('title')}
                     </h1>
                     <p className="text-[9px] font-black uppercase tracking-[0.2em] text-base-content/20 mt-2 leading-none">
-                        Конфигурация системы
+                        {t('subtitle')}
                     </p>
                 </div>
             </header>

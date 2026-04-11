@@ -1,6 +1,7 @@
 "use client";
 
 import {useRouter, useSearchParams} from "next/navigation";
+import {useTranslations} from "next-intl";
 import {formatInTimeZone} from "date-fns-tz";
 import {BaseShiftModal, ShiftFormValues} from "./base-shift-modal";
 import {useUpdateShiftTemplate, useGetShiftTemplate} from "@/features/shift-template/api";
@@ -10,6 +11,7 @@ export function UpdateShiftModal() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const tz = useUserStore(s => s.user?.timezone ?? "UTC");
+    const t = useTranslations('shifts');
 
     const shiftId = searchParams.get("shiftId");
     const isOpen = Boolean(shiftId && shiftId !== "new");
@@ -40,8 +42,8 @@ export function UpdateShiftModal() {
     return (
         <BaseShiftModal
             isOpen={isOpen}
-            title="Редактировать смену"
-            submitLabel="Сохранить"
+            title={t('edit')}
+            submitLabel={t('save')}
             initialValues={initialValues}
             isLoading={isLoading}
             isPending={isPending}

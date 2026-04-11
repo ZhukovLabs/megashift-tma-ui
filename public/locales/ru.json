@@ -6,11 +6,106 @@
   "settings": {
     "app": {
       "title": "Настройки приложения",
-      "language": "Язык"
+      "subtitle": "Настройки интерфейса",
+      "language": "Язык",
+      "languageSection": "Язык интерфейса",
+      "notifications": "Уведомления (скоро)",
+      "inDevelopment": "В разработке"
+    },
+    "calendar": {
+      "title": "Календари",
+      "subtitle": "Выбор активного расписания",
+      "availableCalendars": "Доступные календари",
+      "mainProfile": "Основной профиль",
+      "myCalendar": "Мой календарь",
+      "availableRights": "Доступные права",
+      "yourCapabilities": "Ваши возможности в этом календаре",
+      "searching": "Поиск доступов...",
+      "unsubscribe": "Отписаться",
+      "cancel": "Отмена"
+    },
+    "profile": {
+      "title": "Профиль",
+      "subtitle": "Личные настройки",
+      "localTime": "Местное время",
+      "timezone": "Часовой пояс",
+      "edit": "Редактировать",
+      "save": "Сохранить",
+      "cancel": "Отмена",
+      "registrationDate": "Дата регистрации"
+    },
+    "sharedAccess": {
+      "title": "Общий доступ",
+      "subtitle": "Управление правами",
+      "newInvite": "Новое приглашение",
+      "selectAccessLevel": "Выберите уровень доступа:",
+      "always": "Всегда",
+      "invite": "Пригласить",
+      "creating": "Создание...",
+      "noAccess": "Нет активных доступов",
+      "haveAccess": "Имеют доступ",
+      "rightsManagement": "Права управления"
+    },
+    "compensation": {
+      "title": "Оплата труда",
+      "subtitle": "Параметры дохода",
+      "calculationMethod": "Метод расчета",
+      "hourly": "Час",
+      "shift": "Смена",
+      "monthly": "Месяц",
+      "unknown": "Неизвестно",
+      "hourlyRate": "Ставка в час",
+      "shiftRate": "Ставка за смену",
+      "monthlySalary": "Месячная зарплата",
+      "financialGoal": "Финансовая цель (опционально)",
+      "notSet": "Не установлена",
+      "goalCannotBeLess": "Цель не может быть меньше основной ставки",
+      "placeholder": "0",
+      "save": "Сохранить",
+      "saving": "Сохранение...",
+      "enterCorrectAmount": "Введите корректную сумму"
+    },
+    "main": {
+      "title": "Настройки",
+      "subtitle": "Конфигурация системы",
+      "account": "Аккаунт",
+      "app": "Приложение",
+      "work": "Работа",
+      "sharedAccess": "Общий доступ",
+      "profileDesc": "Имя, фото, личные данные",
+      "sharedAccessDesc": "Доступ к вашему расписанию",
+      "calendarDesc": "Календарь для отображения",
+      "appDesc": "Язык, уведомления",
+      "compensationDesc": "Тип оплаты, ставка и лимиты"
     }
   },
-  "statistics": {
+  "shifts": {
+    "title": "Смены",
+    "subtitle": "Шаблоны времени",
+    "deleteConfirm": "Удалить?",
+    "deleteMessage": "Удалить шаблон \"{label}\"?\nЭто действие нельзя отменить",
+    "deleteOnlyTemplate": "Удалить только шаблон",
+    "deleteTemplateWithShifts": "Удалить шаблон и смены",
+    "noShifts": "Смен пока нет",
+    "createFirst": "Создайте свой первый шаблон смены, чтобы планировать график",
+    "addShift": "Добавить смену",
+    "edit": "Редактировать смену",
+    "create": "Создать смену",
+    "createButton": "Создать",
+    "save": "Сохранить",
+    "saving": "Сохраняем...",
+    "nameLabel": "Название",
+    "namePlaceholder": "Название смены",
+    "visualStyle": "Визуальный стиль",
+    "accentColor": "Акцентный цвет",
+    "timeInterval": "Временной интервал",
+    "start": "НАЧАЛО",
+    "end": "КОНЕЦ",
+    "cancel": "Отмена"
+  },
+"statistics": {
     "title": "Статистика",
+    "subtitle": "Аналитика и доходы",
     "total": "Всего",
     "noData": "Нет данных",
     "yearPlaceholder": "Год",
@@ -53,5 +148,14 @@
       "additionalInfo": "Ожидайте уведомлений о запуске",
       "continue": "Понятно"
     }
+  },
+  "common": {
+    "save": "Сохранить",
+    "cancel": "Отмена",
+    "delete": "Удалить",
+    "confirm": "Подтвердить",
+    "unsubscribe": "Отписаться",
+    "error": "Ошибка",
+    "success": "Успешно"
   }
 }

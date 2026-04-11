@@ -6,11 +6,118 @@
   "settings": {
     "app": {
       "title": "App settings",
-      "language": "Language"
+      "subtitle": "Interface settings",
+      "language": "Language",
+      "languageSection": "Interface language",
+      "notifications": "Notifications (coming soon)",
+      "inDevelopment": "In development"
+    },
+    "calendar": {
+      "title": "Calendars",
+      "subtitle": "Select active schedule",
+      "availableCalendars": "Available calendars",
+      "mainProfile": "Main profile",
+      "myCalendar": "My calendar",
+      "availableRights": "Available rights",
+      "yourCapabilities": "Your capabilities in this calendar",
+      "searching": "Searching accesses...",
+      "unsubscribe": "Unsubscribe",
+      "cancel": "Cancel"
+    },
+    "profile": {
+      "title": "Profile",
+      "subtitle": "Personal settings",
+      "localTime": "Local time",
+      "timezone": "Timezone",
+      "edit": "Edit",
+      "save": "Save",
+      "cancel": "Cancel",
+      "registrationDate": "Registration date",
+      "surname": {
+        "label": "Surname*",
+        "placeholder": "Enter your surname"
+      },
+      "name": {
+        "label": "Name*",
+        "placeholder": "Enter your name"
+      },
+      "patronymic": {
+        "label": "Patronymic",
+        "placeholder": "Enter your patronymic (optional)"
+      }
+    },
+    "sharedAccess": {
+      "title": "Shared access",
+      "subtitle": "Manage rights",
+      "newInvite": "New invitation",
+      "selectAccessLevel": "Select access level:",
+      "always": "Always",
+      "invite": "Invite",
+      "creating": "Creating...",
+      "noAccess": "No active accesses",
+      "haveAccess": "Have access",
+      "rightsManagement": "Management rights"
+    },
+    "compensation": {
+      "title": "Compensation",
+      "subtitle": "Income parameters",
+      "calculationMethod": "Calculation method",
+      "hourly": "Hour",
+      "shift": "Shift",
+      "monthly": "Month",
+      "unknown": "Unknown",
+      "hourlyRate": "Hourly rate",
+      "shiftRate": "Shift rate",
+      "monthlySalary": "Monthly salary",
+      "financialGoal": "Financial goal (optional)",
+      "notSet": "Not set",
+      "goalCannotBeLess": "Goal cannot be less than base rate",
+      "placeholder": "0",
+      "save": "Save",
+      "saving": "Saving...",
+      "enterCorrectAmount": "Enter correct amount"
+    },
+    "main": {
+      "title": "Settings",
+      "subtitle": "System configuration",
+      "account": "Account",
+      "app": "App",
+      "work": "Work",
+      "sharedAccess": "Shared access",
+      "profileDesc": "Name, photo, personal data",
+      "sharedAccessDesc": "Access to your schedule",
+      "calendarDesc": "Calendar to display",
+      "appDesc": "Language, notifications",
+      "compensationDesc": "Payment type, rate and limits"
     }
   },
-  "statistics": {
+  "shifts": {
+    "title": "Shifts",
+    "subtitle": "Time templates",
+    "deleteConfirm": "Delete?",
+    "deleteMessage": "Delete template \"{label}\"?\nThis action cannot be undone",
+    "deleteOnlyTemplate": "Delete only template",
+    "deleteTemplateWithShifts": "Delete template and shifts",
+    "noShifts": "No shifts yet",
+    "createFirst": "Create your first shift template to plan your schedule",
+    "addShift": "Add shift",
+    "edit": "Edit shift",
+    "create": "Create shift",
+    "createButton": "Create",
+    "save": "Save",
+    "saving": "Saving...",
+    "nameLabel": "Name",
+    "namePlaceholder": "Shift name",
+    "visualStyle": "Visual style",
+    "accentColor": "Accent color",
+    "timeInterval": "Time interval",
+    "start": "START",
+    "end": "END",
+    "cancel": "Cancel"
+  },
+"statistics": {
     "title": "Statistics",
+    "subtitle": "Analytics and income",
     "total": "Total",
     "noData": "No data",
     "yearPlaceholder": "Year",
@@ -29,5 +136,14 @@
       "next": "Start filling out",
       "user": "User"
     }
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "confirm": "Confirm",
+    "unsubscribe": "Unsubscribe",
+    "error": "Error",
+    "success": "Success"
   }
 }

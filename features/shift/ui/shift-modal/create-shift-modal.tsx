@@ -1,12 +1,14 @@
 "use client";
 
 import {useRouter, useSearchParams} from "next/navigation";
+import {useTranslations} from "next-intl";
 import {BaseShiftModal, ShiftFormValues} from "./base-shift-modal";
 import {useCreateShiftTemplate} from "@/features/shift-template/api";
 
 export function CreateShiftModal() {
     const router = useRouter();
     const searchParams = useSearchParams();
+    const t = useTranslations('shifts');
 
     const isOpen = searchParams.get("shiftId") === "new";
     const {mutateAsync, isPending} = useCreateShiftTemplate();
@@ -25,8 +27,8 @@ export function CreateShiftModal() {
     return (
         <BaseShiftModal
             isOpen={isOpen}
-            title="Создать смену"
-            submitLabel="Создать"
+            title={t('create')}
+            submitLabel={t('createButton')}
             isPending={isPending}
             onClose={close}
             onSubmit={handleCreate}

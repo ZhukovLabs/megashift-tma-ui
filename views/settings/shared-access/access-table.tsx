@@ -1,6 +1,7 @@
 "use client";
 
 import {useState} from "react";
+import { useTranslations } from "next-intl";
 import { AccessClaim, ACCESS_CLAIM_LABELS } from '@/entities/access';
 import {useUpdateAccess, useRevokeAllAccess} from "@/features/user/api";
 import {Trash2, Save, ChevronDown, UserCircle2, Shield} from "lucide-react";
@@ -21,6 +22,7 @@ type Props = {
 };
 
 export function AccessTable({users}: Props) {
+    const t = useTranslations('settings.sharedAccess');
     const {mutateAsync: updateAccess, isPending: isUpdating} = useUpdateAccess();
     const {mutateAsync: revokeAll, isPending: isDeleting} = useRevokeAllAccess();
 
@@ -76,7 +78,7 @@ export function AccessTable({users}: Props) {
         return (
             <div className="flex flex-col items-center justify-center py-12 px-6 bg-base-200/20 rounded-[32px] border-2 border-dashed border-base-200">
                 <UserCircle2 size={40} className="text-base-content/10 mb-3" />
-                <span className="text-sm font-bold text-base-content/20 uppercase tracking-widest text-center">Нет активных доступов</span>
+                <span className="text-sm font-bold text-base-content/20 uppercase tracking-widest text-center">{t('noAccess')}</span>
             </div>
         );
     }
@@ -87,7 +89,7 @@ export function AccessTable({users}: Props) {
                 <div className="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
                     <Shield size={20} strokeWidth={2.5} />
                 </div>
-                <h2 className="text-sm font-black uppercase tracking-widest text-base-content/40">Имеют доступ</h2>
+                <h2 className="text-sm font-black uppercase tracking-widest text-base-content/40">{t('haveAccess')}</h2>
             </div>
 
             <div className="space-y-3">
@@ -160,7 +162,7 @@ export function AccessTable({users}: Props) {
                                             <div className="h-px bg-base-200/60 w-full" />
                                             
                                             <div className="flex flex-col gap-2">
-                                                <span className="text-[10px] font-black uppercase tracking-widest text-base-content/20 ml-1">Права управления</span>
+                                                <span className="text-[10px] font-black uppercase tracking-widest text-base-content/20 ml-1">{t('rightsManagement')}</span>
                                                 {Object.values(AccessClaim).map(claim => {
                                                     const isChecked = currentClaims.includes(claim);
                                                     const isRead = claim === AccessClaim.READ;
@@ -201,7 +203,7 @@ export function AccessTable({users}: Props) {
                                                     onClick={() => handleSave(user.id)}
                                                 >
                                                     <Save size={16} strokeWidth={3}/>
-                                                    Сохранить
+                                                    {t('save')}
                                                 </button>
 
                                                 <button

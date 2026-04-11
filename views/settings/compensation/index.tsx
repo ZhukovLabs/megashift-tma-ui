@@ -2,54 +2,47 @@
 
 import React, {useEffect, useMemo} from 'react';
 import {useForm, Controller, useWatch} from 'react-hook-form';
+import {useTranslations} from 'next-intl';
 import {useUpdateSalary, useGetUserSettings} from '@/features/user/api';
 import {SalaryType} from '@/entities/salary';
 import {Banknote, Target, ChevronDown} from 'lucide-react';
 import {z} from 'zod';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {CURRENCIES, Currency} from "@/entities/currency";
-import {motion, AnimatePresence} from "framer-motion";
+import {motion} from "framer-motion";
 
 const currencyValues = CURRENCIES.map(
     (c) => c.value
 ) as [Currency, ...Currency[]];
 
-const SALARY_LABELS: Record<SalaryType, string> = {
-    HOURLY: 'Час',
-    SHIFT: 'Смена',
-    MONTHLY: 'Месяц',
-    UNKNOWN: 'Неизвестно',
+type FormValues = {
+    typeSalary: 'HOURLY' | 'SHIFT' | 'MONTHLY';
+    salary: number;
+    maxSalary?: number;
+    currency: Currency;
 };
-
-const SALARY_FULL_LABELS: Record<SalaryType, string> = {
-    HOURLY: 'Ставка в час',
-    SHIFT: 'Ставка за смену',
-    MONTHLY: 'Месячная зарплата',
-    UNKNOWN: 'Неизвестно',
-};
-
-const schema = z
-    .object({
-        typeSalary: z.enum(['HOURLY', 'SHIFT', 'MONTHLY']),
-        salary: z.number().min(0, 'Введите корректную сумму'),
-        maxSalary: z.union([z.number(), z.nan()]).optional().transform(v => (v === undefined || isNaN(v)) ? undefined : v),
-        currency: z.enum(currencyValues),
-    })
-    .refine(
-        (data) =>
-            data.maxSalary === undefined ||
-            data.maxSalary >= data.salary,
-        {
-            message: 'Цель не может быть меньше основной ставки',
-            path: ['maxSalary'],
-        }
-    );
-
-type FormValues = z.infer<typeof schema>;
 
 export function CompensationSettingsPage() {
+    const t = useTranslations('settings.compensation');
     const {data: settings, isLoading} = useGetUserSettings();
     const mutation = useUpdateSalary();
+
+    const schema = z
+        .object({
+            typeSalary: z.enum(['HOURLY', 'SHIFT', 'MONTHLY']),
+            salary: z.number().min(0, t('enterCorrectAmount')),
+            maxSalary: z.union([z.number(), z.nan()]).optional().transform(v => (v === undefined || isNaN(v)) ? undefined : v),
+            currency: z.enum(currencyValues),
+        })
+        .refine(
+            (data) =>
+                data.maxSalary === undefined ||
+                data.maxSalary >= data.salary,
+            {
+                message: t('goalCannotBeLess'),
+                path: ['maxSalary'],
+            }
+        );
 
     const {
         control,
@@ -100,10 +93,10 @@ export function CompensationSettingsPage() {
             <header className="w-full pt-2 pb-4 px-6 sticky top-0 z-30 bg-base-100 border-b border-base-200/60 shadow-sm">
                 <div className="flex flex-col items-center justify-center max-w-xl mx-auto text-center">
                     <h1 className="text-xl font-black tracking-tight text-base-content leading-none">
-                        Оплата труда
+                        {t('title')}
                     </h1>
                     <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-base-content/25 mt-1.5 leading-none">
-                        Параметры дохода
+                        {t('subtitle')}
                     </p>
                 </div>
             </header>
@@ -113,7 +106,7 @@ export function CompensationSettingsPage() {
                     
                     {/* Метод расчета */}
                     <div className="space-y-2">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-base-content/30 ml-1 block">Метод расчета</label>
+                        <label className="text-[10px] font-black uppercase tracking-widest text-base-content/30 ml-1 block">{t('calculationMethod')}</label>
                         <div className="bg-base-200/40 p-1 rounded-2xl border border-base-200/60 relative">
                             <Controller
                                 name="typeSalary"
@@ -140,7 +133,7 @@ export function CompensationSettingsPage() {
                                                         "relative z-20 transition-colors duration-300",
                                                         active ? "text-primary" : "text-base-content/40"
                                                     )}>
-                                                        {SALARY_LABELS[type]}
+                                                        {t(type.toLowerCase())}
                                                     </span>
                                                 </button>
                                             );
@@ -154,7 +147,7 @@ export function CompensationSettingsPage() {
                     {/* Основная ставка */}
                     <div className="space-y-2">
                         <label className="text-[10px] font-black uppercase tracking-widest text-base-content/30 ml-1 block">
-                            {SALARY_FULL_LABELS[typeSalary]}
+                            {t(`${typeSalary.toLowerCase()}Rate`)}
                         </label>
                         <div className="flex gap-2">
                             <div className="relative flex-1 group">
@@ -165,7 +158,7 @@ export function CompensationSettingsPage() {
                                     type="number"
                                     step="any"
                                     className="w-full h-14 pl-12 pr-4 rounded-2xl bg-base-200/30 border-2 border-transparent focus:border-primary/10 focus:bg-base-100 transition-all text-lg font-bold outline-none shadow-inner"
-                                    placeholder="0"
+                                    placeholder={t('placeholder')}
                                     disabled={isLoading}
                                     {...register('salary', {valueAsNumber: true})}
                                 />
@@ -193,7 +186,7 @@ export function CompensationSettingsPage() {
 
                     {/* Финансовая цель */}
                     <div className="space-y-2">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-base-content/30 ml-1 block">Финансовая цель (опционально)</label>
+                        <label className="text-[10px] font-black uppercase tracking-widest text-base-content/30 ml-1 block">{t('financialGoal')}</label>
                         <div className="relative group">
                             <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none text-base-content/20 group-focus-within:text-primary transition-colors">
                                 <Target size={18} strokeWidth={2.5} />
@@ -202,7 +195,7 @@ export function CompensationSettingsPage() {
                                 type="number"
                                 step="any"
                                 className="w-full h-14 pl-12 pr-12 rounded-2xl bg-base-200/30 border-2 border-transparent focus:border-primary/10 focus:bg-base-100 transition-all text-lg font-bold outline-none shadow-inner"
-                                placeholder="Не установлена"
+                                placeholder={t('notSet')}
                                 disabled={isLoading}
                                 {...register('maxSalary', {valueAsNumber: true})}
                             />
@@ -219,7 +212,7 @@ export function CompensationSettingsPage() {
                         disabled={!isValid || mutation.isPending || isLoading}
                         className="btn btn-primary w-full h-14 rounded-2xl text-sm font-black uppercase tracking-widest shadow-lg shadow-primary/20 mt-4 active:scale-[0.98] transition-all disabled:opacity-50"
                     >
-                        {mutation.isPending ? 'Сохранение...' : 'Сохранить'}
+                        {mutation.isPending ? t('saving') : t('save')}
                     </button>
                 </form>
             </main>

@@ -89,6 +89,7 @@ export function ProfileSettingsPage() {
     const {data: user, isLoading} = useGetProfile();
     const {mutateAsync: update, isPending} = useUpdateProfile();
     const t = useTranslations('profile');
+    const tSettings = useTranslations('settings.profile');
 
     const lp = useLaunchParams(true);
     const photo = lp.tgWebAppData?.user?.photoUrl;
@@ -156,10 +157,10 @@ export function ProfileSettingsPage() {
             <header className="w-full pt-2 pb-4 px-6 sticky top-0 z-30 bg-base-100 border-b border-base-200/60 shadow-sm">
                 <div className="flex flex-col items-center justify-center max-w-xl mx-auto text-center">
                     <h1 className="text-2xl font-black tracking-tight text-base-content leading-none">
-                        Профиль
+                        {tSettings('title')}
                     </h1>
                     <p className="text-[9px] font-black uppercase tracking-[0.2em] text-base-content/25 mt-1.5 leading-none">
-                        Личные настройки
+                        {tSettings('subtitle')}
                     </p>
                 </div>
             </header>
@@ -200,14 +201,14 @@ export function ProfileSettingsPage() {
                             <div className="flex-1 bg-base-100/60 rounded-2xl p-3 border border-base-200/50 flex flex-col items-center">
                                 <Clock size={14} className="text-primary/40 mb-1" />
                                 <span className="text-sm font-black text-base-content/80">{now}</span>
-                                <span className="text-[8px] font-black uppercase text-base-content/20 tracking-tighter">Местное время</span>
+                                <span className="text-[8px] font-black uppercase text-base-content/20 tracking-tighter">{tSettings('localTime')}</span>
                             </div>
                             <div className="flex-1 bg-base-100/60 rounded-2xl p-3 border border-base-200/50 flex flex-col items-center">
                                 <Globe size={14} className="text-primary/40 mb-1" />
                                 <span className="text-sm font-black text-base-content/80 truncate w-full text-center">
-                                    {TIMEZONES.find(t => t.tz === (watchedTz || user?.timezone))?.label ?? 'UTC'}
+                                    {TIMEZONES.find(tz => tz.tz === (watchedTz || user?.timezone))?.label ?? 'UTC'}
                                 </span>
-                                <span className="text-[8px] font-black uppercase text-base-content/20 tracking-tighter">Часовой пояс</span>
+                                <span className="text-[8px] font-black uppercase text-base-content/20 tracking-tighter">{tSettings('timezone')}</span>
                             </div>
                         </div>
 
@@ -217,7 +218,7 @@ export function ProfileSettingsPage() {
                                 className="mt-6 flex items-center gap-2 px-6 py-2.5 rounded-full bg-primary/10 text-primary text-[10px] font-black uppercase tracking-widest active:scale-95 transition-all"
                             >
                                 <Pencil size={12} strokeWidth={3} />
-                                Редактировать
+                                {tSettings('edit')}
                             </button>
                         )}
                     </div>
@@ -233,33 +234,33 @@ export function ProfileSettingsPage() {
                                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                                     <div className="grid grid-cols-1 gap-3">
                                         <div className="space-y-1.5">
-                                            <label className="text-[10px] font-black uppercase tracking-widest text-base-content/30 ml-2 block">Фамилия</label>
+                                            <label className="text-[10px] font-black uppercase tracking-widest text-base-content/30 ml-2 block">{t('surname.label')}</label>
                                             <input
                                                 {...register('surname')}
                                                 className="w-full h-12 px-4 rounded-xl bg-base-100 border-2 border-transparent focus:border-primary/20 transition-all font-bold text-sm outline-none shadow-sm"
-                                                placeholder="Введите фамилию"
+                                                placeholder={t('surname.placeholder')}
                                             />
                                             {errors.surname && <p className="text-error text-[10px] font-bold ml-2">{errors.surname.message}</p>}
                                         </div>
                                         <div className="space-y-1.5">
-                                            <label className="text-[10px] font-black uppercase tracking-widest text-base-content/30 ml-2 block">Имя</label>
+                                            <label className="text-[10px] font-black uppercase tracking-widest text-base-content/30 ml-2 block">{t('name.label')}</label>
                                             <input
                                                 {...register('name')}
                                                 className="w-full h-12 px-4 rounded-xl bg-base-100 border-2 border-transparent focus:border-primary/20 transition-all font-bold text-sm outline-none shadow-sm"
-                                                placeholder="Введите имя"
+                                                placeholder={t('name.placeholder')}
                                             />
                                             {errors.name && <p className="text-error text-[10px] font-bold ml-2">{errors.name.message}</p>}
                                         </div>
                                         <div className="space-y-1.5">
-                                            <label className="text-[10px] font-black uppercase tracking-widest text-base-content/30 ml-2 block">Отчество</label>
+                                            <label className="text-[10px] font-black uppercase tracking-widest text-base-content/30 ml-2 block">{t('patronymic.label')}</label>
                                             <input
                                                 {...register('patronymic')}
                                                 className="w-full h-12 px-4 rounded-xl bg-base-100 border-2 border-transparent focus:border-primary/20 transition-all font-bold text-sm outline-none shadow-sm"
-                                                placeholder="Необязательно"
+                                                placeholder={t('patronymic.placeholder')}
                                             />
                                         </div>
                                         <div className="space-y-1.5">
-                                            <label className="text-[10px] font-black uppercase tracking-widest text-base-content/30 ml-2 block">Часовой пояс</label>
+                                            <label className="text-[10px] font-black uppercase tracking-widest text-base-content/30 ml-2 block">{tSettings('timezone')}</label>
                                             <select
                                                 {...register('timezone')}
                                                 className="w-full h-12 px-4 rounded-xl bg-base-100 border-2 border-transparent focus:border-primary/20 transition-all font-bold text-sm outline-none shadow-sm appearance-none cursor-pointer"
@@ -279,14 +280,14 @@ export function ProfileSettingsPage() {
                                             disabled={!isDirty || isPending}
                                             className="h-12 flex-1 rounded-xl bg-primary text-primary-content font-black uppercase tracking-widest text-[10px] shadow-lg shadow-primary/20 active:scale-95 transition-all disabled:opacity-50"
                                         >
-                                            <Save size={14} className="inline mr-2" /> Сохранить
+                                            <Save size={14} className="inline mr-2" /> {tSettings('save')}
                                         </button>
                                         <button 
                                             type="button" 
                                             onClick={() => { reset(); setEditing(false); }}
                                             className="h-12 flex-1 rounded-xl bg-base-200 text-base-content/60 font-black uppercase tracking-widest text-[10px] active:scale-95 transition-all"
                                         >
-                                            Отмена
+                                            {tSettings('cancel')}
                                         </button>
                                     </div>
                                 </form>
@@ -306,7 +307,7 @@ export function ProfileSettingsPage() {
                         <CalendarDays size={22} strokeWidth={2.5} />
                     </div>
                     <div className="flex flex-col">
-                        <span className="text-[10px] font-black uppercase tracking-widest text-base-content/20 leading-none">Дата регистрации</span>
+                        <span className="text-[10px] font-black uppercase tracking-widest text-base-content/20 leading-none">{tSettings('registrationDate')}</span>
                         <span className="text-sm font-bold text-base-content/80 mt-1.5 uppercase">
                             {user?.createdAt ? formatRegDate(user.createdAt, user.timezone) : '—'}
                         </span>

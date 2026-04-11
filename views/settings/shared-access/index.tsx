@@ -6,6 +6,7 @@ import {useCreateInvite} from "@/features/invite/api";
 import {shareURL} from "@tma.js/sdk";
 import {Share2, Users, ShieldCheck} from "lucide-react";
 import {toast} from 'react-toastify';
+import {useTranslations} from "next-intl";
 import { ACCESS_CLAIM_LABELS, AccessClaim } from '@/entities/access';
 import {useAvailableAccess} from "@/features/user/api";
 import {AccessTable} from "./access-table";
@@ -19,6 +20,7 @@ export function SharedAccessPage() {
     const {mutateAsync: createInvite, isPending} = useCreateInvite();
     const {data: accessUsers = []} = useAvailableAccess();
     const [error, setError] = useState<string | null>(null);
+    const t = useTranslations('settings.sharedAccess');
 
     const {control, handleSubmit, formState: {errors}} = useForm<FormValues>({
         defaultValues: {
@@ -46,10 +48,10 @@ export function SharedAccessPage() {
         <div className="flex flex-col items-center w-full min-h-full bg-base-100">
             <header className="w-full pt-2 pb-4 px-6 sticky top-0 z-30 bg-base-100 border-b border-base-200/60 shadow-sm text-center">
                 <h1 className="text-2xl font-black tracking-tight text-base-content leading-none">
-                    Общий доступ
+                    {t('title')}
                 </h1>
                 <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-base-content/25 mt-1.5 leading-none">
-                    Управление правами
+                    {t('subtitle')}
                 </p>
             </header>
 
@@ -63,7 +65,7 @@ export function SharedAccessPage() {
                         <div className="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
                             <Users size={20} strokeWidth={2.5} />
                         </div>
-                        <h2 className="text-sm font-black uppercase tracking-widest text-base-content/40">Новое приглашение</h2>
+                        <h2 className="text-sm font-black uppercase tracking-widest text-base-content/40">{t('newInvite')}</h2>
                     </div>
 
                     <form onSubmit={handleSubmit(onSubmit)} className="bg-base-200/40 border border-base-200/60 rounded-[32px] p-6 space-y-6">
@@ -74,7 +76,7 @@ export function SharedAccessPage() {
                                 <div className="space-y-3">
                                     <div className="flex items-center gap-2 mb-4 px-1">
                                         <ShieldCheck size={14} className="text-primary/40" />
-                                        <span className="text-[11px] font-bold text-base-content/60">Выберите уровень доступа:</span>
+                                        <span className="text-[11px] font-bold text-base-content/60">{t('selectAccessLevel')}</span>
                                     </div>
                                     <div className="grid grid-cols-1 gap-2">
                                         {Object.keys(AccessClaim).map((key) => {
@@ -112,7 +114,7 @@ export function SharedAccessPage() {
                                                             isActive ? "text-base-content" : "text-base-content/40"
                                                         }`}>{label}</span>
                                                     </div>
-                                                    {isRead && <span className="text-[9px] font-black uppercase text-primary/40 bg-primary/5 px-2 py-0.5 rounded-md">Всегда</span>}
+                                                    {isRead && <span className="text-[9px] font-black uppercase text-primary/40 bg-primary/5 px-2 py-0.5 rounded-md">{t('always')}</span>}
                                                 </label>
                                             );
                                         })}
@@ -127,7 +129,7 @@ export function SharedAccessPage() {
                             className="btn btn-primary w-full h-14 rounded-2xl gap-3 text-sm font-black uppercase tracking-widest shadow-lg shadow-primary/20 active:scale-[0.98] transition-all"
                         >
                             <Share2 size={18} strokeWidth={3}/>
-                            {isPending ? "Создание..." : "Пригласить"}
+                            {isPending ? t('creating') : t('invite')}
                         </button>
 
                         {error && (

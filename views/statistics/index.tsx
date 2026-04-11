@@ -30,7 +30,7 @@ export function StatisticsPage() {
                     {t('title')}
                 </h1>
                 <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-base-content/20 mt-1.5 leading-none">
-                    Аналитика и доходы
+                    {t('subtitle')}
                 </p>
             </div>
         </header>

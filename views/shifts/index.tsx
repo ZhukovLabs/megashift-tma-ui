@@ -2,6 +2,7 @@
 
 import {Plus} from "lucide-react";
 import {useRouter} from "next/navigation";
+import {useTranslations} from "next-intl";
 import ShiftsList from "@/features/shift/ui/shifts-list";
 import {CreateShiftModal, UpdateShiftModal} from "@/features/shift/ui/shift-modal";
 import {useGetShiftTemplates, useRemoveShiftTemplate} from "@/features/shift-template/api";
@@ -10,6 +11,7 @@ import {motion, AnimatePresence} from "framer-motion";
 
 export function ShiftsPage() {
     const router = useRouter();
+    const t = useTranslations('shifts');
 
     const {data: shifts = [], isLoading} = useGetShiftTemplates();
     const {mutateAsync: removeShift} = useRemoveShiftTemplate();
@@ -19,11 +21,11 @@ export function ShiftsPage() {
 
     const handleDelete = async (id: string, label: string) => {
         const confirmed = await popup.show({
-            title: 'Удалить?',
-            message: `Удалить шаблон "${label}"?\nЭто действие нельзя отменить`,
+            title: t('deleteConfirm'),
+            message: t('deleteMessage', {label}),
             buttons: [
-                {id: 'onlyTemplate', type: 'destructive', text: 'Удалить только шаблон'},
-                {id: 'templateWithShifts', type: 'destructive', text: 'Удалить шаблон и смены'},
+                {id: 'onlyTemplate', type: 'destructive', text: t('deleteOnlyTemplate')},
+                {id: 'templateWithShifts', type: 'destructive', text: t('deleteTemplateWithShifts')},
                 {id: 'no', type: 'cancel'},
             ],
         });
@@ -42,7 +44,7 @@ export function ShiftsPage() {
                         className="flex items-center gap-3"
                     >
                         <h1 className="text-2xl font-black tracking-tight text-base-content leading-none">
-                            Смены
+                            {t('title')}
                         </h1>
                         {!isLoading && shifts.length > 0 && (
                             <span className="bg-base-200 text-base-content/40 text-[9px] font-black px-2 py-0.5 rounded-md uppercase tracking-widest">
@@ -52,7 +54,7 @@ export function ShiftsPage() {
                     </motion.div>
                     {!isLoading && (
                         <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-base-content/20 mt-1.5 leading-none">
-                            Шаблоны времени
+                            {t('subtitle')}
                         </p>
                     )}
                 </div>

@@ -16,10 +16,10 @@ export function AppSettingsPage() {
             <header className="w-full pt-2 pb-4 px-6 sticky top-0 z-30 bg-base-100 border-b border-base-200/60 shadow-sm">
                 <div className="flex flex-col items-center justify-center max-w-xl mx-auto text-center">
                     <h1 className="text-2xl font-black tracking-tight text-base-content leading-none">
-                        Приложение
+                        {t('title')}
                     </h1>
                     <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-base-content/25 mt-1.5 leading-none">
-                        Настройки интерфейса
+                        {t('subtitle')}
                     </p>
                 </div>
             </header>
@@ -29,7 +29,7 @@ export function AppSettingsPage() {
                     {/* Секция выбора языка */}
                     <div className="space-y-3">
                         <label className="text-[10px] font-black uppercase tracking-widest text-base-content/30 ml-1 block">
-                            Язык интерфейса
+                            {t('languageSection')}
                         </label>
                         
                         <div className="bg-base-100 rounded-[32px] border border-base-200 shadow-[0_4px_20px_rgba(0,0,0,0.02)] overflow-hidden">
@@ -83,13 +83,13 @@ export function AppSettingsPage() {
                     <div className="opacity-40 grayscale pointer-events-none">
                         <div className="space-y-3">
                             <label className="text-[10px] font-black uppercase tracking-widest text-base-content/30 ml-1 block">
-                                Уведомления (скоро)
+                                {t('notifications')}
                             </label>
                             <div className="bg-base-200/30 rounded-[32px] p-6 border border-dashed border-base-300 flex flex-col items-center justify-center gap-2">
                                 <div className="w-12 h-12 rounded-full bg-base-200 flex items-center justify-center text-base-content/20">
                                     <Check size={24} />
                                 </div>
-                                <span className="text-xs font-bold text-base-content/20 uppercase tracking-widest">В разработке</span>
+                                <span className="text-xs font-bold text-base-content/20 uppercase tracking-widest">{t('inDevelopment')}</span>
                             </div>
                         </div>
                     </div>

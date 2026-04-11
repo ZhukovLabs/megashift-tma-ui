@@ -1,7 +1,10 @@
 import {Plus, ClipboardList} from "lucide-react";
+import {useTranslations} from "next-intl";
 import {motion} from "framer-motion";
 
 export const EmptyState = ({onCreateClick}: { onCreateClick?: VoidFunction }) => {
+    const t = useTranslations('shifts');
+
     return (
         <motion.div 
             initial={{opacity: 0, scale: 0.9}}
@@ -16,9 +19,9 @@ export const EmptyState = ({onCreateClick}: { onCreateClick?: VoidFunction }) =>
             </div>
 
             <div className="flex flex-col gap-2 items-center">
-                <h3 className="text-xl font-black text-base-content/80">Смен пока нет</h3>
+                <h3 className="text-xl font-black text-base-content/80">{t('noShifts')}</h3>
                 <p className="text-center text-sm font-medium text-base-content/40 max-w-[220px] leading-relaxed">
-                    Создайте свой первый шаблон смены, чтобы планировать график
+                    {t('createFirst')}
                 </p>
             </div>
 
@@ -26,7 +29,7 @@ export const EmptyState = ({onCreateClick}: { onCreateClick?: VoidFunction }) =>
                 onClick={onCreateClick}
                 className="btn btn-primary btn-wide rounded-2xl font-black uppercase tracking-widest shadow-lg shadow-primary/20 h-14"
             >
-                Добавить смену
+                {t('addShift')}
             </button>
         </motion.div>
     );

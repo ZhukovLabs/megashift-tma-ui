@@ -6,9 +6,11 @@ import {useGetAvailableCalendars, AccessUser, useUnsubscribeFromCalendar} from "
 import { ACCESS_CLAIM_LABELS, AccessClaim } from '@/entities/access';
 import {popup} from "@tma.js/sdk";
 import {motion, AnimatePresence} from "framer-motion";
+import {useTranslations} from "next-intl";
 import cn from "classnames";
 
 export function CalendarSettingsPage() {
+    const t = useTranslations('settings.calendar');
     const userId = useUserStore((s) => s.user?.id ?? "");
     const ownerId = useUserStore((s) => s.ownerId);
     const setOwnerId = useUserStore((s) => s.setOwnerId);
@@ -22,12 +24,12 @@ export function CalendarSettingsPage() {
     const accessibleUsers: AccessUser[] = useMemo(() => {
         const me: AccessUser = {
             id: userId,
-            name: "Мой календарь",
+            name: t('myCalendar'),
             surname: "",
             claims: Object.values(AccessClaim),
         };
         return [me, ...accessData];
-    }, [userId, accessData]);
+    }, [userId, accessData, t]);
 
     const selectedUserId = useMemo(() => {
         const ownerIsValid = ownerId && accessibleUsers.some((u) => u.id === ownerId);
@@ -67,11 +69,11 @@ export function CalendarSettingsPage() {
         const name = [user.name, user.surname].filter(Boolean).join(" ") || "этого пользователя";
 
         const confirmed = await popup.show({
-            title: "Отписаться?",
+            title: t('unsubscribe') + "?",
             message: `Вы действительно хотите отписаться от календаря ${name}?`,
             buttons: [
-                {id: "confirm", type: "destructive", text: "Отписаться"},
-                {id: "cancel", type: "cancel", text: "Отмена"},
+                {id: "confirm", type: "destructive", text: t('unsubscribe')},
+                {id: "cancel", type: "cancel", text: t('cancel')},
             ],
         });
 
@@ -86,19 +88,18 @@ export function CalendarSettingsPage() {
         <div className="flex flex-col items-center w-full min-h-full bg-base-100">
             <header className="w-full pt-2 pb-4 px-6 sticky top-0 z-30 bg-base-100 border-b border-base-200/60 shadow-sm text-center">
                 <h1 className="text-2xl font-black tracking-tight text-base-content leading-none">
-                    Календари
+                    {t('title')}
                 </h1>
                 <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-base-content/25 mt-1.5 leading-none">
-                    Выбор активного расписания
+                    {t('subtitle')}
                 </p>
             </header>
 
             <main className="w-full px-6 max-w-xl mx-auto pt-8 pb-32 space-y-8">
-                {/* Секция списка календарей */}
                 <div className="space-y-4">
                     <div className="flex items-center gap-3 px-2">
                         <CalendarDays size={18} className="text-primary/40" />
-                        <h2 className="text-[10px] font-black uppercase tracking-widest text-base-content/30">Доступные календари</h2>
+                        <h2 className="text-[10px] font-black uppercase tracking-widest text-base-content/30">{t('availableCalendars')}</h2>
                     </div>
 
                     <div className="space-y-2.5">
@@ -136,7 +137,7 @@ export function CalendarSettingsPage() {
                                         </div>
                                         {isMyCalendar && (
                                             <div className="text-[9px] font-black uppercase tracking-widest text-primary/50 mt-0.5">
-                                                Основной профиль
+                                                {t('mainProfile')}
                                             </div>
                                         )}
                                     </div>
@@ -181,8 +182,8 @@ export function CalendarSettingsPage() {
                                     <ShieldCheck size={20} strokeWidth={2.5} />
                                 </div>
                                 <div className="flex flex-col">
-                                    <h3 className="text-sm font-black uppercase tracking-widest text-base-content/80">Доступные права</h3>
-                                    <span className="text-[9px] font-bold text-base-content/30 uppercase tracking-tighter">Ваши возможности в этом календаре</span>
+                                    <h3 className="text-sm font-black uppercase tracking-widest text-base-content/80">{t('availableRights')}</h3>
+                                    <span className="text-[9px] font-bold text-base-content/30 uppercase tracking-tighter">{t('yourCapabilities')}</span>
                                 </div>
                             </div>
 
@@ -223,7 +224,7 @@ export function CalendarSettingsPage() {
                 {isLoading && (
                     <div className="flex flex-col items-center justify-center py-12 text-base-content/20 gap-3">
                         <div className="loading loading-spinner loading-md" />
-                        <span className="text-[10px] font-black uppercase tracking-[0.2em]">Поиск доступов...</span>
+                        <span className="text-[10px] font-black uppercase tracking-[0.2em]">{t('searching')}</span>
                     </div>
                 )}
             </main>
