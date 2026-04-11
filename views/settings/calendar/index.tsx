@@ -72,10 +72,10 @@ export function CalendarSettingsPage() {
             title: t('unsubscribe') + "?",
             message: `Вы действительно хотите отписаться от календаря ${name}?`,
             buttons: [
-                {id: "confirm", type: "destructive", text: t('unsubscribe')},
-                {id: "cancel", type: "cancel", text: t('cancel')},
+                {id: "confirm", type: "destructive" as const, text: t('unsubscribe')},
+                {id: "cancel", type: "cancel" as const, text: t('cancel')},
             ],
-        });
+        } as any);
 
         if (!confirmed || confirmed === "cancel") return;
 
