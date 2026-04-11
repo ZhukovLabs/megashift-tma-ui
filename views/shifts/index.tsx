@@ -33,34 +33,32 @@ export function ShiftsPage() {
     };
 
     return (
-        <div className="relative flex flex-col items-center w-full min-h-full overflow-hidden bg-base-100">
-            <header className="w-full pt-3 pb-5 px-6 sticky top-0 z-30 bg-base-100/60 backdrop-blur-xl border-b border-base-200/20 mb-6">
+        <div className="relative flex flex-col items-center w-full min-h-full bg-base-100">
+            <header className="w-full pt-3 pb-5 px-6 sticky top-0 z-30 bg-base-100/80 backdrop-blur-md border-b border-base-200/50 mb-6">
                 <div className="flex flex-col items-center justify-center max-w-xl mx-auto text-center">
                     <motion.div 
                         initial={{ opacity: 0, y: -5 }}
                         animate={{ opacity: 1, y: 0 }}
                         className="flex items-center gap-3"
                     >
-                        <h1 className="text-3xl font-black tracking-tighter text-base-content leading-none">
+                        <h1 className="text-3xl font-black tracking-tight text-base-content leading-none">
                             Смены
                         </h1>
                         {!isLoading && shifts.length > 0 && (
-                            <div className="bg-primary px-2.5 py-0.5 rounded-full shadow-sm">
-                                <span className="text-[10px] font-black text-primary-content uppercase tracking-widest">
-                                    {shifts.length}
-                                </span>
-                            </div>
+                            <span className="bg-base-200 text-base-content/50 text-[10px] font-black px-2 py-0.5 rounded-md uppercase tracking-wider">
+                                {shifts.length}
+                            </span>
                         )}
                     </motion.div>
                     {!isLoading && (
                         <p className="text-[9px] font-black uppercase tracking-[0.2em] text-base-content/20 mt-2 leading-none">
-                            Персональные шаблоны
+                            Шаблоны рабочего времени
                         </p>
                     )}
                 </div>
             </header>
 
-            <main className="w-full px-5 max-w-xl mx-auto relative z-10">
+            <main className="w-full px-4 max-w-xl mx-auto pb-32">
                 <ShiftsList
                     shifts={shifts}
                     isLoading={isLoading}
@@ -75,15 +73,17 @@ export function ShiftsPage() {
 
             <AnimatePresence>
                 <motion.button
-                    initial={{ scale: 0, y: 20 }}
-                    animate={{ scale: 1, y: 0 }}
-                    whileHover={{ scale: 1.05 }}
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
                     whileTap={{ scale: 0.9 }}
                     onClick={openCreateModal}
-                    className="fixed bottom-8 right-6 z-50 flex h-16 w-16 items-center justify-center rounded-full bg-primary text-primary-content shadow-[0_20px_40px_rgba(var(--p),0.4)] transition-all ring-4 ring-base-100"
+                    className="fixed bottom-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-primary text-primary-content shadow-lg border-4 border-base-100 transition-transform"
                     aria-label="Добавить смену"
+                    style={{
+                        left: 'calc(50% + 140px - 28px)',
+                    }}
                 >
-                    <Plus size={32} strokeWidth={3}/>
+                    <Plus size={28} strokeWidth={3}/>
                 </motion.button>
             </AnimatePresence>
         </div>

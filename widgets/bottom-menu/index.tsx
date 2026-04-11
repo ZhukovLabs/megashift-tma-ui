@@ -26,19 +26,22 @@ export function BottomMenu({items, className}: BottomMenuProps) {
             {!editIsOpen && (
                 <motion.div
                     key="bottom-menu-wrapper"
-                    initial={{y: 100, opacity: 0, x: '-50%'}}
-                    animate={{y: 0, opacity: 1, x: '-50%'}}
-                    exit={{y: 100, opacity: 0, x: '-50%'}}
-                    className="fixed bottom-6 left-1/2 z-40 w-full max-w-[360px] px-6 pb-safe flex justify-center"
+                    initial={{y: 100, x: '-50%'}}
+                    animate={{y: 0, x: '-50%'}}
+                    exit={{y: 100, x: '-50%'}}
+                    transition={{type: 'spring', stiffness: 300, damping: 30}}
+                    className={cn(
+                        'fixed bottom-6 left-1/2 z-40 w-full max-w-[280px] pb-safe flex justify-center',
+                        className
+                    )}
                 >
                     <div
                         className={cn(
-                            'flex items-center justify-around gap-2 px-8',
-                            'h-16 w-full',
-                            'rounded-[32px]',
-                            'bg-base-100/80 backdrop-blur-2xl',
-                            'shadow-[0_12px_40px_rgba(0,0,0,0.15)] border border-base-200/50',
-                            className
+                            'flex items-center justify-around gap-2 px-4',
+                            'h-14 w-full',
+                            'rounded-[24px]',
+                            'bg-base-100/90 backdrop-blur-xl',
+                            'shadow-lg border border-base-200/50'
                         )}
                     >
                         {items.map(({path, icon}) => {
@@ -50,17 +53,17 @@ export function BottomMenu({items, className}: BottomMenuProps) {
                                     href={path}
                                     className={cn(
                                         'relative flex items-center justify-center',
-                                        'h-12 w-12',
-                                        'rounded-2xl transition-all active:scale-90',
+                                        'h-10 w-10',
+                                        'rounded-xl transition-all active:scale-90',
                                         isActive
                                             ? 'text-primary'
-                                            : 'text-base-content/40 hover:text-base-content/70'
+                                            : 'text-base-content/40'
                                     )}
                                 >
                                     {isActive && (
                                         <motion.span
                                             layoutId="bottom-menu-indicator"
-                                            className="absolute inset-0 rounded-2xl bg-primary/10"
+                                            className="absolute inset-0 rounded-xl bg-primary/10"
                                             transition={{
                                                 type: 'spring',
                                                 stiffness: 400,
