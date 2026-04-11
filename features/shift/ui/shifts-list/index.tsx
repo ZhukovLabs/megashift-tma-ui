@@ -5,6 +5,7 @@ import {ShiftsListSkeleton} from "./skeleton";
 import {EmptyState} from "./empty-list";
 import {formatInTimeZone} from "date-fns-tz";
 import {useUserStore} from "@/entities/user";
+import {motion} from "framer-motion";
 
 type Shift = {
     id: string;
@@ -33,30 +34,29 @@ export default function ShiftsList({
     const isEmpty = !isLoading && shifts.length === 0;
 
     return (
-        <div className="relative w-full max-w-xl rounded-2xl overflow-hidden">
-            <div
-                className="relative"
-                style={{WebkitOverflowScrolling: "touch"}}
-            >
-                {isLoading && <ShiftsListSkeleton/>}
-                {isEmpty && <EmptyState onCreateClick={onCreateClick}/>}
+        <div className="w-full">
+            {isLoading && <ShiftsListSkeleton/>}
+            {isEmpty && <EmptyState onCreateClick={onCreateClick}/>}
 
-                {!isLoading && !isEmpty && (
-                    <ul className="flex flex-col gap-4 pb-8" role="list">
-                        {shifts.map((shift) => (
-                            <ShiftCard
-                                key={shift.id}
-                                label={shift.label}
-                                startTime={formatInTimeZone(shift.startTime, tz, 'HH:mm')}
-                                endTime={formatInTimeZone(shift.endTime, tz, 'HH:mm')}
-                                color={shift.color}
-                                onClick={() => onOpenShift?.(shift)}
-                                onDelete={() => onDeleteShift?.(shift)}
-                            />
-                        ))}
-                    </ul>
-                )}
-            </div>
+            {!isLoading && !isEmpty && (
+                <motion.ul 
+                    initial={false}
+                    className="flex flex-col gap-3 pb-32" 
+                    role="list"
+                >
+                    {shifts.map((shift, i) => (
+                        <ShiftCard
+                            key={shift.id}
+                            label={shift.label}
+                            startTime={formatInTimeZone(shift.startTime, tz, 'HH:mm')}
+                            endTime={formatInTimeZone(shift.endTime, tz, 'HH:mm')}
+                            color={shift.color}
+                            onClick={() => onOpenShift?.(shift)}
+                            onDelete={() => onDeleteShift?.(shift)}
+                        />
+                    ))}
+                </motion.ul>
+            )}
         </div>
     );
 }

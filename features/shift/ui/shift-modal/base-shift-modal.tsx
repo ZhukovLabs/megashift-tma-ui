@@ -6,6 +6,8 @@ import {ModalSheet} from '@/shared/ui/modal-sheet';
 import { defaultValues } from '@/features/shift/model';
 import {LoaderLarge} from '@/shared/ui/loader-large';
 import {getContrastColor, lightenHex} from "@/shared/lib";
+import {Clock, Type, Palette} from 'lucide-react';
+import cn from 'classnames';
 
 export type ShiftFormValues = {
     label: string;
@@ -59,11 +61,11 @@ export function BaseShiftModal({
             onClose={onClose}
             title={title}
             footer={
-                <div className="flex gap-3">
+                <div className="flex gap-4">
                     <button
                         type="button"
                         onClick={onClose}
-                        className="flex-1 btn btn-ghost rounded-full py-3 text-sm sm:text-base"
+                        className="flex-1 h-14 rounded-2xl font-bold bg-base-200/50 hover:bg-base-200 transition-all active:scale-95"
                     >
                         Отмена
                     </button>
@@ -71,7 +73,7 @@ export function BaseShiftModal({
                         type="button"
                         onClick={handleSubmit(onSubmit)}
                         disabled={isPending || isLoading}
-                        className="flex-1 btn btn-primary rounded-full py-3 text-sm sm:text-base"
+                        className="flex-1 h-14 rounded-2xl font-bold bg-primary text-primary-content shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all active:scale-95 disabled:opacity-50"
                     >
                         {isPending ? 'Сохраняем...' : submitLabel}
                     </button>
@@ -79,44 +81,53 @@ export function BaseShiftModal({
             }
         >
             {isLoading ? (<LoaderLarge/>) : (
-                <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-                    <input
-                        {...register('label', {required: true})}
-                        placeholder="Название смены"
-                        disabled={isLoading}
-                        className="input input-bordered w-full py-3 text-base sm:text-base"
-                    />
+                <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-8 pb-4">
+                    <div className="flex flex-col gap-3">
+                        <label className="flex items-center gap-2 text-xs font-black uppercase tracking-[2px] text-base-content/30 ml-1">
+                            <Type size={14} className="text-primary/50" />
+                            Название
+                        </label>
+                        <input
+                            {...register('label', {required: true})}
+                            placeholder="Название смены"
+                            disabled={isLoading}
+                            className="w-full h-16 px-6 rounded-[24px] bg-base-200/30 border-2 border-transparent focus:border-primary/20 focus:bg-base-100 transition-all text-lg font-bold outline-none placeholder:font-normal placeholder:opacity-30 shadow-inner"
+                        />
+                    </div>
 
-                    <div className="flex flex-col gap-2 w-full">
-                        <label className="text-sm text-gray-600">Цвет</label>
+                    <div className="flex flex-col gap-3">
+                        <label className="flex items-center gap-2 text-xs font-black uppercase tracking-[2px] text-base-content/30 ml-1">
+                            <Palette size={14} className="text-primary/50" />
+                            Визуальный стиль
+                        </label>
                         <div
-                            className="relative w-full h-14 rounded-lg border border-gray-200 shadow-sm overflow-hidden transition-transform duration-150"
+                            className="relative w-full h-20 rounded-[28px] border-2 border-transparent shadow-xl overflow-hidden active:scale-[0.98] transition-all cursor-pointer group"
                             style={{
-                                background: `linear-gradient(90deg, ${base} 0%, ${light} 100%)`,
+                                background: `linear-gradient(135deg, ${base} 0%, ${light} 100%)`,
                             }}
-                            title={base.toUpperCase()}
                             onClick={() => {
                                 const el = document.getElementById('shift-color-input') as HTMLInputElement | null;
-                                el?.focus();
                                 el?.click();
                             }}
                         >
                             <div
-                                className="absolute inset-0 flex items-center justify-between px-4"
+                                className="absolute inset-0 flex items-center justify-between px-6"
                                 style={{color: textColor}}
                             >
-                                <div className="flex items-center gap-3">
-                                    <span
-                                        className="w-8 h-8 rounded-full border border-gray-300 shadow-inner flex-shrink-0"
+                                <div className="flex items-center gap-4">
+                                    <div
+                                        className="w-10 h-10 rounded-full border-2 border-white/30 shadow-2xl flex-shrink-0 relative overflow-hidden"
                                         style={{backgroundColor: base}}
-                                        aria-hidden
-                                    />
-                                    <div className="flex flex-col">
-                                        <span className="text-sm font-medium select-none">{base.toUpperCase()}</span>
+                                    >
+                                        <div className="absolute inset-0 bg-gradient-to-tr from-black/10 to-transparent" />
+                                    </div>
+                                    <div className="flex flex-col leading-none">
+                                        <span className="text-xl font-black tracking-tight">{base.toUpperCase()}</span>
+                                        <span className="text-[10px] uppercase font-bold tracking-widest opacity-60">Акцентный цвет</span>
                                     </div>
                                 </div>
-                                <div className="flex items-center gap-3">
-                                    <span className="text-xs opacity-80 select-none">Нажмите для выбора</span>
+                                <div className="h-10 w-10 flex items-center justify-center rounded-full bg-black/10 group-hover:bg-black/20 transition-all">
+                                    <Palette size={20} />
                                 </div>
                             </div>
 
@@ -126,25 +137,36 @@ export function BaseShiftModal({
                                 {...register('color', {required: true})}
                                 onChange={onColorChange}
                                 disabled={isLoading}
-                                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                                aria-label="Выбрать цвет смены"
+                                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer pointer-events-auto"
                             />
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-2">
-                        <input
-                            type="time"
-                            {...register('startTime', {required: true})}
-                            disabled={isLoading}
-                            className="input input-bordered w-full py-3 text-sm"
-                        />
-                        <input
-                            type="time"
-                            {...register('endTime', {required: true})}
-                            disabled={isLoading}
-                            className="input input-bordered w-full py-3 text-sm"
-                        />
+                    <div className="flex flex-col gap-3">
+                        <label className="flex items-center gap-2 text-xs font-black uppercase tracking-[2px] text-base-content/30 ml-1">
+                            <Clock size={14} className="text-primary/50" />
+                            Временной интервал
+                        </label>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="relative group">
+                                <input
+                                    type="time"
+                                    {...register('startTime', {required: true})}
+                                    disabled={isLoading}
+                                    className="w-full h-16 px-6 rounded-[24px] bg-base-200/30 border-2 border-transparent focus:border-primary/20 focus:bg-base-100 transition-all text-xl font-black outline-none shadow-inner flex justify-center text-center no-scrollbar"
+                                />
+                                <span className="absolute -top-2 left-6 px-2 bg-base-100 rounded-full text-[9px] font-black text-primary/40 group-focus-within:text-primary transition-colors">НАЧАЛО</span>
+                            </div>
+                            <div className="relative group">
+                                <input
+                                    type="time"
+                                    {...register('endTime', {required: true})}
+                                    disabled={isLoading}
+                                    className="w-full h-16 px-6 rounded-[24px] bg-base-200/30 border-2 border-transparent focus:border-primary/20 focus:bg-base-100 transition-all text-xl font-black outline-none shadow-inner text-center"
+                                />
+                                <span className="absolute -top-2 left-6 px-2 bg-base-100 rounded-full text-[9px] font-black text-primary/40 group-focus-within:text-primary transition-colors">КОНЕЦ</span>
+                            </div>
+                        </div>
                     </div>
                 </form>
             )}
