@@ -3,8 +3,10 @@
 import {useState} from "react";
 import { AccessClaim, ACCESS_CLAIM_LABELS } from '@/entities/access';
 import {useUpdateAccess, useRevokeAllAccess} from "@/features/user/api";
-import {Trash2, Save, ChevronDown} from "lucide-react";
+import {Trash2, Save, ChevronDown, UserCircle2, Shield} from "lucide-react";
 import {toast} from "react-toastify";
+import cn from "classnames";
+import {motion, AnimatePresence} from "framer-motion";
 
 type AccessUser = {
     id: string;
@@ -72,129 +74,152 @@ export function AccessTable({users}: Props) {
 
     if (!users?.length) {
         return (
-            <div className="mt-8 text-center text-sm text-base-content/60">
-                Пока никто не имеет доступ к вашему расписанию
+            <div className="flex flex-col items-center justify-center py-12 px-6 bg-base-200/20 rounded-[32px] border-2 border-dashed border-base-200">
+                <UserCircle2 size={40} className="text-base-content/10 mb-3" />
+                <span className="text-sm font-bold text-base-content/20 uppercase tracking-widest text-center">Нет активных доступов</span>
             </div>
         );
     }
 
     return (
-        <div className="mt-8 space-y-5">
-            <h2
-                className="font-medium text-base-content mb-2 block">Пользователи имеющие доступ к вашему
-                расписанию:</h2>
+        <div className="space-y-6">
+            <div className="flex items-center gap-3 px-2">
+                <div className="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
+                    <Shield size={20} strokeWidth={2.5} />
+                </div>
+                <h2 className="text-sm font-black uppercase tracking-widest text-base-content/40">Имеют доступ</h2>
+            </div>
 
-            {users.map((user) => {
-                const currentClaims = edited[user.id] ?? user.claims;
-                const isOpen = openUser === user.id;
+            <div className="space-y-3">
+                {users.map((user) => {
+                    const currentClaims = edited[user.id] ?? user.claims;
+                    const isOpen = openUser === user.id;
 
-                const initials =
-                    `${user.name?.[0] ?? ""}${user.surname?.[0] ?? ""}`.toUpperCase();
+                    const initials =
+                        `${user.name?.[0] ?? ""}${user.surname?.[0] ?? ""}`.toUpperCase();
 
-                return (
-                    <div
-                        key={user.id}
-                        className="rounded-2xl bg-base-100 shadow-sm hover:shadow-md transition-shadow border border-base-200"
-                    >
+                    return (
                         <div
-                            onClick={() =>
-                                setOpenUser(isOpen ? null : user.id)
-                            }
-                            className="flex items-center justify-between p-4 cursor-pointer"
+                            key={user.id}
+                            className={cn(
+                                "rounded-[32px] bg-base-100 border transition-all duration-300",
+                                isOpen ? "border-primary/20 shadow-lg" : "border-base-200 shadow-sm"
+                            )}
                         >
-                            <div className="flex items-center gap-3">
-                                <div
-                                    className="shrink-0 w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center text-sm font-semibold">
-                                    {initials}
-                                </div>
-
-                                <div>
-                                    <div className="font-medium text-sm">
-                                        {user.surname} {user.name}
+                            <div
+                                onClick={() =>
+                                    setOpenUser(isOpen ? null : user.id)
+                                }
+                                className="flex items-center justify-between p-4 pl-5 cursor-pointer"
+                            >
+                                <div className="flex items-center gap-4">
+                                    <div
+                                        className="shrink-0 w-12 h-12 rounded-[18px] bg-primary/5 text-primary flex items-center justify-center text-base font-black shadow-inner">
+                                        {initials}
                                     </div>
 
-                                    <div className="flex flex-wrap gap-1 mt-1">
-                                        {currentClaims.map(claim => (
-                                            <span
-                                                key={claim}
-                                                className="badge badge-primary badge-soft badge-xs"
-                                            >
-                                                {ACCESS_CLAIM_LABELS[claim]}
-                                            </span>
-                                        ))}
-                                    </div>
-                                </div>
-                            </div>
+                                    <div className="flex flex-col">
+                                        <div className="font-bold text-base text-base-content/90">
+                                            {user.surname} {user.name}
+                                        </div>
 
-                            <ChevronDown
-                                size={18}
-                                className={`text-base-content/60 transition-transform duration-200 ${
-                                    isOpen ? "rotate-180" : ""
-                                }`}
-                            />
-                        </div>
-
-                        <div
-                            className={`grid transition-all duration-300 ${
-                                isOpen
-                                    ? "grid-rows-[1fr] opacity-100"
-                                    : "grid-rows-[0fr] opacity-0"
-                            }`}
-                        >
-                            <div className="overflow-hidden border-t border-base-200 px-4 pb-4 space-y-4">
-                                <div className="pt-4 flex flex-col gap-3">
-                                    {Object.values(AccessClaim).map(claim => {
-                                        const isChecked =
-                                            currentClaims.includes(claim);
-                                        const isRead =
-                                            claim === AccessClaim.READ;
-
-                                        return (
-                                            <label
-                                                key={claim}
-                                                className="flex items-center justify-between bg-base-200/40 hover:bg-base-200 rounded-xl px-3 py-2 transition-colors"
-                                            >
-                                                <span className="text-sm">
+                                        <div className="flex flex-wrap gap-1 mt-1">
+                                            {currentClaims.map(claim => (
+                                                <span
+                                                    key={claim}
+                                                    className="text-[8px] font-black uppercase tracking-tighter px-1.5 py-0.5 rounded-md bg-primary/10 text-primary"
+                                                >
                                                     {ACCESS_CLAIM_LABELS[claim]}
                                                 </span>
-
-                                                <input
-                                                    type="checkbox"
-                                                    className="toggle toggle-primary toggle-sm"
-                                                    checked={isChecked}
-                                                    disabled={isRead}
-                                                    onChange={() =>
-                                                        handleToggle(user.id, claim)
-                                                    }
-                                                />
-                                            </label>
-                                        );
-                                    })}
+                                            ))}
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <div className="flex gap-3 pt-2">
-                                    <button
-                                        className="btn btn-primary btn-sm flex-1 gap-2"
-                                        disabled={isUpdating}
-                                        onClick={() => handleSave(user.id)}
-                                    >
-                                        <Save size={16}/>
-                                        Сохранить
-                                    </button>
-
-                                    <button
-                                        className="btn btn-error btn-outline btn-sm"
-                                        disabled={isDeleting}
-                                        onClick={() => handleDelete(user.id)}
-                                    >
-                                        <Trash2 size={16}/>
-                                    </button>
+                                <div className={cn(
+                                    "w-10 h-10 rounded-2xl flex items-center justify-center transition-colors",
+                                    isOpen ? "bg-primary text-primary-content" : "bg-base-200/50 text-base-content/20"
+                                )}>
+                                    <ChevronDown
+                                        size={20}
+                                        strokeWidth={3}
+                                        className={cn("transition-transform duration-300", isOpen && "rotate-180")}
+                                    />
                                 </div>
                             </div>
+
+                            <AnimatePresence>
+                                {isOpen && (
+                                    <motion.div
+                                        initial={{ height: 0, opacity: 0 }}
+                                        animate={{ height: 'auto', opacity: 1 }}
+                                        exit={{ height: 0, opacity: 0 }}
+                                        className="overflow-hidden"
+                                    >
+                                        <div className="px-5 pb-6 pt-2 space-y-5">
+                                            <div className="h-px bg-base-200/60 w-full" />
+                                            
+                                            <div className="flex flex-col gap-2">
+                                                <span className="text-[10px] font-black uppercase tracking-widest text-base-content/20 ml-1">Права управления</span>
+                                                {Object.values(AccessClaim).map(claim => {
+                                                    const isChecked = currentClaims.includes(claim);
+                                                    const isRead = claim === AccessClaim.READ;
+
+                                                    return (
+                                                        <label
+                                                            key={claim}
+                                                            className={cn(
+                                                                "flex items-center justify-between p-4 rounded-2xl transition-all",
+                                                                isChecked ? "bg-primary/5" : "bg-base-200/30"
+                                                            )}
+                                                        >
+                                                            <span className={cn(
+                                                                "text-sm font-bold",
+                                                                isChecked ? "text-base-content" : "text-base-content/40"
+                                                            )}>
+                                                                {ACCESS_CLAIM_LABELS[claim]}
+                                                            </span>
+
+                                                            <input
+                                                                type="checkbox"
+                                                                className="toggle toggle-primary toggle-sm"
+                                                                checked={isChecked}
+                                                                disabled={isRead}
+                                                                onChange={() =>
+                                                                    handleToggle(user.id, claim)
+                                                                }
+                                                            />
+                                                        </label>
+                                                    );
+                                                })}
+                                            </div>
+
+                                            <div className="flex gap-3">
+                                                <button
+                                                    className="btn btn-primary h-12 flex-1 rounded-2xl gap-2 font-black uppercase tracking-widest text-[10px]"
+                                                    disabled={isUpdating}
+                                                    onClick={() => handleSave(user.id)}
+                                                >
+                                                    <Save size={16} strokeWidth={3}/>
+                                                    Сохранить
+                                                </button>
+
+                                                <button
+                                                    className="btn btn-error btn-outline h-12 w-12 p-0 rounded-2xl flex items-center justify-center border-2 active:bg-error active:text-white"
+                                                    disabled={isDeleting}
+                                                    onClick={() => handleDelete(user.id)}
+                                                >
+                                                    <Trash2 size={18} strokeWidth={2.5}/>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
                         </div>
-                    </div>
-                );
-            })}
+                    );
+                })}
+            </div>
         </div>
     );
 }
