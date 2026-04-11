@@ -14,7 +14,7 @@ type DayCellProps = {
 };
 
 const MAX_VISIBLE = 2;
-const DEFAULT_LABEL = "(Без названия)";
+const DEFAULT_LABEL = "";
 const TIME_FORMAT = "HH:mm";
 
 const TEMPLATE_PALETTE = [
@@ -63,18 +63,18 @@ export const DayCell = memo(function DayCell({day, monthDate, isLastInRow}: DayC
     const more = events.length - visible.length;
 
     const getDayClasses = () => {
-        const classes: string[] = ["flex flex-col flex-1 min-h-0 cursor-pointer select-none transition-all duration-150"];
+        const classes: string[] = ["flex flex-col flex-1 min-h-0 cursor-pointer select-none transition-colors active:bg-base-200/50 relative overflow-hidden"];
 
         if (holiday) {
             classes.push("bg-error/5");
         } else if (config.showWeekends && weekend) {
             if (config.weekendHighlight === "background" || config.weekendHighlight === "both") {
-                classes.push("bg-error/10");
+                classes.push("bg-base-200/40");
             } else {
                 classes.push("bg-base-100");
             }
         } else if (!isCurrentMonth) {
-            classes.push("bg-base-200/20");
+            classes.push("bg-base-200/10 opacity-40");
         } else {
             classes.push("bg-base-100");
         }
@@ -83,20 +83,20 @@ export const DayCell = memo(function DayCell({day, monthDate, isLastInRow}: DayC
     };
 
     const getTextClasses = () => {
-        const classes: string[] = [];
+        const classes: string[] = ["text-xs font-bold transition-colors"];
 
         if (isTodayDay) {
-            classes.push("text-primary font-bold");
+            classes.push("text-primary ring-2 ring-primary ring-offset-2 rounded-full px-1 flex items-center justify-center min-w-[20px] h-[20px] bg-primary/10");
         } else if (holiday) {
-            classes.push("text-error font-bold");
+            classes.push("text-error");
         } else if (config.showWeekends && weekend) {
             if (config.weekendHighlight === "text" || config.weekendHighlight === "both") {
-                classes.push("text-warning font-bold");
+                classes.push("text-error/70");
             } else {
-                classes.push(isCurrentMonth ? "text-base-content" : "text-base-content/30");
+                classes.push(isCurrentMonth ? "text-base-content/70" : "text-base-content/20");
             }
         } else {
-            classes.push(isCurrentMonth ? "text-base-content" : "text-base-content/30");
+            classes.push(isCurrentMonth ? "text-base-content/70" : "text-base-content/20");
         }
 
         return classes;
@@ -107,19 +107,19 @@ export const DayCell = memo(function DayCell({day, monthDate, isLastInRow}: DayC
             onClick={() => onDayClick?.(day, events)}
             className={cn(
                 getDayClasses(),
-                "border-r border-b border-base-300/30",
+                "border-r border-b border-base-200/50",
                 isLastInRow && "border-r-0",
                 "w-full min-w-0 box-border"
             )}
         >
-            <div className="relative z-10 flex flex-col h-full p-1 min-h-0">
-                <div className="text-center shrink-0">
-                    <span className={cn("text-sm font-semibold", getTextClasses())}>
+            <div className="relative z-10 flex flex-col h-full p-0.5 min-h-0 pointer-events-none">
+                <div className="flex justify-center items-center h-5 mb-0.5 shrink-0">
+                    <span className={cn(getTextClasses())}>
                         {format(day, "d")}
                     </span>
                 </div>
 
-                <div className="flex-1 px-0.5 pb-0.5 flex flex-col gap-0.5 overflow-hidden min-h-0">
+                <div className="flex-1 px-0.5 flex flex-col gap-0.5 overflow-hidden min-h-0 justify-start">
                     {visible.map(event => {
                         const tpl = event.shiftTemplateId ? templateMap.get(event.shiftTemplateId) : null;
                         const label = tpl?.label ?? DEFAULT_LABEL;
@@ -136,34 +136,24 @@ export const DayCell = memo(function DayCell({day, monthDate, isLastInRow}: DayC
                             ? `repeating-linear-gradient(45deg, ${lightenHex(color, 28)}, ${lightenHex(color, 28)} 3px, ${color} 3px, ${color} 6px)`
                             : undefined;
 
-                        const timeBg = "rgba(0,0,0,0.06)";
-
                         return (
                             <div
                                 key={event.id}
-                                className="rounded-sm text-[9px] font-medium text-center truncate transition-transform hover:scale-[1.02] shrink-0"
+                                className={cn(
+                                    "rounded-sm text-[8px] font-bold text-center truncate px-0.5 py-0.5 flex flex-col justify-center leading-none shadow-sm shrink-0",
+                                )}
                                 style={{
-                                    backgroundColor: cardBackground,
+                                    backgroundColor: cardBackground || color,
                                     backgroundImage: cardBackgroundImage,
                                     color: textColor,
-                                    lineHeight: 1.2,
+                                    borderLeft: `2px solid ${color}`
                                 }}
-                                title={label}
                             >
-                                <div className="px-1 py-0.5 leading-tight">{label}</div>
-
+                                <span className="truncate">{label}</span>
                                 {time && (
-                                    <div
-                                        className="px-1 pb-0.5 text-[8px] leading-none"
-                                        style={{
-                                            color: textColor,
-                                            background: timeBg,
-                                            borderTopLeftRadius: 4,
-                                            borderTopRightRadius: 4,
-                                        }}
-                                    >
+                                    <span className="opacity-80 text-[7px]">
                                         {formatInTimeZone(new Date(time), tz, TIME_FORMAT)}
-                                    </div>
+                                    </span>
                                 )}
                             </div>
                         );
@@ -171,7 +161,7 @@ export const DayCell = memo(function DayCell({day, monthDate, isLastInRow}: DayC
 
                     {more > 0 && (
                         <div
-                            className="mt-auto shrink-0 rounded text-[9px] text-center text-base-content/50 bg-base-300/40 py-0.5 leading-none font-medium">
+                            className="text-[7px] font-black text-center text-base-content/40 bg-base-300/30 rounded py-0.5 leading-none shrink-0">
                             +{more}
                         </div>
                     )}

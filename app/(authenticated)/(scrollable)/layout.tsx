@@ -5,8 +5,10 @@ type ScrollableLayoutProps = {
 }
 
 const ScrollableLayout = ({children}: ScrollableLayoutProps) => (
-    <div className="h-[80vh] max-h-[80vh] overflow-y-auto overflow-x-hidden p-2 pr-4">
-        {children}
+    <div className="flex-1 overflow-y-auto overflow-x-hidden p-4 pb-28 scroll-smooth antialiased">
+        <div className="max-w-md mx-auto">
+            {children}
+        </div>
     </div>
 )
 

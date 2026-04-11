@@ -24,8 +24,8 @@ export function StatisticsPage() {
 
     if (isLoading) {
         return (
-            <div className="min-h-screen flex flex-col items-center bg-base-100 px-4">
-                <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-center mb-5">
+            <div className="flex flex-col items-center w-full">
+                <h1 className="text-2xl font-black tracking-tight text-center mb-6 mt-2">
                     {t('title')}
                 </h1>
                 <MonthSelector
@@ -40,17 +40,19 @@ export function StatisticsPage() {
     }
 
     return (
-        <div className="min-h-screen flex flex-col items-center bg-base-100 px-4">
-            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-center mb-5">
+        <div className="flex flex-col items-center w-full">
+            <h1 className="text-3xl font-black tracking-tight text-center mb-8 mt-2">
                 {t('title')}
             </h1>
 
-            <MonthSelector
-                year={year}
-                month={month}
-                onChange={set}
-                yearPlaceholder={t('yearPlaceholder')}
-            />
+            <div className="w-full mb-6">
+                <MonthSelector
+                    year={year}
+                    month={month}
+                    onChange={set}
+                    yearPlaceholder={t('yearPlaceholder')}
+                />
+            </div>
 
             <MonthSwitcher
                 year={year}
@@ -58,25 +60,35 @@ export function StatisticsPage() {
                 onNext={next}
                 onPrev={prev}
             >
-                <StatisticsTable
-                    data={shiftCount.items}
-                    formatNumber={formatNumberRU}
-                    totalLabel={t('total')}
-                    noDataMessage={t('noData')}
-                />
-                <StatisticsTable
-                    data={shiftHours.items}
-                    formatNumber={formatNumberRU}
-                    totalLabel={t('total')}
-                    noDataMessage={t('noData')}
-                />
-                <SalaryProgress
-                    typeSalary={salary.typeSalary}
-                    salary={salary.salary}
-                    maxSalary={salary.maxSalary}
-                    currencySymbol={currencySymbol?.symbol}
-                    salaryTypeLabel={t(`salaryTypes.${salary.typeSalary}`)}
-                />
+                <div className="space-y-6 w-full">
+                    <div className="bg-base-200/30 rounded-[24px] p-1">
+                        <StatisticsTable
+                            data={shiftCount.items}
+                            formatNumber={formatNumberRU}
+                            totalLabel={t('total')}
+                            noDataMessage={t('noData')}
+                        />
+                    </div>
+                    
+                    <div className="bg-base-200/30 rounded-[24px] p-1">
+                        <StatisticsTable
+                            data={shiftHours.items}
+                            formatNumber={formatNumberRU}
+                            totalLabel={t('total')}
+                            noDataMessage={t('noData')}
+                        />
+                    </div>
+
+                    <div className="bg-primary/5 rounded-[32px] p-6 border border-primary/10">
+                        <SalaryProgress
+                            typeSalary={salary.typeSalary}
+                            salary={salary.salary}
+                            maxSalary={salary.maxSalary}
+                            currencySymbol={currencySymbol?.symbol}
+                            salaryTypeLabel={t(`salaryTypes.${salary.typeSalary}`)}
+                        />
+                    </div>
+                </div>
             </MonthSwitcher>
         </div>
     );

@@ -12,17 +12,24 @@ export function SafeContentArea({children, className}: Props) {
     const [insets, setInsets] = useState({top: 0, bottom: 0});
 
     useEffect(() => {
-        const safeInsets = viewport.safeAreaInsets();
-        setInsets({
-            top: safeInsets?.top ?? 0,
-            bottom: safeInsets?.bottom ?? 0,
-        });
+        try {
+            const safeInsets = viewport.contentSafeAreaInsets();
+            setInsets({
+                top: safeInsets?.top ?? 0,
+                bottom: safeInsets?.bottom ?? 0,
+            });
+        } catch (e) {
+            console.error("Failed to get viewport insets", e);
+        }
     }, []);
 
     return (
         <div
-            className={`h-[calc(100dvh - ${insets.top}px - ${insets.bottom}px)] w-full max-w-lg mx-auto ${className ?? ''}`}
-            style={{paddingTop: insets.top, paddingBottom: insets.bottom}}
+            className={`w-full max-w-lg mx-auto flex flex-col relative overflow-hidden h-screen h-[100dvh] ${className ?? ''}`}
+            style={{
+                paddingTop: insets.top,
+                paddingBottom: insets.bottom
+            }}
         >
             {children}
         </div>

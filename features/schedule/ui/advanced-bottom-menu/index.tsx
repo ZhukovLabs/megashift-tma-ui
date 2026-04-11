@@ -6,7 +6,7 @@ import {useUserStore} from '@/entities/user';
 import {useScheduleStore} from '@/features/schedule/model';
 import {useGetShiftTemplates} from '@/features/shift-template/api';
 import {formatInTimeZone} from 'date-fns-tz';
-import {X, Edit2} from 'lucide-react';
+import {X, Edit2, Plus} from 'lucide-react';
 import Link from 'next/link';
 import {ROUTES} from '@/shared/constants/routes';
 
@@ -32,24 +32,21 @@ export function AdvancedBottomMenu() {
         <>
             <motion.button
                 whileTap={{scale: 0.9}}
-                whileHover={{scale: 1.05}}
                 onClick={toggleMenu}
                 className={cn(
-                    'fixed bottom-4 right-4 z-50 h-14 w-14 rounded-full flex items-center justify-center',
-                    'bg-base-100/90 backdrop-blur-xl shadow-lg shadow-black/10',
-                    'border border-base-300',
-                    'transition-all duration-300'
+                    'fixed bottom-7 right-6 z-[70] h-14 w-14 rounded-full flex items-center justify-center',
+                    'bg-primary text-primary-content shadow-[0_12px_32px_rgba(var(--p),0.3)] pb-safe transition-all'
                 )}
             >
                 <AnimatePresence mode="wait" initial={false}>
                     <motion.span
                         key={editIsOpen ? 'close' : 'open'}
-                        initial={{opacity: 0, rotate: -90, scale: 0.8}}
+                        initial={{opacity: 0, rotate: -90, scale: 0.5}}
                         animate={{opacity: 1, rotate: 0, scale: 1}}
-                        exit={{opacity: 0, rotate: 90, scale: 0.8}}
+                        exit={{opacity: 0, rotate: 90, scale: 0.5}}
                         transition={{duration: 0.2}}
                     >
-                        {editIsOpen ? <X size={24}/> : <Edit2 size={24}/>}
+                        {editIsOpen ? <X size={26}/> : <Edit2 size={24}/>}
                     </motion.span>
                 </AnimatePresence>
             </motion.button>
@@ -57,80 +54,52 @@ export function AdvancedBottomMenu() {
             <AnimatePresence>
                 {editIsOpen && (
                     <motion.div
-                        initial={{y: 80, scale: 0.95}}
-                        animate={{y: 0, scale: 1}}
-                        exit={{y: 80, scale: 0.95}}
-                        transition={{type: 'spring', stiffness: 260, damping: 24}}
-                        className={cn(
-                            'fixed bottom-4 left-2 sm:left-1/2 z-50 w-max max-w-[calc(100vw-90px)]',
-                            'sm:-translate-x-1/2'
-                        )}
+                        key="edit-bar-wrapper"
+                        initial={{y: 100, opacity: 0}}
+                        animate={{y: 0, opacity: 1}}
+                        exit={{y: 100, opacity: 0}}
+                        transition={{type: 'spring', stiffness: 300, damping: 30}}
+                        className="fixed bottom-6 left-6 z-[65] right-22 pb-safe flex justify-start"
                     >
                         <div
                             className={cn(
-                                'flex items-center gap-2 px-3 py-2 rounded-full',
-                                'bg-base-100/80 backdrop-blur-xl shadow-lg shadow-black/10 border border-base-300',
-                                'overflow-x-auto',
-                                'w-[calc(100vw-90px)] sm:mx-20 sm:w-auto'
+                                'flex items-center gap-3 px-4 py-2',
+                                'h-16 w-full',
+                                'rounded-[32px]',
+                                'bg-base-100/95 backdrop-blur-2xl',
+                                'shadow-[0_12px_40px_rgba(0,0,0,0.15)] border border-base-200/50'
                             )}
                         >
-                            {isLoading && (
-                                <span className="text-xs opacity-60 px-2">Загрузка...</span>
-                            )}
-
-                            {!isLoading && templates.length === 0 && (
+                            <div className="flex-1 flex gap-3 overflow-x-auto no-scrollbar scroll-smooth">
                                 <Link
                                     href={ROUTES.createShift}
-                                    className={cn(
-                                        'flex items-center justify-center px-4 py-2 mx-auto',
-                                        'text-sm font-semibold rounded-lg',
-                                        'bg-gradient-to-r from-primary to-secondary text-primary-content',
-                                        'shadow-lg shadow-primary/40',
-                                        'whitespace-nowrap'
-                                    )}
+                                    className="flex flex-col items-center justify-center min-w-[70px] h-12 rounded-2xl bg-primary text-primary-content shrink-0 shadow-md transition-transform active:scale-95"
                                 >
-                                    + Создать смену
+                                    <Plus size={20}/>
+                                    <span className="text-[10px] font-black uppercase">Новая</span>
                                 </Link>
-                            )}
 
-                            {templates.map(item => {
-                                const isActive = item.id === selectedShiftId;
-
-                                return (
-                                    <button
-                                        key={item.id}
-                                        onClick={() => toggleShift(item.id)}
-                                        className={cn(
-                                            'relative flex items-center gap-2 px-3 py-1.5 rounded-lg flex-shrink-0 transition-all',
-                                            'bg-base-200/80 border border-base-300/40',
-                                            isActive
-                                                ? 'text-primary shadow-md ring-1 ring-primary/40'
-                                                : 'opacity-90 hover:opacity-100'
-                                        )}
-                                    >
-                                        {isActive && (
-                                            <motion.span
-                                                layoutId="floating-menu-active"
-                                                className="absolute inset-0 rounded-lg bg-primary/10"
-                                                transition={{type: 'spring', stiffness: 400, damping: 30}}
-                                            />
-                                        )}
-
-                                        <span
-                                            className="h-3 w-3 rounded-full flex-shrink-0 shadow-sm"
-                                            style={{backgroundColor: item.color}}
-                                        />
-
-                                        <div className="flex flex-col leading-none z-10">
-                                            <span className="text-xs font-semibold">{item.label}</span>
-                                            <span className="text-[10px] opacity-70">
-                                                {formatInTimeZone(item.startTime, tz, 'HH:mm')} –{' '}
-                                                {formatInTimeZone(item.endTime, tz, 'HH:mm')}
+                                {isLoading && <div className="loading loading-spinner loading-xs mx-auto text-primary"></div>}
+                                
+                                {templates.map(item => {
+                                    const isActive = item.id === selectedShiftId;
+                                    return (
+                                        <button
+                                            key={item.id}
+                                            onClick={() => toggleShift(item.id)}
+                                            className={cn(
+                                                'flex flex-col items-center justify-center min-w-[70px] h-12 rounded-2xl transition-all relative px-2 active:scale-95',
+                                                isActive ? 'bg-primary/10 ring-2 ring-primary/30' : 'bg-base-200/50 hover:bg-base-200'
+                                            )}
+                                        >
+                                            <div className="h-2.5 w-2.5 rounded-full mb-1 shrink-0" style={{backgroundColor: item.color}} />
+                                            <span className="text-[10px] font-bold truncate w-full text-center leading-none">
+                                                {item.label}
                                             </span>
-                                        </div>
-                                    </button>
-                                );
-                            })}
+                                        </button>
+                                    );
+                                })}
+                            </div>
                         </div>
                     </motion.div>
                 )}

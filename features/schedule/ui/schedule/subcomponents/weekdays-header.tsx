@@ -6,7 +6,7 @@ export const WeekdaysHeader = () => {
     const dayNames = getDayNames(config.startOfWeek ?? 1);
 
     return (
-        <div className="grid grid-cols-7 text-center w-full box-border px-0.5 bg-base-100 relative z-10">
+        <div className="grid grid-cols-7 text-center w-full box-border px-0 bg-base-100/50 backdrop-blur-sm sticky top-[68px] z-10 border-b border-base-200/40">
             {dayNames.map((day, idx) => {
                 const dayIndex = ((config.startOfWeek ?? 1) + idx) % 7;
                 const isWeekend = dayIndex === 0 || dayIndex === 6;
@@ -17,8 +17,8 @@ export const WeekdaysHeader = () => {
                     <div 
                         key={idx} 
                         className={cn(
-                            "py-1.5 text-[10px] font-semibold uppercase tracking-wider transition-colors border-b border-base-300/40",
-                            shouldHighlight ? "text-warning" : "text-base-content/45"
+                            "py-2 text-[10px] font-bold uppercase tracking-widest transition-colors",
+                            shouldHighlight ? "text-error/70" : "text-base-content/40"
                         )}
                     >
                         {day}

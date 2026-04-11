@@ -2,6 +2,7 @@ import {format, isSameMonth} from "date-fns";
 import {ru} from "date-fns/locale";
 import {useSchedule} from "../context";
 import cn from "classnames";
+import {ChevronLeft, ChevronRight} from "lucide-react";
 
 export const CalendarHeader = () => {
     const {currentDate, nextMonth, prevMonth} = useSchedule();
@@ -14,38 +15,36 @@ export const CalendarHeader = () => {
 
     return (
         <div
-            className="flex items-center justify-center gap-2 px-1 py-2 bg-base-100 box-border w-full flex-shrink-0 relative z-20">
-            <button
-                onClick={prevMonth}
-                className="btn btn-ghost btn-sm btn-circle min-h-0 h-8 w-8 p-0 hover:bg-base-200"
-                aria-label="Предыдущий месяц"
-            >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24"
-                     stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7"/>
-                </svg>
-            </button>
-
-            <div className="flex flex-col items-center w-[125px]">
-                <h1 className="text-base font-bold tracking-tight text-base-content">
-                    {capitalizedMonth} {year}
+            className="flex items-center justify-between px-4 py-3 bg-base-100/80 backdrop-blur-md sticky top-0 box-border w-full flex-shrink-0 relative z-20 border-b border-base-200/50">
+            <div className="flex flex-col">
+                <h1 className="text-xl font-extrabold tracking-tight text-base-content flex items-baseline gap-2">
+                    {capitalizedMonth}
+                    <span className="text-sm font-medium text-base-content/40">{year}</span>
                 </h1>
-                <span
-                    className={cn("text-[9px] text-primary font-semibold tracking-wide uppercase",
-                        {'opacity-0': !isCurrentMonth}
-                    )}>Текущий месяц</span>
+                {isCurrentMonth && (
+                    <span className="text-[10px] text-primary font-bold tracking-wider uppercase">
+                        Текущий месяц
+                    </span>
+                )}
             </div>
 
-            <button
-                onClick={nextMonth}
-                className="btn btn-ghost btn-sm btn-circle min-h-0 h-8 w-8 p-0 hover:bg-base-200"
-                aria-label="Следующий месяц"
-            >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24"
-                     stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7"/>
-                </svg>
-            </button>
+            <div className="flex items-center gap-1 bg-base-200/50 p-1 rounded-xl">
+                <button
+                    onClick={prevMonth}
+                    className="btn btn-ghost btn-xs btn-square h-8 w-8 hover:bg-base-100 shadow-sm transition-all active:scale-95"
+                    aria-label="Предыдущий месяц"
+                >
+                    <ChevronLeft size={18} className="text-base-content/70"/>
+                </button>
+
+                <button
+                    onClick={nextMonth}
+                    className="btn btn-ghost btn-xs btn-square h-8 w-8 hover:bg-base-100 shadow-sm transition-all active:scale-95"
+                    aria-label="Следующий месяц"
+                >
+                    <ChevronRight size={18} className="text-base-content/70"/>
+                </button>
+            </div>
         </div>
     );
 };
