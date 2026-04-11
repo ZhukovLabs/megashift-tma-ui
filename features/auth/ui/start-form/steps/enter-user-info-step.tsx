@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { StepProps, FormData, getCurrentTimeInTZ, getOffset, TIMEZONES } from '@/features/auth/model';
 import { useTranslations } from 'next-intl';
 import { useFormContext, useWatch } from 'react-hook-form';
+import { motion } from 'framer-motion';
 
 type EnterUserInfoStepProps = StepProps & { isValid: boolean };
 
@@ -23,69 +24,81 @@ export const EnterUserInfoStep = ({onNext, onBack, isValid}: EnterUserInfoStepPr
     }, [selectedTimezone]);
 
     return (
-        <div className="w-full mx-auto p-6 rounded-2xl">
-            <h2 className="mb-6">{t("title")}</h2>
+        <div className="w-full flex flex-col flex-1 min-h-0 overflow-hidden">
+            <div className="flex-1 overflow-y-auto no-scrollbar pb-4 pr-1">
+                <h2 className="text-xl font-black tracking-tight mb-5 text-base-content/90">{t("title")}</h2>
 
-            <form onSubmit={handleSubmit(onNext!)} className="w-full">
-                <div className="flex flex-col [&>span]:mb-5">
-                    <input
-                        {...register('surname')}
-                        className="input w-full"
-                        placeholder={t('surname.placeholder')}
-                        autoComplete="family-name"
-                        required
-                    />
-                    <span className="text-red-500 text-sm">{errors.surname?.message}</span>
+                <form onSubmit={handleSubmit(onNext!)} className="w-full space-y-4">
+                    <div className="space-y-3">
+                        <div className="group">
+                            <input
+                                {...register('surname')}
+                                className="w-full h-12 px-4 rounded-xl bg-base-200/50 border-2 border-transparent focus:border-primary/20 focus:bg-base-100 transition-all font-bold text-sm outline-none placeholder:font-normal placeholder:opacity-30"
+                                placeholder={t('surname.placeholder')}
+                                autoComplete="family-name"
+                                required
+                            />
+                            {errors.surname && <span className="text-error text-[10px] font-bold mt-1 ml-2">{errors.surname.message}</span>}
+                        </div>
 
-                    <input
-                        {...register('name')}
-                        className="input w-full"
-                        placeholder={t('name.placeholder')}
-                        autoComplete="given-name"
-                        required
-                    />
-                    <span className="text-red-500 text-sm">{errors.name?.message}</span>
+                        <div className="group">
+                            <input
+                                {...register('name')}
+                                className="w-full h-12 px-4 rounded-xl bg-base-200/50 border-2 border-transparent focus:border-primary/20 focus:bg-base-100 transition-all font-bold text-sm outline-none placeholder:font-normal placeholder:opacity-30"
+                                placeholder={t('name.placeholder')}
+                                autoComplete="given-name"
+                                required
+                            />
+                            {errors.name && <span className="text-error text-[10px] font-bold mt-1 ml-2">{errors.name.message}</span>}
+                        </div>
 
-                    <input
-                        {...register('patronymic')}
-                        className="input w-full"
-                        placeholder={t('patronymic.placeholder')}
-                        autoComplete="additional-name"
-                    />
-                    <span className="text-red-500 text-sm">{errors.patronymic?.message}</span>
+                        <div className="group">
+                            <input
+                                {...register('patronymic')}
+                                className="w-full h-12 px-4 rounded-xl bg-base-200/50 border-2 border-transparent focus:border-primary/20 focus:bg-base-100 transition-all font-bold text-sm outline-none placeholder:font-normal placeholder:opacity-30"
+                                placeholder={t('patronymic.placeholder')}
+                                autoComplete="additional-name"
+                            />
+                            {errors.patronymic && <span className="text-error text-[10px] font-bold mt-1 ml-2">{errors.patronymic.message}</span>}
+                        </div>
+                    </div>
 
-                    <label className="mt-4 mb-1 font-medium">Часовой пояс</label>
-                    <select
-                        {...register('timezone', {required: true})}
-                        className="input w-full"
-                        defaultValue="UTC"
-                    >
-                        {TIMEZONES.map(({tz, label}) => (
-                            <option key={tz} value={tz}>
-                                {label} ({getOffset(tz)})
-                            </option>
-                        ))}
-                    </select>
-                    <span className="text-red-500 text-sm">{errors.timezone?.message}</span>
+                    <div className="pt-2">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-base-content/30 ml-2 mb-2 block">Часовой пояс</label>
+                        <select
+                            {...register('timezone', {required: true})}
+                            className="w-full h-12 px-4 rounded-xl bg-base-200/50 border-2 border-transparent focus:border-primary/20 transition-all font-bold text-sm outline-none appearance-none"
+                            defaultValue="UTC"
+                        >
+                            {TIMEZONES.map(({tz, label}) => (
+                                <option key={tz} value={tz}>
+                                    {label} ({getOffset(tz)})
+                                </option>
+                            ))}
+                        </select>
+                        <p className="text-[10px] text-base-content/40 mt-2 ml-2 font-medium">
+                            У вас сейчас: <span className="text-primary font-bold">{currentTime}</span>
+                        </p>
+                    </div>
+                </form>
+            </div>
 
-                    <p className="text-sm text-gray-500 mt-2">
-                        У вас сейчас: <strong>{currentTime}</strong> в выбранном часовом поясе
-                    </p>
-                </div>
-
-                <div className="flex gap-3 mt-8">
-                    <button type="button" onClick={onBack} className="btn btn-outline flex-1">
-                        Назад
-                    </button>
-                    <button
-                        type="submit"
-                        disabled={!isValid}
-                        className="btn btn-primary flex-1"
-                    >
-                        Продолжить
-                    </button>
-                </div>
-            </form>
+            <div className="mt-4 flex gap-3 pb-2 shrink-0">
+                <button 
+                    type="button" 
+                    onClick={onBack} 
+                    className="h-14 flex-1 rounded-2xl bg-base-200 text-base-content/60 font-black uppercase tracking-widest text-xs active:scale-95 transition-all"
+                >
+                    Назад
+                </button>
+                <button
+                    onClick={handleSubmit(onNext!)}
+                    disabled={!isValid}
+                    className="h-14 flex-1 rounded-2xl bg-primary text-primary-content font-black uppercase tracking-widest text-xs shadow-lg shadow-primary/20 active:scale-95 transition-all disabled:opacity-50"
+                >
+                    Продолжить
+                </button>
+            </div>
         </div>
     );
 };
