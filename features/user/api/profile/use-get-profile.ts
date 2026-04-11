@@ -9,6 +9,7 @@ export type ProfileResponse = {
     patronymic?: string | null;
     createdAt: string;
     timezone: string;
+    notifyBeforeMinutes: number;
 };
 
 export const useGetProfile = () => {

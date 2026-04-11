@@ -1,15 +1,84 @@
 {
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "confirm": "Confirm",
+    "unsubscribe": "Unsubscribe",
+    "error": "Error",
+    "success": "Success",
+    "loading": "Loading...",
+    "at": "at"
+  },
   "profile": {
     "title": "Profile",
-    "registered": "Registered"
+    "registered": "Registered",
+    "saved": "Profile updated",
+    "error": "Save error",
+    "localTime": "Local time",
+    "timezone": "Timezone",
+    "notifyBefore": "Remind before",
+    "disabled": "Off",
+    "minutes15": "15 min",
+    "minutes30": "30 min",
+    "hour1": "1 hour",
+    "hours2": "2 hours",
+    "notifyDisabled": "Disabled",
+    "minutes": "min",
+    "hour": "hour",
+    "hours": "hours",
+    "edit": "Edit",
+    "save": "Save",
+    "cancel": "Cancel",
+    "registrationDate": "Registration date",
+    "surname": {
+      "label": "Surname*",
+      "placeholder": "Enter your surname",
+      "required": "Surname is required"
+    },
+    "name": {
+      "label": "Name*",
+      "placeholder": "Enter your name",
+      "required": "Name is required"
+    },
+    "patronymic": {
+      "label": "Patronymic",
+      "placeholder": "Enter your patronymic (optional)"
+    },
+    "timezoneSelect": "Select timezone",
+    "timezones": {
+      "minsk": "Minsk",
+      "moscow": "Moscow",
+      "kyiv": "Kyiv",
+      "london": "London",
+      "paris": "Paris",
+      "newYork": "New York",
+      "losAngeles": "Los Angeles",
+      "tokyo": "Tokyo",
+      "utc": "UTC"
+    }
   },
   "settings": {
+    "main": {
+      "title": "Settings",
+      "subtitle": "System configuration",
+      "account": "Account",
+      "app": "App",
+      "work": "Work",
+      "sharedAccess": "Shared access",
+      "profileDesc": "Name, photo, personal data",
+      "sharedAccessDesc": "Access to your schedule",
+      "calendarDesc": "Calendar to display",
+      "appDesc": "Language, notifications",
+      "compensationDesc": "Payment type, rate and limits"
+    },
     "app": {
       "title": "App settings",
       "subtitle": "Interface settings",
       "language": "Language",
       "languageSection": "Interface language",
-      "notifications": "Notifications (coming soon)",
+      "notifications": "Notifications",
+      "notifyBefore": "Remind before shift",
       "inDevelopment": "In development"
     },
     "calendar": {
@@ -27,24 +96,13 @@
     "profile": {
       "title": "Profile",
       "subtitle": "Personal settings",
-      "localTime": "Local time",
-      "timezone": "Timezone",
       "edit": "Edit",
       "save": "Save",
       "cancel": "Cancel",
       "registrationDate": "Registration date",
-      "surname": {
-        "label": "Surname*",
-        "placeholder": "Enter your surname"
-      },
-      "name": {
-        "label": "Name*",
-        "placeholder": "Enter your name"
-      },
-      "patronymic": {
-        "label": "Patronymic",
-        "placeholder": "Enter your patronymic (optional)"
-      }
+      "localTime": "Local time",
+      "timezone": "Timezone",
+      "notifyBefore": "Remind before"
     },
     "sharedAccess": {
       "title": "Shared access",
@@ -75,20 +133,12 @@
       "placeholder": "0",
       "save": "Save",
       "saving": "Saving...",
-      "enterCorrectAmount": "Enter correct amount"
-    },
-    "main": {
-      "title": "Settings",
-      "subtitle": "System configuration",
-      "account": "Account",
-      "app": "App",
-      "work": "Work",
-      "sharedAccess": "Shared access",
-      "profileDesc": "Name, photo, personal data",
-      "sharedAccessDesc": "Access to your schedule",
-      "calendarDesc": "Calendar to display",
-      "appDesc": "Language, notifications",
-      "compensationDesc": "Payment type, rate and limits"
+      "enterCorrectAmount": "Enter correct amount",
+      "typeHourly": "Hourly",
+      "typeShift": "Shift",
+      "typeMonthly": "Monthly",
+      "salary": "Salary",
+      "currency": "Currency"
     }
   },
   "shifts": {
@@ -115,7 +165,7 @@
     "end": "END",
     "cancel": "Cancel"
   },
-"statistics": {
+  "statistics": {
     "title": "Statistics",
     "subtitle": "Analytics and income",
     "total": "Total",
@@ -126,7 +176,11 @@
       "SHIFT": "Shift",
       "MONTHLY": "Monthly",
       "UNKNOWN": "Unknown"
-    }
+    },
+    "totalHours": "Total hours",
+    "totalShifts": "Total shifts",
+    "earned": "Earned",
+    "month": "Month"
   },
   "start-form": {
     "welcome-step": {
@@ -137,13 +191,48 @@
       "user": "User"
     }
   },
-  "common": {
-    "save": "Save",
-    "cancel": "Cancel",
-    "delete": "Delete",
-    "confirm": "Confirm",
-    "unsubscribe": "Unsubscribe",
-    "error": "Error",
-    "success": "Success"
+  "app": {
+    "welcome": "Welcome",
+    "continue": "Continue",
+    "back": "Back",
+    "next": "Next",
+    "skip": "Skip"
+  },
+  "schedule": {
+    "today": "Today",
+    "noShifts": "No shifts"
+  },
+  "auth": {
+    "start": "Start",
+    "enterName": "How should we call you?",
+    "namePlaceholder": "Your name",
+    "surnamePlaceholder": "Your surname",
+    "continueBtn": "Continue"
+  },
+  "onboarding": {
+    "welcome": "Welcome to Megashift",
+    "desc": "Manage your shifts and get statistics",
+    "name": "Your name",
+    "namePlaceholder": "John",
+    "surname": "Surname",
+    "surnamePlaceholder": "Doe",
+    "continue": "Continue",
+    "selectTimezone": "Select timezone",
+    "timezoneSearchPlaceholder": "Search...",
+    "createCalendar": "Create calendar",
+    "calendarName": "Calendar name",
+    "calendarNamePlaceholder": "Work shifts"
+  },
+  "invite": {
+    "title": "Invite",
+    "enterUser": "Enter username",
+    "send": "Send",
+    "success": "Invitation sent",
+    "error": "Error"
+  },
+  "share": {
+    "title": "Share",
+    "linkDesc": "Send link to a friend",
+    "copied": "Copied!"
   }
 }

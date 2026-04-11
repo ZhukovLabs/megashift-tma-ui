@@ -1,39 +1,26 @@
 'use client';
 
-import {useEffect, useMemo, useState} from 'react';
+import {useEffect, useState, useMemo} from 'react';
 import {useGetProfile, useUpdateProfile} from '@/features/user/api';
 import {format} from 'date-fns';
-import {ru} from 'date-fns/locale';
-import {Pencil, X, Save, Globe, Clock, CalendarDays, Camera, ShieldCheck} from 'lucide-react';
+import {ru, enUS} from 'date-fns/locale';
+import {Pencil, Save, Globe, Clock, CalendarDays, ShieldCheck} from 'lucide-react';
 import {useLaunchParams} from '@tma.js/sdk-react';
 import {useForm, useWatch} from 'react-hook-form';
 import {z} from 'zod';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {toast} from 'react-toastify';
-import {useTranslations} from 'next-intl';
+import {useTranslations, useLocale} from 'next-intl';
 import {motion, AnimatePresence} from 'framer-motion';
-import cn from 'classnames';
 
-const schema = z.object({
-    surname: z.string().min(1, 'Фамилия обязательна').max(50),
-    name: z.string().min(1, 'Имя обязательно').max(50),
+const createSchema = (t: any) => z.object({
+    surname: z.string().min(1, t('surname.required')).max(50),
+    name: z.string().min(1, t('name.required')).max(50),
     patronymic: z.string().max(50).optional().or(z.literal('')),
-    timezone: z.string().min(1, 'Выберите часовой пояс'),
+    timezone: z.string().min(1, t('timezoneSelect')),
 });
 
-type FormValues = z.infer<typeof schema>;
-
-const TIMEZONES = [
-    {label: 'Минск', tz: 'Europe/Minsk'},
-    {label: 'Москва', tz: 'Europe/Moscow'},
-    {label: 'Киев', tz: 'Europe/Kyiv'},
-    {label: 'Лондон', tz: 'Europe/London'},
-    {label: 'Париж', tz: 'Europe/Paris'},
-    {label: 'Нью-Йорк', tz: 'America/New_York'},
-    {label: 'Лос-Анджелес', tz: 'America/Los_Angeles'},
-    {label: 'Токио', tz: 'Asia/Tokyo'},
-    {label: 'UTC', tz: 'UTC'},
-];
+type FormValues = z.infer<ReturnType<typeof createSchema>>;
 
 function getOffset(tz: string) {
     try {
@@ -47,9 +34,9 @@ function getOffset(tz: string) {
     }
 }
 
-function getTimeInZone(tz: string) {
+function getTimeInZone(tz: string, locale: string) {
     try {
-        return new Intl.DateTimeFormat('ru-RU', {
+        return new Intl.DateTimeFormat(locale === 'ru' ? 'ru-RU' : 'en-US', {
             hour: '2-digit',
             minute: '2-digit',
             hour12: false,
@@ -60,36 +47,13 @@ function getTimeInZone(tz: string) {
     }
 }
 
-function formatRegDate(dateStr: string, tz?: string) {
-    try {
-        const d = new Date(dateStr);
-        if (!tz) return format(d, 'dd.MM.yyyy', {locale: ru});
-
-        const date = new Intl.DateTimeFormat('ru-RU', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
-            timeZone: tz,
-        }).format(d);
-
-        const time = new Intl.DateTimeFormat('ru-RU', {
-            hour: '2-digit',
-            minute: '2-digit',
-            timeZone: tz,
-            hour12: false,
-        }).format(d);
-
-        return `${date} в ${time}`;
-    } catch {
-        return '—';
-    }
-}
-
 export function ProfileSettingsPage() {
     const {data: user, isLoading} = useGetProfile();
     const {mutateAsync: update, isPending} = useUpdateProfile();
     const t = useTranslations('profile');
     const tSettings = useTranslations('settings.profile');
+    const tCommon = useTranslations('common');
+    const locale = useLocale();
 
     const lp = useLaunchParams(true);
     const photo = lp.tgWebAppData?.user?.photoUrl;
@@ -97,23 +61,35 @@ export function ProfileSettingsPage() {
     const [imgError, setImgError] = useState(false);
     const [editing, setEditing] = useState(false);
 
+    const TIMEZONES = useMemo(() => [
+        {label: t('timezones.minsk'), tz: 'Europe/Minsk'},
+        {label: t('timezones.moscow'), tz: 'Europe/Moscow'},
+        {label: t('timezones.kyiv'), tz: 'Europe/Kyiv'},
+        {label: t('timezones.london'), tz: 'Europe/London'},
+        {label: t('timezones.paris'), tz: 'Europe/Paris'},
+        {label: t('timezones.newYork'), tz: 'America/New_York'},
+        {label: t('timezones.losAngeles'), tz: 'America/Los_Angeles'},
+        {label: t('timezones.tokyo'), tz: 'Asia/Tokyo'},
+        {label: t('timezones.utc'), tz: 'UTC'},
+    ], [t]);
+
     const {register, handleSubmit, reset, formState: {errors, isDirty}, control} =
         useForm<FormValues>({
-            resolver: zodResolver(schema),
+            resolver: zodResolver(createSchema(t)),
             defaultValues: {surname: '', name: '', patronymic: '', timezone: 'UTC'},
         });
 
     const watchedTz = useWatch({control, name: 'timezone'});
 
-    const [now, setNow] = useState(getTimeInZone(user?.timezone ?? 'UTC'));
+    const [now, setNow] = useState(getTimeInZone(user?.timezone ?? 'UTC', locale));
 
     useEffect(() => {
         const tz = editing ? watchedTz || user?.timezone || 'UTC' : user?.timezone || 'UTC';
-        setNow(getTimeInZone(tz));
+        setNow(getTimeInZone(tz, locale));
 
-        const id = setInterval(() => setNow(getTimeInZone(tz)), 1000);
+        const id = setInterval(() => setNow(getTimeInZone(tz, locale)), 1000);
         return () => clearInterval(id);
-    }, [editing, watchedTz, user?.timezone]);
+    }, [editing, watchedTz, user?.timezone, locale]);
 
     useEffect(() => {
         if (user) {
@@ -126,13 +102,40 @@ export function ProfileSettingsPage() {
         }
     }, [user, reset]);
 
+    const formatRegDate = (dateStr: string, tz?: string) => {
+        try {
+            const d = new Date(dateStr);
+            const dateLocale = locale === 'ru' ? ru : enUS;
+            
+            if (!tz) return format(d, 'dd.MM.yyyy', {locale: dateLocale});
+
+            const date = new Intl.DateTimeFormat(locale === 'ru' ? 'ru-RU' : 'en-US', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                timeZone: tz,
+            }).format(d);
+
+            const time = new Intl.DateTimeFormat(locale === 'ru' ? 'ru-RU' : 'en-US', {
+                hour: '2-digit',
+                minute: '2-digit',
+                timeZone: tz,
+                hour12: false,
+            }).format(d);
+
+            return `${date} ${tCommon('at')} ${time}`;
+        } catch {
+            return '—';
+        }
+    };
+
     const onSubmit = async (values: FormValues) => {
         try {
             await update(values);
-            toast.success('Профиль обновлен');
+            toast.success(t('saved'));
             setEditing(false);
         } catch {
-            toast.error('Ошибка сохранения');
+            toast.error(t('error'));
         }
     };
 

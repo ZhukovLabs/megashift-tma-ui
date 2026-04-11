@@ -1,15 +1,46 @@
 'use client';
 
-import {Globe, ChevronDown, Check} from 'lucide-react';
+import {useState} from 'react';
+import {Globe, Bell, Check} from 'lucide-react';
 import {useLocale, useTranslations} from 'next-intl';
 import { setLocale } from '@/shared/i18n/actions';
 import { localesMap } from '@/shared/i18n/config';
+import {useGetProfile, useUpdateProfile} from '@/features/user/api';
 import {motion} from 'framer-motion';
+import {toast} from 'react-toastify';
 import cn from 'classnames';
+
+const NOTIFY_OPTIONS = [
+    { value: 0, labelKey: 'disabled' },
+    { value: 1, labelKey: 'minutes1' },
+    { value: 5, labelKey: 'minutes5' },
+    { value: 15, labelKey: 'minutes15' },
+    { value: 30, labelKey: 'minutes30' },
+    { value: 60, labelKey: 'hour1' },
+    { value: 120, labelKey: 'hours2' },
+];
 
 export function AppSettingsPage() {
     const t = useTranslations('settings.app');
+    const tProfile = useTranslations('profile');
     const currentLocale = useLocale();
+    
+    const { data: user } = useGetProfile();
+    const { mutateAsync: updateProfile } = useUpdateProfile();
+    
+    const [notifyValue, setNotifyValue] = useState(user?.notifyBeforeMinutes ?? 30);
+    
+    const notifyBefore = user?.notifyBeforeMinutes ?? 30;
+    
+    const handleNotifyChange = async (value: number) => {
+        setNotifyValue(value);
+        try {
+            await updateProfile({ notifyBeforeMinutes: value });
+            toast.success(tProfile('saved'));
+        } catch {
+            toast.error(tProfile('error'));
+        }
+    };
 
     return (
         <div className="flex flex-col items-center w-full min-h-full bg-base-100">
@@ -79,17 +110,46 @@ export function AppSettingsPage() {
                         </div>
                     </div>
 
-                    {/* Дополнительная карточка (плейсхолдер для уведомлений или темы) */}
-                    <div className="opacity-40 grayscale pointer-events-none">
-                        <div className="space-y-3">
-                            <label className="text-[10px] font-black uppercase tracking-widest text-base-content/30 ml-1 block">
-                                {t('notifications')}
-                            </label>
-                            <div className="bg-base-200/30 rounded-[32px] p-6 border border-dashed border-base-300 flex flex-col items-center justify-center gap-2">
-                                <div className="w-12 h-12 rounded-full bg-base-200 flex items-center justify-center text-base-content/20">
-                                    <Check size={24} />
+                    {/* Секция уведомлений */}
+                    <div className="space-y-3">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-base-content/30 ml-1 block">
+                            {t('notifications')}
+                        </label>
+                        
+                        <div className="bg-base-100 rounded-[32px] border border-base-200 shadow-[0_4px_20px_rgba(0,0,0,0.02)] overflow-hidden">
+                            <div className="flex items-center gap-4 px-6 py-5">
+                                <div className="w-10 h-10 rounded-2xl bg-primary text-primary-content shadow-lg shadow-primary/20 flex items-center justify-center">
+                                    <Bell size={20} strokeWidth={3} />
                                 </div>
-                                <span className="text-xs font-bold text-base-content/20 uppercase tracking-widest">{t('inDevelopment')}</span>
+                                <div className="flex-1">
+                                    <span className="text-base font-bold text-base-content">
+                                        {t('notifyBefore')}
+                                    </span>
+                                </div>
+                            </div>
+                            <div className="border-t border-base-200/50">
+                                <select
+                                    value={notifyBefore}
+                                    onChange={(e) => handleNotifyChange(Number(e.target.value))}
+                                    className="w-full h-14 px-6 bg-transparent font-bold text-base text-base-content outline-none appearance-none cursor-pointer text-left"
+                                >
+                                    {NOTIFY_OPTIONS.map((opt) => {
+                                    const labelMap: Record<string, string> = {
+                                        disabled: tProfile('disabled'),
+                                        minutes1: tProfile('minutes1'),
+                                        minutes5: tProfile('minutes5'),
+                                        minutes15: tProfile('minutes15'),
+                                        minutes30: tProfile('minutes30'),
+                                        hour1: tProfile('hour1'),
+                                        hours2: tProfile('hours2'),
+                                    };
+                                    return (
+                                        <option key={opt.value} value={opt.value}>
+                                            {labelMap[opt.labelKey]}
+                                        </option>
+                                    );
+                                })}
+                                </select>
                             </div>
                         </div>
                     </div>

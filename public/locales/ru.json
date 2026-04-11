@@ -1,15 +1,86 @@
 {
+  "common": {
+    "save": "Сохранить",
+    "cancel": "Отмена",
+    "delete": "Удалить",
+    "confirm": "Подтвердить",
+    "unsubscribe": "Отписаться",
+    "error": "Ошибка",
+    "success": "Успех",
+    "loading": "Загрузка...",
+    "at": "в"
+  },
   "profile": {
     "title": "Профиль",
-    "registered": "Зарегистрирован"
+    "registered": "Зарегистрирован",
+    "saved": "Профиль обновлен",
+    "error": "Ошибка сохранения",
+    "localTime": "Местное время",
+    "timezone": "Часовой пояс",
+    "notifyBefore": "Напомнить за",
+    "disabled": "Выключены",
+    "minutes1": "1 мин",
+    "minutes5": "5 мин",
+    "minutes15": "15 мин",
+    "minutes30": "30 мин",
+    "hour1": "1 час",
+    "hours2": "2 часа",
+    "notifyDisabled": "Выключены",
+    "minutes": "мин",
+    "hour": "час",
+    "hours": "часов",
+    "edit": "Редактировать",
+    "save": "Сохранить",
+    "cancel": "Отмена",
+    "registrationDate": "Дата регистрации",
+    "surname": {
+      "label": "Фамилия*",
+      "placeholder": "Введите фамилию",
+      "required": "Фамилия обязательна"
+    },
+    "name": {
+      "label": "Имя*",
+      "placeholder": "Введите имя",
+      "required": "Имя обязательно"
+    },
+    "patronymic": {
+      "label": "Отчество",
+      "placeholder": "Введите отчество (необязательно)"
+    },
+    "timezoneSelect": "Выберите часовой пояс",
+    "timezones": {
+      "minsk": "Минск",
+      "moscow": "Москва",
+      "kyiv": "Киев",
+      "london": "Лондон",
+      "paris": "Париж",
+      "newYork": "Нью-Йорк",
+      "losAngeles": "Лос-Анджелес",
+      "tokyo": "Токио",
+      "utc": "UTC"
+    }
   },
   "settings": {
+    "main": {
+      "title": "Настройки",
+      "subtitle": "Конфигурация системы",
+      "account": "Аккаунт",
+      "app": "Приложение",
+      "work": "Работа",
+      "sharedAccess": "Общий доступ",
+      "profileDesc": "Имя, фото, личные данные",
+      "sharedAccessDesc": "Доступ к вашему расписанию",
+      "calendarDesc": "Календарь для отображения",
+      "appDesc": "Язык, уведомления",
+      "compensationDesc": "Тип оплаты, ставка и лимиты"
+    },
     "app": {
       "title": "Настройки приложения",
       "subtitle": "Настройки интерфейса",
       "language": "Язык",
       "languageSection": "Язык интерфейса",
-      "notifications": "Уведомления (скоро)",
+      "notifications": "Уведомления",
+      "notifyBefore": "Напомнить перед сменой",
       "inDevelopment": "В разработке"
     },
     "calendar": {
@@ -27,12 +98,13 @@
     "profile": {
       "title": "Профиль",
       "subtitle": "Личные настройки",
-      "localTime": "Местное время",
-      "timezone": "Часовой пояс",
       "edit": "Редактировать",
       "save": "Сохранить",
       "cancel": "Отмена",
-      "registrationDate": "Дата регистрации"
+      "registrationDate": "Дата регистрации",
+      "localTime": "Местное время",
+      "timezone": "Часовой пояс",
+      "notifyBefore": "Напомнить за"
     },
     "sharedAccess": {
       "title": "Общий доступ",
@@ -47,36 +119,28 @@
       "rightsManagement": "Права управления"
     },
     "compensation": {
-      "title": "Оплата труда",
-      "subtitle": "Параметры дохода",
-      "calculationMethod": "Метод расчета",
-      "hourly": "Час",
-      "shift": "Смена",
-      "monthly": "Месяц",
-      "unknown": "Неизвестно",
-      "hourlyRate": "Ставка в час",
-      "shiftRate": "Ставка за смену",
-      "monthlySalary": "Месячная зарплата",
-      "financialGoal": "Финансовая цель (опционально)",
-      "notSet": "Не установлена",
-      "goalCannotBeLess": "Цель не может быть меньше основной ставки",
+      "title": "Компенсация",
+      "subtitle": "Income parameters",
+      "calculationMethod": "Calculation method",
+      "hourly": "Hour",
+      "shift": "Shift",
+      "monthly": "Month",
+      "unknown": "Unknown",
+      "hourlyRate": "Hourly rate",
+      "shiftRate": "Shift rate",
+      "monthlySalary": "Monthly salary",
+      "financialGoal": "Financial goal (optional)",
+      "notSet": "Not set",
+      "goalCannotBeLess": "Goal cannot be less than base rate",
       "placeholder": "0",
-      "save": "Сохранить",
-      "saving": "Сохранение...",
-      "enterCorrectAmount": "Введите корректную сумму"
-    },
-    "main": {
-      "title": "Настройки",
-      "subtitle": "Конфигурация системы",
-      "account": "Аккаунт",
-      "app": "Приложение",
-      "work": "Работа",
-      "sharedAccess": "Общий доступ",
-      "profileDesc": "Имя, фото, личные данные",
-      "sharedAccessDesc": "Доступ к вашему расписанию",
-      "calendarDesc": "Календарь для отображения",
-      "appDesc": "Язык, уведомления",
-      "compensationDesc": "Тип оплаты, ставка и лимиты"
+      "save": "Save",
+      "saving": "Saving...",
+      "enterCorrectAmount": "Enter correct amount",
+      "typeHourly": "Почасовая",
+      "typeShift": "За смену",
+      "typeMonthly": "Фиксированная",
+      "salary": "Оклад",
+      "currency": "Валюта"
     }
   },
   "shifts": {
@@ -93,7 +157,7 @@
     "create": "Создать смену",
     "createButton": "Создать",
     "save": "Сохранить",
-    "saving": "Сохраняем...",
+    "saving": "Сохранение...",
     "nameLabel": "Название",
     "namePlaceholder": "Название смены",
     "visualStyle": "Визуальный стиль",
@@ -103,7 +167,7 @@
     "end": "КОНЕЦ",
     "cancel": "Отмена"
   },
-"statistics": {
+  "statistics": {
     "title": "Статистика",
     "subtitle": "Аналитика и доходы",
     "total": "Всего",
@@ -111,51 +175,66 @@
     "yearPlaceholder": "Год",
     "salaryTypes": {
       "HOURLY": "Почасовая",
-      "SHIFT": "Посменная",
-      "MONTHLY": "Месячная",
+      "SHIFT": "За смену",
+      "MONTHLY": "Оклад",
       "UNKNOWN": "Неизвестно"
-    }
+    },
+    "totalHours": "Всего часов",
+    "totalShifts": "Всего смен",
+    "earned": "Заработано",
+    "month": "Месяц"
   },
   "start-form": {
     "welcome-step": {
       "title": "Привет",
-      "subtitle": "Давайте заполним ваши данные. Это займёт всего несколько шагов.",
-      "description": "На следующем шаге вам нужно будет ввести ваши личные данные. Мы гарантируем конфиденциальность и безопасность вашей информации.",
+      "subtitle": "Давайте заполним ваши данные. Это займет всего несколько шагов.",
+      "description": "На следующем шаге вам нужно будет ввести свои личные данные. Мы гарантируем конфиденциальность и безопасность вашей информации.",
       "next": "Начать заполнение",
       "user": "Пользователь"
-    },
-    "enter-user-info-step": {
-      "title": "Личные данные",
-      "surname": {
-        "label": "Фамилия*",
-        "placeholder": "Введите вашу фамилию"
-      },
-      "name": {
-        "label": "Имя*",
-        "placeholder": "Введите вашу имя"
-      },
-      "patronymic": {
-        "label": "Отчество",
-        "placeholder": "Введите ваше отчество (если есть)"
-      }
-    },
-    "development-step": {
-      "title": "Добро пожаловать!",
-      "titleWithName": "Добро пожаловать, {name}!",
-      "status": "🚧 Приложение в разработке",
-      "description": "Мы активно работаем над созданием функционального и удобного приложения. Скоро появится множество интересных функций!",
-      "thankYou": "Спасибо за регистрацию и проявленный интерес! Мы уведомим вас, когда приложение будет готово.",
-      "additionalInfo": "Ожидайте уведомлений о запуске",
-      "continue": "Понятно"
     }
   },
-  "common": {
-    "save": "Сохранить",
-    "cancel": "Отмена",
-    "delete": "Удалить",
-    "confirm": "Подтвердить",
-    "unsubscribe": "Отписаться",
-    "error": "Ошибка",
-    "success": "Успешно"
+  "app": {
+    "welcome": "Добро пожаловать",
+    "continue": "Продолжить",
+    "back": "Назад",
+    "next": "Далее",
+    "skip": "Пропустить"
+  },
+  "schedule": {
+    "today": "Сегодня",
+    "noShifts": "Нет смен"
+  },
+  "auth": {
+    "start": "Начать",
+    "enterName": "Как к вам обращаться?",
+    "namePlaceholder": "Ваше имя",
+    "surnamePlaceholder": "Ваша фамилия",
+    "continueBtn": "Продолжить"
+  },
+  "onboarding": {
+    "welcome": "Добро пожаловать в Megashift",
+    "desc": "Управляйте рабочими сменами и получайте статистику",
+    "name": "Ваше имя",
+    "namePlaceholder": "Иван",
+    "surname": "Фамилия",
+    "surnamePlaceholder": "Иванов",
+    "continue": "Продолжить",
+    "selectTimezone": "Выберите часовой пояс",
+    "timezoneSearchPlaceholder": "Поиск...",
+    "createCalendar": "Создать календарь",
+    "calendarName": "Название календаря",
+    "calendarNamePlaceholder": "Рабочие смены"
+  },
+  "invite": {
+    "title": "Пригласить",
+    "enterUser": "Введите username",
+    "send": "Отправить",
+    "success": "Приглашение отправлено",
+    "error": "Ошибка"
+  },
+  "share": {
+    "title": "Поделиться",
+    "linkDesc": "Отправьте ссылку другу",
+    "copied": "Скопировано!"
   }
 }

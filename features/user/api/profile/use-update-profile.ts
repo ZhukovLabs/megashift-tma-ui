@@ -7,6 +7,8 @@ export type UpdateProfilePayload = {
     surname?: string;
     name?: string;
     patronymic?: string;
+    timezone?: string;
+    notifyBeforeMinutes?: number;
 };
 
 export const useUpdateProfile = () => {
