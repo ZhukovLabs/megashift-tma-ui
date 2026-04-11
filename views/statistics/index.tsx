@@ -23,20 +23,24 @@ export function StatisticsPage() {
 
     const {isLoading, shiftCount, shiftHours, salary} = useStatisticsData(year, month);
 
+    const header = (
+        <header className="w-full pt-2 pb-4 px-6 sticky top-0 z-30 bg-base-100 border-b border-base-200/60 shadow-sm">
+            <div className="flex flex-col items-center justify-center max-w-xl mx-auto text-center">
+                <h1 className="text-2xl font-black tracking-tight text-base-content leading-none">
+                    {t('title')}
+                </h1>
+                <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-base-content/20 mt-1.5 leading-none">
+                    Аналитика и доходы
+                </p>
+            </div>
+        </header>
+    );
+
     if (isLoading) {
         return (
             <div className="flex flex-col items-center w-full min-h-full">
-                <header className="w-full pt-3 pb-5 px-6 sticky top-0 z-30 bg-base-100/80 backdrop-blur-md border-b border-base-200/50 mb-6">
-                    <div className="flex flex-col items-center justify-center max-w-xl mx-auto text-center">
-                        <h1 className="text-3xl font-black tracking-tight text-base-content leading-none">
-                            {t('title')}
-                        </h1>
-                        <p className="text-[9px] font-black uppercase tracking-[0.2em] text-base-content/20 mt-2 leading-none">
-                            Загрузка данных...
-                        </p>
-                    </div>
-                </header>
-                <div className="px-4 w-full max-w-xl mx-auto">
+                {header}
+                <div className="px-4 py-6 w-full max-w-xl mx-auto">
                     <MonthSelector
                         year={year}
                         month={month}
@@ -51,18 +55,9 @@ export function StatisticsPage() {
 
     return (
         <div className="flex flex-col items-center w-full min-h-full bg-base-100">
-            <header className="w-full pt-3 pb-5 px-6 sticky top-0 z-30 bg-base-100/80 backdrop-blur-md border-b border-base-200/50 mb-6">
-                <div className="flex flex-col items-center justify-center max-w-xl mx-auto text-center">
-                    <h1 className="text-3xl font-black tracking-tight text-base-content leading-none">
-                        {t('title')}
-                    </h1>
-                    <p className="text-[9px] font-black uppercase tracking-[0.2em] text-base-content/20 mt-2 leading-none">
-                        Аналитика и доходы
-                    </p>
-                </div>
-            </header>
+            {header}
 
-            <main className="w-full px-4 max-w-xl mx-auto space-y-6 pb-32">
+            <main className="w-full px-4 max-w-xl mx-auto space-y-6 pt-6 pb-32">
                 <motion.div 
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -87,7 +82,7 @@ export function StatisticsPage() {
                             initial={{ opacity: 0, scale: 0.95 }}
                             animate={{ opacity: 1, scale: 1 }}
                             transition={{ delay: 0.1 }}
-                            className="bg-base-100 rounded-[32px] p-2 border border-base-200 shadow-[0_4px_20px_rgba(0,0,0,0.02)]"
+                            className="bg-base-100 rounded-[32px] p-2 border border-base-200/60 shadow-[0_4px_20px_rgba(0,0,0,0.02)]"
                         >
                             <StatisticsTable
                                 data={shiftCount.items}
@@ -101,7 +96,7 @@ export function StatisticsPage() {
                             initial={{ opacity: 0, scale: 0.95 }}
                             animate={{ opacity: 1, scale: 1 }}
                             transition={{ delay: 0.2 }}
-                            className="bg-base-100 rounded-[32px] p-2 border border-base-200 shadow-[0_4px_20px_rgba(0,0,0,0.02)]"
+                            className="bg-base-100 rounded-[32px] p-2 border border-base-200/60 shadow-[0_4px_20px_rgba(0,0,0,0.02)]"
                         >
                             <StatisticsTable
                                 data={shiftHours.items}

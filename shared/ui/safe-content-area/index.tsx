@@ -25,13 +25,25 @@ export function SafeContentArea({children, className}: Props) {
 
     return (
         <div
-            className={`w-full max-w-lg mx-auto flex flex-col relative overflow-hidden h-screen h-[100dvh] ${className ?? ''}`}
-            style={{
-                paddingTop: insets.top,
-                paddingBottom: insets.bottom
-            }}
+            className={`w-full max-w-lg mx-auto flex flex-col relative overflow-hidden h-[100dvh] bg-base-100 ${className ?? ''}`}
         >
-            {children}
+            {/* 
+                Top Guard: Physically blocks any content from being visible 
+                in the system safe area (status bar).
+            */}
+            <div 
+                className="fixed top-0 left-0 right-0 z-[100] bg-base-100 pointer-events-none" 
+                style={{ height: insets.top + 1 }} // +1px to avoid rounding gaps
+            />
+            
+            <div 
+                className="flex-1 flex flex-col min-h-0 relative"
+                style={{ marginTop: insets.top }}
+            >
+                {children}
+            </div>
+
+            <div style={{ height: insets.bottom }} className="shrink-0 bg-base-100" />
         </div>
     );
 }
