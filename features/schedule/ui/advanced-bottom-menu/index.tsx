@@ -79,7 +79,7 @@ export function AdvancedBottomMenu() {
                                     className="flex flex-col items-center justify-center min-w-[70px] h-10 rounded-xl bg-primary text-primary-content shrink-0 shadow-md active:scale-95"
                                 >
                                     <Plus size={18}/>
-                                    <span className="text-[10px] font-black uppercase">Новая</span>
+                                    <span className="text-[10px] font-black uppercase tracking-tight">Новая</span>
                                 </Link>
 
                                 {isLoading && <div className="loading loading-spinner loading-xs mx-auto text-primary"></div>}
@@ -95,7 +95,12 @@ export function AdvancedBottomMenu() {
                                                 isActive ? 'bg-primary/10 ring-2 ring-primary/30' : 'bg-base-200/50'
                                             )}
                                         >
-                                            <div className="h-2 w-2 rounded-full mb-1 shrink-0" style={{backgroundColor: item.color}} />
+                                            <div className="flex items-baseline gap-1.5 mb-0.5">
+                                                <div className="h-2 w-2 rounded-full shrink-0" style={{backgroundColor: item.color}} />
+                                                <span className="text-[9px] font-black text-base-content/40 leading-none">
+                                                    {formatInTimeZone(item.startTime, tz, 'HH:mm')}
+                                                </span>
+                                            </div>
                                             <span className="text-[10px] font-bold truncate w-full text-center leading-none">
                                                 {item.label}
                                             </span>
