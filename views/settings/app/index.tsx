@@ -12,12 +12,10 @@ import cn from 'classnames';
 
 const NOTIFY_OPTIONS = [
     { value: 0, labelKey: 'disabled' },
-    { value: 1, labelKey: 'minutes1' },
-    { value: 5, labelKey: 'minutes5' },
-    { value: 15, labelKey: 'minutes15' },
     { value: 30, labelKey: 'minutes30' },
     { value: 60, labelKey: 'hour1' },
     { value: 120, labelKey: 'hours2' },
+    { value: 180, labelKey: 'hours3' },
 ];
 
 export function AppSettingsPage() {
@@ -78,7 +76,7 @@ export function AppSettingsPage() {
                             {t('languageSection')}
                         </label>
                         
-                        <div className="bg-base-100 rounded-[32px] border border-base-200 shadow-[0_4px_20px_rgba(0,0,0,0.02)] overflow-hidden">
+                        <div className="bg-base-100 rounded-[32px] border border-base-200 shadow-[0_4px_200px_rgba(0,0,0,0.02)] overflow-hidden">
                             {localesMap.map((loc, index) => {
                                 const isActive = currentLocale === loc.key;
                                 return (
@@ -151,12 +149,10 @@ export function AppSettingsPage() {
                                     {NOTIFY_OPTIONS.map((opt) => {
                                     const labelMap: Record<string, string> = {
                                         disabled: tProfile('disabled'),
-                                        minutes1: tProfile('minutes1'),
-                                        minutes5: tProfile('minutes5'),
-                                        minutes15: tProfile('minutes15'),
                                         minutes30: tProfile('minutes30'),
                                         hour1: tProfile('hour1'),
                                         hours2: tProfile('hours2'),
+                                        hours3: tProfile('hours3'),
                                     };
                                     return (
                                         <option key={opt.value} value={opt.value}>

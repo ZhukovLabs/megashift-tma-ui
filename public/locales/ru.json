@@ -19,12 +19,11 @@
     "timezone": "Часовой пояс",
     "notifyBefore": "Напомнить за",
     "disabled": "Выключены",
-    "minutes1": "1 мин",
-    "minutes5": "5 мин",
     "minutes15": "15 мин",
     "minutes30": "30 мин",
     "hour1": "1 час",
     "hours2": "2 часа",
+    "hours3": "3 часа",
     "notifyDisabled": "Выключены",
     "minutes": "мин",
     "hour": "час",
@@ -70,9 +69,9 @@
       "sharedAccess": "Общий доступ",
       "profileDesc": "Имя, фото, личные данные",
       "sharedAccessDesc": "Доступ к вашему расписанию",
-      "calendarDesc": "Календарь для отображения",
+      "calendarDesc": "Calendar to display",
       "appDesc": "Язык, уведомления",
-      "compensationDesc": "Тип оплаты, ставка и лимиты"
+      "compensationDesc": "Payment type, rate and limits"
     },
     "app": {
       "title": "Настройки приложения",
