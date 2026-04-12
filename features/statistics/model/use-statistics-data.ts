@@ -5,18 +5,18 @@ import {SalaryType} from '@/entities/salary';
 import {useState, useMemo, useEffect} from 'react';
 import {useUserStore} from '@/entities/user';
 
-const LOCAL_STORAGE_KEY = 'megashift_excluded_shift_ids';
+const STORAGE_KEY = 'megashift_excluded_shift_ids';
 
 export function useStatisticsData(year: number, month: number) {
     const {data, isLoading} = useGetStatisticsCombined(year, month);
     const [excludedIds, setExcludedIds] = useState<Set<string>>(new Set());
     const [isStorageLoaded, setIsStorageLoaded] = useState(false);
 
-    // Загрузка исключенных ID из Local Storage при инициализации
+    // Загрузка исключенных ID при инициализации
     useEffect(() => {
         const loadExcludedIds = () => {
             try {
-                const value = localStorage.getItem(LOCAL_STORAGE_KEY);
+                const value = window.sessionStorage.getItem(STORAGE_KEY);
                 if (value) {
                     const ids = JSON.parse(value);
                     if (Array.isArray(ids)) {
@@ -30,7 +30,9 @@ export function useStatisticsData(year: number, month: number) {
             }
         };
 
-        loadExcludedIds();
+        if (typeof window !== 'undefined') {
+            loadExcludedIds();
+        }
     }, []);
 
     const toggleExclude = (id: string) => {
@@ -42,9 +44,11 @@ export function useStatisticsData(year: number, month: number) {
                 next.add(id);
             }
             
-            // Сохраняем в Local Storage
+            // Сохраняем
             try {
-                localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(Array.from(next)));
+                if (typeof window !== 'undefined') {
+                    window.sessionStorage.setItem(STORAGE_KEY, JSON.stringify(Array.from(next)));
+                }
             } catch (error) {
                 console.error('[Storage] Failed to save excluded IDs:', error);
             }

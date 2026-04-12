@@ -27,9 +27,9 @@ export function AppSettingsPage() {
     
     const { data: user } = useGetProfile();
     const { mutateAsync: updateProfile } = useUpdateProfile();
-    
+
     const [notifyValue, setNotifyValue] = useState(user?.notifyBeforeMinutes ?? 30);
-    
+
     const notifyBefore = user?.notifyBeforeMinutes ?? 30;
     
     const handleNotifyChange = async (value: number) => {
