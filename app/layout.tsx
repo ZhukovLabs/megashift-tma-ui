@@ -3,6 +3,7 @@ import {Geist, Geist_Mono} from "next/font/google";
 import {SafeContentArea} from '@/shared/ui/safe-content-area';
 import { I18nProvider } from '@/shared/i18n/provider';
 import { getLocale } from '@/shared/i18n/locale';
+import { MaintenanceView } from '@/shared/ui';
 
 import "./globals.css";
 import 'react-toastify/dist/ReactToastify.css';
@@ -32,6 +33,7 @@ export default async function RootLayout({
     children: React.ReactNode;
 }) {
     const locale = await getLocale();
+    const isMaintenance = process.env.NEXT_PUBLIC_MAINTENANCE_MODE === 'true';
 
     return (
         <html lang={locale}>
@@ -39,7 +41,7 @@ export default async function RootLayout({
         <QueryClientProvider client={queryClient}>
             <I18nProvider>
                 <SafeContentArea>
-                    {children}
+                    {isMaintenance ? <MaintenanceView /> : children}
                     <ToastContainer
                         position="bottom-center"
                         autoClose={4000}
