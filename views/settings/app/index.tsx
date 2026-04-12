@@ -1,6 +1,6 @@
 'use client';
 
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 import {Globe, Bell, Check} from 'lucide-react';
 import {useLocale, useTranslations} from 'next-intl';
 import { setLocale } from '@/shared/i18n/actions';
@@ -28,28 +28,43 @@ export function AppSettingsPage() {
     const { data: user } = useGetProfile();
     const { mutateAsync: updateProfile } = useUpdateProfile();
 
-    const [notifyValue, setNotifyValue] = useState(user?.notifyBeforeMinutes ?? 30);
+    const [notifyValue, setNotifyValue] = useState<number | undefined>(undefined);
 
-    const notifyBefore = user?.notifyBeforeMinutes ?? 30;
+    useEffect(() => {
+        if (user?.notifyBeforeMinutes !== undefined && notifyValue === undefined) {
+            setNotifyValue(user.notifyBeforeMinutes);
+        }
+    }, [user, notifyValue]);
     
     const handleNotifyChange = async (value: number) => {
+        const previousValue = notifyValue;
         setNotifyValue(value);
         try {
             await updateProfile({ notifyBeforeMinutes: value });
             toast.success(tProfile('saved'));
         } catch {
+            setNotifyValue(previousValue);
             toast.error(tProfile('error'));
         }
     };
 
+    const currentNotifyValue = notifyValue !== undefined ? notifyValue : (user?.notifyBeforeMinutes ?? 0);
+
+    // Разделяем заголовок на слова для двухстрочного отображения
+    const titleWords = t('title').split(' ');
+
     return (
         <div className="flex flex-col items-center w-full min-h-full bg-base-100">
-            <header className="w-full pt-2 pb-4 px-6 sticky top-0 z-30 bg-base-100 border-b border-base-200/60 shadow-sm">
+            <header className="w-full pt-6 pb-6 px-6 sticky top-0 z-30 bg-base-100 border-b border-base-200/60 shadow-sm">
                 <div className="flex flex-col items-center justify-center max-w-xl mx-auto text-center">
-                    <h1 className="text-2xl font-black tracking-tight text-base-content leading-none">
-                        {t('title')}
+                    <h1 className="text-3xl font-black tracking-tight text-base-content leading-[0.85] flex flex-col items-center">
+                        {titleWords.map((word, i) => (
+                            <span key={i}>
+                                {word}
+                            </span>
+                        ))}
                     </h1>
-                    <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-base-content/25 mt-1.5 leading-none">
+                    <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-base-content/25 mt-3 leading-none">
                         {t('subtitle')}
                     </p>
                 </div>
@@ -129,7 +144,7 @@ export function AppSettingsPage() {
                             </div>
                             <div className="border-t border-base-200/50">
                                 <select
-                                    value={notifyBefore}
+                                    value={currentNotifyValue}
                                     onChange={(e) => handleNotifyChange(Number(e.target.value))}
                                     className="w-full h-14 px-6 bg-transparent font-bold text-base text-base-content outline-none appearance-none cursor-pointer text-left"
                                 >
