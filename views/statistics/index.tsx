@@ -1,5 +1,6 @@
 'use client';
 
+import {useState} from 'react';
 import {useTranslations} from 'next-intl';
 import {
     MonthSelector,
@@ -14,6 +15,9 @@ import {getCurrencySymbol} from '@/entities/currency';
 import {useUserStore} from '@/entities/user/model/store';
 import {StatisticsSkeleton} from '@/features/statistics/ui/skeleton';
 import {motion} from 'framer-motion';
+import {ModalSheet} from '@/shared/ui/modal-sheet';
+import {CheckCircle2, Circle, Settings2, ShieldCheck, Check, Filter} from 'lucide-react';
+import cn from 'classnames';
 
 export function StatisticsPage() {
     const t = useTranslations('statistics');
@@ -21,7 +25,8 @@ export function StatisticsPage() {
     const currency = useUserStore(s => s.user?.currency);
     const currencySymbol = getCurrencySymbol(currency);
 
-    const {isLoading, shiftCount, shiftHours, salary} = useStatisticsData(year, month);
+    const {isLoading, shiftCount, shiftHours, salary, toggleExclude, excludedIds} = useStatisticsData(year, month);
+    const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
     const header = (
         <header className="w-full pt-2 pb-4 px-6 sticky top-0 z-30 bg-base-100 border-b border-base-200/60 shadow-sm">
@@ -82,13 +87,16 @@ export function StatisticsPage() {
                             initial={{ opacity: 0, scale: 0.95 }}
                             animate={{ opacity: 1, scale: 1 }}
                             transition={{ delay: 0.1 }}
-                            className="bg-base-100 rounded-[32px] p-2 border border-base-200/60 shadow-[0_4px_20px_rgba(0,0,0,0.02)]"
+                            className="bg-base-100 rounded-[32px] border border-base-200/60 shadow-[0_4px_20px_rgba(0,0,0,0.02)] overflow-hidden"
                         >
                             <StatisticsTable
+                                title={t('totalShifts')}
                                 data={shiftCount.items}
                                 formatNumber={formatNumberRU}
                                 totalLabel={t('total')}
                                 noDataMessage={t('noData')}
+                                onToggleExclude={toggleExclude}
+                                onOpenSettings={() => setIsSettingsOpen(true)}
                             />
                         </motion.div>
                         
@@ -96,13 +104,16 @@ export function StatisticsPage() {
                             initial={{ opacity: 0, scale: 0.95 }}
                             animate={{ opacity: 1, scale: 1 }}
                             transition={{ delay: 0.2 }}
-                            className="bg-base-100 rounded-[32px] p-2 border border-base-200/60 shadow-[0_4px_20px_rgba(0,0,0,0.02)]"
+                            className="bg-base-100 rounded-[32px] border border-base-200/60 shadow-[0_4px_20px_rgba(0,0,0,0.02)] overflow-hidden"
                         >
                             <StatisticsTable
+                                title={t('totalHours')}
                                 data={shiftHours.items}
                                 formatNumber={formatNumberRU}
                                 totalLabel={t('total')}
                                 noDataMessage={t('noData')}
+                                onToggleExclude={toggleExclude}
+                                onOpenSettings={() => setIsSettingsOpen(true)}
                             />
                         </motion.div>
 
@@ -110,8 +121,11 @@ export function StatisticsPage() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.3 }}
-                            className="bg-primary/[0.03] rounded-[40px] p-8 border border-primary/10"
+                            className="bg-primary/[0.03] rounded-[40px] p-8 border border-primary/10 relative overflow-hidden group"
                         >
+                            <div className="absolute top-4 right-4 text-primary/10 group-hover:scale-110 group-hover:rotate-12 transition-transform duration-500">
+                                <ShieldCheck size={48} strokeWidth={2.5}/>
+                            </div>
                             <SalaryProgress
                                 typeSalary={salary.typeSalary}
                                 salary={salary.salary}
@@ -123,6 +137,64 @@ export function StatisticsPage() {
                     </div>
                 </MonthSwitcher>
             </main>
+
+            {/* Настройки отображения */}
+            <ModalSheet 
+                isOpen={isSettingsOpen} 
+                onClose={() => setIsSettingsOpen(false)}
+                title={
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-2xl bg-primary/10 text-primary flex items-center justify-center">
+                            <Filter size={20} strokeWidth={2.5} />
+                        </div>
+                        <span>Фильтр расчетов</span>
+                    </div>
+                }
+            >
+                <div className="space-y-6">
+                    <p className="text-sm font-medium text-base-content/40 leading-relaxed">
+                        Выберите шаблоны смен, которые должны участвовать в расчете статистики и дохода за этот месяц.
+                    </p>
+                    
+                    <div className="space-y-3 pb-8">
+                        {shiftCount.items.map((item) => {
+                            const isExcluded = excludedIds.has(item.id);
+                            return (
+                                <button
+                                    key={item.id}
+                                    onClick={() => toggleExclude(item.id)}
+                                    className={cn(
+                                        "w-full flex items-center justify-between p-5 rounded-[24px] border-2 transition-all active:scale-[0.98]",
+                                        isExcluded 
+                                            ? "bg-base-200/20 border-transparent text-base-content/30" 
+                                            : "bg-base-100 border-base-200/60 text-base-content hover:border-primary/20"
+                                    )}
+                                >
+                                    <div className="flex items-center gap-4">
+                                        <div 
+                                            className="w-10 h-10 rounded-xl flex items-center justify-center transition-colors"
+                                            style={{ 
+                                                backgroundColor: isExcluded ? "transparent" : `${item.color}15`, 
+                                                color: isExcluded ? "currentColor" : item.color 
+                                            }}
+                                        >
+                                            <div className="w-2.5 h-2.5 rounded-full" style={{backgroundColor: isExcluded ? "currentColor" : item.color}} />
+                                        </div>
+                                        <span className="font-bold text-base tracking-tight">{item.label}</span>
+                                    </div>
+                                    
+                                    <div className={cn(
+                                        "w-6 h-6 rounded-full flex items-center justify-center transition-all",
+                                        isExcluded ? "bg-base-300/50 text-base-content/10" : "bg-primary text-primary-content shadow-lg shadow-primary/20"
+                                    )}>
+                                        {!isExcluded && <Check size={14} strokeWidth={4} />}
+                                    </div>
+                                </button>
+                            );
+                        })}
+                    </div>
+                </div>
+            </ModalSheet>
         </div>
     );
 }
