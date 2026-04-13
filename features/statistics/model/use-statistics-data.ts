@@ -1,3 +1,4 @@
+import type {StatisticItem} from '@/features/statistics/ui/statistics-table';
 import {useGetStatisticsCombined} from '@/features/statistics/api';
 import {mapShiftToStatisticItems} from './map-shift-to-statistic-item';
 import {mapShiftHoursToStatisticItems} from './map-shift-hours-to-statistic-item';
@@ -97,36 +98,36 @@ export function useStatisticsData(year: number, month: number) {
         };
     }, [allItemsCount, allItemsHours, isLoading]);
 
-    const calculatedSalary = useMemo(() => {
-        if (!data?.salary) return 0;
+    const calculateSalary = useCallback((
+        filteredCount: StatisticItem[],
+        filteredHours: StatisticItem[]
+    ) => {
+        if (!data?.salary) return { salary: 0, maxSalary: 0, typeSalary: SalaryType.UNKNOWN };
         
         const type = data.salary.typeSalary;
         const baseRate = data.salary.salary; 
+        let calculated = 0;
 
         if (type === SalaryType.MONTHLY) {
-            return baseRate;
+            calculated = baseRate;
+        } else if (type === SalaryType.HOURLY) {
+            const totalHours = filteredHours.reduce((acc, item) => acc + item.value, 0);
+            calculated = totalHours * baseRate;
+        } else if (type === SalaryType.SHIFT) {
+            const totalShifts = filteredCount.reduce((acc, item) => acc + item.value, 0);
+            calculated = totalShifts * baseRate;
         }
 
-        if (type === SalaryType.HOURLY) {
-            const totalHours = allItemsHours.reduce((acc, item) => acc + item.value, 0);
-            return totalHours * baseRate;
-        }
-
-        if (type === SalaryType.SHIFT) {
-            const totalShifts = allItemsCount.reduce((acc, item) => acc + item.value, 0);
-            return totalShifts * baseRate;
-        }
-
-        return 0;
-    }, [data?.salary, allItemsCount, allItemsHours]);
+        return {
+            salary: calculated,
+            maxSalary: data.salary.maxSalary,
+            typeSalary: data.salary.typeSalary,
+        };
+    }, [data?.salary]);
 
     return {
         isLoading,
         useBlockStatistics,
-        salary: {
-            typeSalary: data?.salary?.typeSalary ?? SalaryType.UNKNOWN,
-            salary: calculatedSalary,
-            maxSalary: data?.salary?.maxSalary ?? 0.01,
-        },
+        calculateSalary,
     };
 }

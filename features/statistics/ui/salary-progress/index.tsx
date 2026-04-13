@@ -6,7 +6,7 @@ import {SalaryType} from "@/entities/salary/model/types";
 import {calculateSalaryPercentage} from "@/features/statistics/model/calculate-salary-percentage";
 import {formatMoney} from "@/shared/lib/format/format-money";
 import {LoaderLarge} from "@/shared/ui/loader-large";
-import {TrendingUp} from 'lucide-react';
+import {TrendingUp, Settings2} from 'lucide-react';
 
 type SalaryProgressProps = {
     typeSalary: SalaryType;
@@ -15,9 +15,10 @@ type SalaryProgressProps = {
     currencySymbol?: string;
     isLoading?: boolean;
     salaryTypeLabel?: string;
+    onOpenSettings?: () => void;
 };
 
-export const SalaryProgress = ({typeSalary, salary, maxSalary, currencySymbol, isLoading, salaryTypeLabel}: SalaryProgressProps) => {
+export const SalaryProgress = ({typeSalary, salary, maxSalary, currencySymbol, isLoading, salaryTypeLabel, onOpenSettings}: SalaryProgressProps) => {
     if (isLoading) {
         return <LoaderLarge/>
     }
@@ -28,6 +29,14 @@ export const SalaryProgress = ({typeSalary, salary, maxSalary, currencySymbol, i
 
     return (
         <div className="w-full flex flex-col items-center">
+            {onOpenSettings && (
+                <button 
+                    onClick={onOpenSettings}
+                    className="absolute top-0 right-0 w-8 h-8 rounded-xl bg-base-200/50 flex items-center justify-center text-base-content/30 active:scale-90 active:bg-primary/10 active:text-primary transition-all group"
+                >
+                    <Settings2 size={16} strokeWidth={2.5} className="group-hover:rotate-45 transition-transform duration-500" />
+                </button>
+            )}
             <div className="relative w-48 h-48 mb-6">
                 <svg viewBox="0 0 36 36" className="w-full h-full rotate-[-90deg] drop-shadow-sm">
                     <circle

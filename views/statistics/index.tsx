@@ -22,6 +22,7 @@ import cn from 'classnames';
 const BLOCK_IDS = {
     SHIFT_COUNT: 'shift_count',
     SHIFT_HOURS: 'shift_hours',
+    SALARY: 'salary',
 } as const;
 
 function BlockSettingsModal({
@@ -105,10 +106,16 @@ export function StatisticsPage() {
     const currency = useUserStore(s => s.user?.currency);
     const currencySymbol = getCurrencySymbol(currency);
 
-    const {isLoading, useBlockStatistics, salary} = useStatisticsData(year, month);
+    const {isLoading, useBlockStatistics, calculateSalary} = useStatisticsData(year, month);
     
     const countBlock = useBlockStatistics(BLOCK_IDS.SHIFT_COUNT);
     const hoursBlock = useBlockStatistics(BLOCK_IDS.SHIFT_HOURS);
+    const salaryBlock = useBlockStatistics(BLOCK_IDS.SALARY);
+
+    const salaryInfo = calculateSalary(
+        salaryBlock.itemsCount.filteredItems,
+        salaryBlock.itemsHours.filteredItems
+    );
 
     const [settingsBlockId, setSettingsBlockId] = useState<string | null>(null);
 
@@ -119,7 +126,9 @@ export function StatisticsPage() {
         ? countBlock 
         : settingsBlockId === BLOCK_IDS.SHIFT_HOURS 
             ? hoursBlock 
-            : null;
+            : settingsBlockId === BLOCK_IDS.SALARY
+                ? salaryBlock
+                : null;
 
     const header = (
         <header className="w-full pt-2 pb-4 px-6 sticky top-0 z-30 bg-base-100 border-b border-base-200/60 shadow-sm">
@@ -220,11 +229,12 @@ export function StatisticsPage() {
                                 <ShieldCheck size={48} strokeWidth={2.5}/>
                             </div>
                             <SalaryProgress
-                                typeSalary={salary.typeSalary}
-                                salary={salary.salary}
-                                maxSalary={salary.maxSalary}
+                                typeSalary={salaryInfo.typeSalary}
+                                salary={salaryInfo.salary}
+                                maxSalary={salaryInfo.maxSalary}
                                 currencySymbol={currencySymbol?.symbol}
-                                salaryTypeLabel={t(`salaryTypes.${salary.typeSalary}`)}
+                                salaryTypeLabel={t(`salaryTypes.${salaryInfo.typeSalary}`)}
+                                onOpenSettings={() => openSettings(BLOCK_IDS.SALARY)}
                             />
                         </motion.div>
                     </div>
@@ -247,6 +257,15 @@ export function StatisticsPage() {
                 items={hoursBlock.itemsHours.items}
                 excludedIds={hoursBlock.excludedIds}
                 onToggle={hoursBlock.toggleExclude}
+            />
+
+            <BlockSettingsModal
+                isOpen={settingsBlockId === BLOCK_IDS.SALARY}
+                onClose={closeSettings}
+                title="Зарплата"
+                items={salaryBlock.itemsCount.items}
+                excludedIds={salaryBlock.excludedIds}
+                onToggle={salaryBlock.toggleExclude}
             />
         </div>
     );
