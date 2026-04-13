@@ -16,8 +16,88 @@ import {useUserStore} from '@/entities/user/model/store';
 import {StatisticsSkeleton} from '@/features/statistics/ui/skeleton';
 import {motion} from 'framer-motion';
 import {ModalSheet} from '@/shared/ui/modal-sheet';
-import {CheckCircle2, Circle, Settings2, ShieldCheck, Check, Filter} from 'lucide-react';
+import {ShieldCheck, Check, Filter} from 'lucide-react';
 import cn from 'classnames';
+
+const BLOCK_IDS = {
+    SHIFT_COUNT: 'shift_count',
+    SHIFT_HOURS: 'shift_hours',
+} as const;
+
+function BlockSettingsModal({
+    isOpen,
+    onClose,
+    title,
+    items,
+    excludedIds,
+    onToggle
+}: {
+    isOpen: boolean;
+    onClose: () => void;
+    title: string;
+    items: Array<{id: string; label: string; color?: string; isExcluded?: boolean}>;
+    excludedIds: Set<string>;
+    onToggle: (id: string) => void;
+}) {
+    return (
+        <ModalSheet 
+            isOpen={isOpen} 
+            onClose={onClose}
+            title={
+                <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-2xl bg-primary/10 text-primary flex items-center justify-center">
+                        <Filter size={20} strokeWidth={2.5} />
+                    </div>
+                    <span>{title}</span>
+                </div>
+            }
+        >
+            <div className="space-y-6">
+                <p className="text-sm font-medium text-base-content/40 leading-relaxed">
+                    Выберите шаблоны смен, которые должны участвовать в расчете.
+                </p>
+                
+                <div className="space-y-3 pb-8">
+                    {items.map((item) => {
+                        const isExcluded = excludedIds.has(item.id);
+                        return (
+                            <button
+                                key={item.id}
+                                onClick={() => onToggle(item.id)}
+                                className={cn(
+                                    "w-full flex items-center justify-between p-5 rounded-[24px] border-2 transition-all active:scale-[0.98]",
+                                    isExcluded 
+                                        ? "bg-base-200/20 border-transparent text-base-content/30" 
+                                        : "bg-base-100 border-base-200/60 text-base-content hover:border-primary/20"
+                                )}
+                            >
+                                <div className="flex items-center gap-4">
+                                    <div 
+                                        className="w-10 h-10 rounded-xl flex items-center justify-center transition-colors"
+                                        style={{ 
+                                            backgroundColor: isExcluded ? "transparent" : `${item.color}15`, 
+                                            color: isExcluded ? "currentColor" : item.color 
+                                        }}
+                                    >
+                                        <div className="w-2.5 h-2.5 rounded-full" style={{backgroundColor: isExcluded ? "currentColor" : item.color}} />
+                                    </div>
+                                    <span className="font-bold text-base tracking-tight">{item.label}</span>
+                                </div>
+                                
+                                <div className={cn(
+                                    "w-6 h-6 rounded-full flex items-center justify-center transition-all",
+                                    isExcluded ? "bg-base-300/50 text-base-content/10" : "bg-primary text-primary-content shadow-lg shadow-primary/20"
+                                )}>
+                                    {!isExcluded && <Check size={14} strokeWidth={4} />}
+                                </div>
+                            </button>
+                        );
+                    })}
+                </div>
+            </div>
+        </ModalSheet>
+    );
+}
 
 export function StatisticsPage() {
     const t = useTranslations('statistics');
@@ -25,8 +105,21 @@ export function StatisticsPage() {
     const currency = useUserStore(s => s.user?.currency);
     const currencySymbol = getCurrencySymbol(currency);
 
-    const {isLoading, shiftCount, shiftHours, salary, toggleExclude, excludedIds} = useStatisticsData(year, month);
-    const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+    const {isLoading, useBlockStatistics, salary} = useStatisticsData(year, month);
+    
+    const countBlock = useBlockStatistics(BLOCK_IDS.SHIFT_COUNT);
+    const hoursBlock = useBlockStatistics(BLOCK_IDS.SHIFT_HOURS);
+
+    const [settingsBlockId, setSettingsBlockId] = useState<string | null>(null);
+
+    const openSettings = (blockId: string) => setSettingsBlockId(blockId);
+    const closeSettings = () => setSettingsBlockId(null);
+
+    const currentSettingsBlock = settingsBlockId === BLOCK_IDS.SHIFT_COUNT 
+        ? countBlock 
+        : settingsBlockId === BLOCK_IDS.SHIFT_HOURS 
+            ? hoursBlock 
+            : null;
 
     const header = (
         <header className="w-full pt-2 pb-4 px-6 sticky top-0 z-30 bg-base-100 border-b border-base-200/60 shadow-sm">
@@ -91,12 +184,12 @@ export function StatisticsPage() {
                         >
                             <StatisticsTable
                                 title={t('totalShifts')}
-                                data={shiftCount.items}
+                                data={countBlock.itemsCount.items}
                                 formatNumber={formatNumberRU}
                                 totalLabel={t('total')}
                                 noDataMessage={t('noData')}
-                                onToggleExclude={toggleExclude}
-                                onOpenSettings={() => setIsSettingsOpen(true)}
+                                onToggleExclude={countBlock.toggleExclude}
+                                onOpenSettings={() => openSettings(BLOCK_IDS.SHIFT_COUNT)}
                             />
                         </motion.div>
                         
@@ -108,12 +201,12 @@ export function StatisticsPage() {
                         >
                             <StatisticsTable
                                 title={t('totalHours')}
-                                data={shiftHours.items}
+                                data={hoursBlock.itemsHours.items}
                                 formatNumber={formatNumberRU}
                                 totalLabel={t('total')}
                                 noDataMessage={t('noData')}
-                                onToggleExclude={toggleExclude}
-                                onOpenSettings={() => setIsSettingsOpen(true)}
+                                onToggleExclude={hoursBlock.toggleExclude}
+                                onOpenSettings={() => openSettings(BLOCK_IDS.SHIFT_HOURS)}
                             />
                         </motion.div>
 
@@ -138,63 +231,23 @@ export function StatisticsPage() {
                 </MonthSwitcher>
             </main>
 
-            {/* Настройки отображения */}
-            <ModalSheet 
-                isOpen={isSettingsOpen} 
-                onClose={() => setIsSettingsOpen(false)}
-                title={
-                    <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-2xl bg-primary/10 text-primary flex items-center justify-center">
-                            <Filter size={20} strokeWidth={2.5} />
-                        </div>
-                        <span>Фильтр расчетов</span>
-                    </div>
-                }
-            >
-                <div className="space-y-6">
-                    <p className="text-sm font-medium text-base-content/40 leading-relaxed">
-                        Выберите шаблоны смен, которые должны участвовать в расчете статистики и дохода за этот месяц.
-                    </p>
-                    
-                    <div className="space-y-3 pb-8">
-                        {shiftCount.items.map((item) => {
-                            const isExcluded = excludedIds.has(item.id);
-                            return (
-                                <button
-                                    key={item.id}
-                                    onClick={() => toggleExclude(item.id)}
-                                    className={cn(
-                                        "w-full flex items-center justify-between p-5 rounded-[24px] border-2 transition-all active:scale-[0.98]",
-                                        isExcluded 
-                                            ? "bg-base-200/20 border-transparent text-base-content/30" 
-                                            : "bg-base-100 border-base-200/60 text-base-content hover:border-primary/20"
-                                    )}
-                                >
-                                    <div className="flex items-center gap-4">
-                                        <div 
-                                            className="w-10 h-10 rounded-xl flex items-center justify-center transition-colors"
-                                            style={{ 
-                                                backgroundColor: isExcluded ? "transparent" : `${item.color}15`, 
-                                                color: isExcluded ? "currentColor" : item.color 
-                                            }}
-                                        >
-                                            <div className="w-2.5 h-2.5 rounded-full" style={{backgroundColor: isExcluded ? "currentColor" : item.color}} />
-                                        </div>
-                                        <span className="font-bold text-base tracking-tight">{item.label}</span>
-                                    </div>
-                                    
-                                    <div className={cn(
-                                        "w-6 h-6 rounded-full flex items-center justify-center transition-all",
-                                        isExcluded ? "bg-base-300/50 text-base-content/10" : "bg-primary text-primary-content shadow-lg shadow-primary/20"
-                                    )}>
-                                        {!isExcluded && <Check size={14} strokeWidth={4} />}
-                                    </div>
-                                </button>
-                            );
-                        })}
-                    </div>
-                </div>
-            </ModalSheet>
+            <BlockSettingsModal
+                isOpen={settingsBlockId === BLOCK_IDS.SHIFT_COUNT}
+                onClose={closeSettings}
+                title={t('totalShifts')}
+                items={countBlock.itemsCount.items}
+                excludedIds={countBlock.excludedIds}
+                onToggle={countBlock.toggleExclude}
+            />
+
+            <BlockSettingsModal
+                isOpen={settingsBlockId === BLOCK_IDS.SHIFT_HOURS}
+                onClose={closeSettings}
+                title={t('totalHours')}
+                items={hoursBlock.itemsHours.items}
+                excludedIds={hoursBlock.excludedIds}
+                onToggle={hoursBlock.toggleExclude}
+            />
         </div>
     );
 }
