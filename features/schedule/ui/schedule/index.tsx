@@ -20,7 +20,7 @@ export const Schedule = () => {
     const gridRef = useRef<HTMLDivElement>(null); // Outer container for measuring height
     const calendarGridControls = useAnimation(); // Controls for the draggable part
     const [cellHeight, setCellHeight] = useState(0);
-    const isAnimating = useRef(false);
+    const [isAnimating, setIsAnimating] = useState(false);
 
     const weeks = useMemo(() => {
         const days = getCalendarDays(currentDate);
@@ -45,8 +45,11 @@ export const Schedule = () => {
         return () => resizeObserver.disconnect();
     }, []);
 
+    const dragRef = useRef(false);
+
     const handleDragEnd = useCallback(async (info: { offset: { y: number } }) => {
-        if (!gridRef.current || isAnimating.current) return;
+        dragRef.current = false;
+        if (!gridRef.current || isAnimating) return;
         
         const height = gridRef.current.clientHeight;
         const threshold = height * THRESHOLD_FACTOR;
@@ -58,7 +61,7 @@ export const Schedule = () => {
             return;
         }
 
-        isAnimating.current = true;
+        setIsAnimating(true);
 
         if (offset < -threshold) {
             await calendarGridControls.start({
@@ -93,8 +96,8 @@ export const Schedule = () => {
                 transition: SPRING
             });
         }
-        isAnimating.current = false;
-    }, [calendarGridControls, nextMonth, prevMonth]);
+        setIsAnimating(false);
+    }, [calendarGridControls, nextMonth, prevMonth, isAnimating]);
 
     return (
         <div className="flex flex-col w-full h-full flex-1 overflow-hidden bg-base-100 relative">
@@ -106,13 +109,19 @@ export const Schedule = () => {
             >
                 <motion.div // This motion.div handles the drag for month switching
                     className="flex-1 flex flex-col min-h-0"
-                    drag="y"
+                    drag={!isAnimating ? "y" : false}
                     dragElastic={0.05}
                     dragConstraints={{top: 0, bottom: 0}}
                     dragMomentum={false}
                     animate={calendarGridControls}
+                    onDragStart={() => {
+                        dragRef.current = true;
+                    }}
                     onDragEnd={(_, info) => {
-                        handleDragEnd(info);
+                        if (dragRef.current) {
+                            dragRef.current = false;
+                            handleDragEnd(info);
+                        }
                     }}
                     style={{
                         willChange: 'transform, opacity',
