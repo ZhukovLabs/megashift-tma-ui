@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import {ROUTES} from "@/shared/constants/routes";
-import {useTranslation} from "react-i18next";
+import {useTranslations} from "next-intl";
 
 interface ErrorProps {
     error: Error;
@@ -10,7 +10,7 @@ interface ErrorProps {
 }
 
 export default function GlobalError({error, reset}: ErrorProps) {
-    const {t} = useTranslation();
+    const t = useTranslations();
     const handleReportClick = () => {
         const ua = typeof navigator !== 'undefined' ? navigator.userAgent : 'unknown';
         const to = 'deniszhukov.hachiko@gmail.com';

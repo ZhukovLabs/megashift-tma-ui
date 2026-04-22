@@ -1,6 +1,6 @@
 'use client';
 
-import {useTranslation} from 'react-i18next';
+import {useTranslations} from 'next-intl';
 
 type MonthSelectorProps = {
     year: number;
@@ -19,7 +19,7 @@ export function MonthSelector({
                                    maxYear = 2200,
                                    yearPlaceholder,
                                }: MonthSelectorProps) {
-    const {t} = useTranslation();
+    const t = useTranslations();
     const handleYearChange = (value: number) => {
         onChange(value, month);
     };

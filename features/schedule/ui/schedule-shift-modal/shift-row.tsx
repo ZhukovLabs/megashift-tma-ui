@@ -4,7 +4,7 @@ import {useState} from 'react';
 import {useForm, Controller, useWatch} from 'react-hook-form';
 import {Trash2, Edit2, Check, X, Clock} from 'lucide-react';
 import cn from 'classnames';
-import {useTranslation} from 'react-i18next';
+import {useTranslations} from 'next-intl';
 
 import type {UpdateShiftPayload} from '@/features/shift/api';
 
@@ -18,7 +18,7 @@ type ShiftRowProps = {
 };
 
 export const ShiftRow = ({shift, template, updateShift, getDuration, handleDelete, formatTime}: ShiftRowProps) => {
-    const {t} = useTranslation();
+    const t = useTranslations();
     const [editing, setEditing] = useState(false);
     const color = template?.color ?? '#3b82f6';
 

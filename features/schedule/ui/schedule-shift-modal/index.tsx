@@ -13,10 +13,10 @@ import {ModalSheet} from '@/shared/ui/modal-sheet';
 import {ShiftRow} from './shift-row';
 import * as timeUtils from '@/shared/lib/time';
 import {LoaderLarge} from "@/shared/ui/loader-large";
-import {useTranslation} from 'react-i18next';
+import {useTranslations} from 'next-intl';
 
 export const ShiftModal = () => {
-    const {t} = useTranslation();
+    const t = useTranslations();
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();

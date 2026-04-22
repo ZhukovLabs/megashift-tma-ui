@@ -2,10 +2,10 @@
 
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useRef } from 'react';
-import {useTranslation} from 'react-i18next';
+import {useTranslations} from 'next-intl';
 
 export default function NotFoundPage() {
-    const {t} = useTranslation();
+    const t = useTranslations();
     const pathname = usePathname();
     const router = useRouter();
     const historyRef = useRef<string[]>([]);

@@ -6,7 +6,7 @@ import {useSchedule} from "../context";
 import {useGetShiftTemplates} from "@/features/shift-template/api";
 import {getContrastColor, lightenHex} from "@/shared/lib";
 import {useUserStore} from "@/entities/user";
-import {useTranslation} from "react-i18next";
+import {useTranslations} from "next-intl";
 
 type DayCellProps = {
     day: Date;
@@ -43,7 +43,7 @@ function hashStringToIndex(s: string | number | undefined, modulo = TEMPLATE_PAL
 export const DayCell = memo(function DayCell({day, monthDate, isLastInRow}: DayCellProps) {
     const {shifts, onDayClick, config, isHoliday, isWeekend} = useSchedule();
     const {data: templates = []} = useGetShiftTemplates();
-    const {t} = useTranslation();
+    const t = useTranslations();
     const tz = useUserStore(s => s.user?.timezone || "UTC");
 
     const isCurrentMonth = isSameMonth(day, monthDate);

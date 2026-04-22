@@ -4,7 +4,7 @@ import './globals.css';
 import {Geist, Geist_Mono} from 'next/font/google';
 import Link from "next/link";
 import {ROUTES} from "@/shared/constants/routes";
-import {useTranslation} from "react-i18next";
+import {useTranslations} from "next-intl";
 
 const geistSans = Geist({variable: '--font-geist-sans', subsets: ['latin']});
 const geistMono = Geist_Mono({variable: '--font-geist-mono', subsets: ['latin']});
@@ -15,7 +15,7 @@ interface GlobalErrorProps {
 }
 
 export default function GlobalError({error, reset}: GlobalErrorProps) {
-    const {t} = useTranslation();
+    const t = useTranslations();
     const handleReportClick = () => {
         const ua = typeof navigator !== 'undefined' ? navigator.userAgent : 'unknown';
         const to = 'deniszhukov.hachiko@gmail.com';

@@ -1,5 +1,5 @@
 import type {ReactNode} from "react";
-import {useTranslation} from "react-i18next";
+import {useTranslations} from "next-intl";
 import {calculatePercentage} from "@/features/statistics/model/calculate-percentage";
 import {StatisticsRow} from "./statistics-row";
 import {LoaderLarge} from "@/shared/ui/loader-large";
@@ -36,7 +36,7 @@ export const StatisticsTable = <T extends StatisticItem>({
                                                                  onOpenSettings,
                                                                  title
                                                              }: BaseStatisticsTableProps<T>) => {
-    const {t} = useTranslation();
+    const t = useTranslations();
 
     if (isLoading) {
         return <LoaderLarge/>

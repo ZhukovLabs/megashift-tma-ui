@@ -3,12 +3,12 @@ import {ru} from "date-fns/locale";
 import {useSchedule} from "../context";
 import cn from "classnames";
 import {ChevronLeft, ChevronRight} from "lucide-react";
-import {useTranslation} from "react-i18next";
+import {useTranslations} from "next-intl";
 
 export const CalendarHeader = () => {
     const {currentDate, nextMonth, prevMonth} = useSchedule();
     const isCurrentMonth = isSameMonth(currentDate, new Date());
-    const {t} = useTranslation();
+    const t = useTranslations();
 
     const monthNames = [
         t('months.january'), t('months.february'), t('months.march'),

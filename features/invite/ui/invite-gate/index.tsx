@@ -7,12 +7,12 @@ import {popup} from '@tma.js/sdk';
 import {useInviteProcessor} from '@/features/invite/model';
 import {useUserStore} from '@/entities/user';
 import { ACCESS_CLAIM_KEYS } from '@/entities/access';
-import {useTranslation} from 'react-i18next';
+import {useTranslations} from 'next-intl';
 
 type PopupChoice = 'accept' | 'decline' | string | null;
 
 export function InviteGate({children}: {children: ReactNode}) {
-    const {t} = useTranslation();
+    const t = useTranslations();
     const user = useUserStore((s) => s.user);
 
     const launchParams = useLaunchParams(true);

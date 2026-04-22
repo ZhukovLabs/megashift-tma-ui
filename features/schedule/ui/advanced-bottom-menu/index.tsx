@@ -9,10 +9,10 @@ import {formatInTimeZone} from 'date-fns-tz';
 import {X, Edit2, Plus} from 'lucide-react';
 import Link from 'next/link';
 import {ROUTES} from '@/shared/constants/routes';
-import {useTranslation} from 'react-i18next';
+import {useTranslations} from 'next-intl';
 
 export function AdvancedBottomMenu() {
-    const {t} = useTranslation();
+    const t = useTranslations();
     const {data: templates = [], isLoading} = useGetShiftTemplates();
     const tz = useUserStore(s => s.user?.timezone ?? 'UTC');
     const selectedShiftId = useScheduleStore(s => s.selectedShiftId);
