@@ -13,7 +13,8 @@
     "error": "Ошибка",
     "success": "Успешно",
     "add": "Добавить",
-    "optional": "(опционально)"
+    "optional": "(опционально)",
+    "at": "в"
   },
   "navigation": {
     "home": "На главную",
@@ -57,48 +58,116 @@
       "required": "Выберите часовой пояс",
       "currentTime": "У вас сейчас: {time} в выбранном часовом поясе"
     },
+    "timezones": {
+      "minsk": "Минск",
+      "moscow": "Москва",
+      "kyiv": "Киев",
+      "london": "Лондон",
+      "paris": "Париж",
+      "newYork": "Нью-Йорк",
+      "losAngeles": "Лос-Анджелес",
+      "tokyo": "Токио",
+      "utc": "UTC"
+    },
+    "saved": "Сохранено",
+    "error": "Ошибка сохранения",
     "saveSuccess": "Сохранено",
-    "saveError": "Ошибка сохранения"
+    "saveError": "Ошибка сохранения",
+    "disabled": "Отключено",
+    "minutes30": "30 минут",
+    "hour1": "1 час",
+    "hours2": "2 часа",
+    "hours3": "3 часа"
   },
   "settings": {
-    "title": "Настройки",
-    "sections": {
+    "main": {
+      "title": "Настройки",
+      "subtitle": "Управление аккаунтом",
       "account": "Аккаунт",
       "app": "Приложение",
-      "work": "Работа"
+      "work": "Работа",
+      "profileDesc": "Имя, фото, личные данные",
+      "sharedAccess": "Общий доступ",
+      "sharedAccessDesc": "Настройка доступа другим людям к вашему расписанию",
+      "calendarDesc": "Выберите календарь для отображения",
+      "appDesc": "Язык, уведомления",
+      "compensationDesc": "Тип оплаты, ставка и лимиты"
     },
-    "items": {
-      "profile": {
-        "label": "Профиль",
-        "description": "Имя, фото, личные данные"
-      },
-      "sharedAccess": {
-        "label": "Общий доступ",
-        "description": "Настройка доступа другим людям к вашему расписанию"
-      },
-      "calendar": {
-        "label": "Выбор календаря",
-        "description": "Выберите календарь для отображения"
-      },
-      "appSettings": {
-        "label": "Настройки приложения",
-        "description": "Язык, уведомления"
-      },
-      "compensation": {
-        "label": "Оплата труда",
-        "description": "Тип оплаты, ставка и лимиты"
-      }
+    "profile": {
+      "title": "Профиль",
+      "subtitle": "Личные данные",
+      "localTime": "Местное время",
+      "timezone": "Часовой пояс",
+      "edit": "Редактировать",
+      "save": "Сохранить",
+      "cancel": "Отмена",
+      "registrationDate": "Дата регистрации"
+    },
+    "sharedAccess": {
+      "title": "Общий доступ",
+      "subtitle": "Управление доступом к расписанию",
+      "newInvite": "Новое приглашение",
+      "selectAccessLevel": "Выберите уровень доступа",
+      "always": "Всегда",
+      "creating": "Создание...",
+      "invite": "Пригласить",
+      "noAccess": "Нет доступа",
+      "haveAccess": "Имеют доступ",
+      "rightsManagement": "Управление правами",
+      "save": "Сохранить"
+    },
+    "calendar": {
+      "title": "Календари",
+      "subtitle": "Выбор календаря для отображения",
+      "myCalendar": "Мой календарь",
+      "thisUser": "Этот пользователь",
+      "unsubscribe": "Отписаться",
+      "unsubscribeMessage": "Вы уверены, что хотите отписаться от календаря {name}?",
+      "cancel": "Отмена",
+      "availableCalendars": "Доступные календари",
+      "mainProfile": "Основной профиль",
+      "availableRights": "Доступные права",
+      "yourCapabilities": "Ваши возможности",
+      "searching": "Поиск..."
     },
     "app": {
       "title": "Настройки приложения",
-      "language": "Язык"
+      "subtitle": "Язык и уведомления",
+      "language": "Язык",
+      "languageSection": "Язык интерфейса",
+      "notifications": "Уведомления",
+      "notifyBefore": "Уведомлять за"
+    },
+    "compensation": {
+      "title": "Оплата труда",
+      "subtitle": "Настройка расчета заработка",
+      "calculationMethod": "Метод расчета",
+      "hourly": "Час",
+      "shift": "Смена",
+      "monthly": "Месяц",
+      "hourlyRate": "Ставка в час",
+      "shiftRate": "Ставка за смену",
+      "monthlyRate": "Месячная зарплата",
+      "placeholder": "Введите сумму",
+      "financialGoal": "Финансовая цель",
+      "notSet": "Не задано",
+      "enterCorrectAmount": "Введите корректную сумму",
+      "goalCannotBeLess": "Цель не может быть меньше основной суммы",
+      "saving": "Сохранение...",
+      "save": "Сохранить"
     }
   },
   "statistics": {
     "title": "Статистика",
+    "subtitle": "Анализ смен и заработка",
     "total": "Всего",
     "noData": "Нет данных",
     "yearPlaceholder": "Год",
+    "totalShifts": "Всего смен",
+    "totalHours": "Всего часов",
+    "filterDescription": "Выберите шаблоны смен, которые должны участвовать в расчете.",
+    "salary": "Зарплата",
+    "changeFilter": "Изменить фильтр",
     "salaryTypes": {
       "HOURLY": "Почасовая",
       "SHIFT": "Посменная",
@@ -108,6 +177,7 @@
   },
   "shifts": {
     "title": "Смены",
+    "subtitle": "Управление шаблонами смен",
     "addButton": "Добавить смену",
     "emptyState": "Сейчас смен нет — добавьте первую смену!",
     "create": {
@@ -130,9 +200,29 @@
       "success": "Удалено",
       "error": "Ошибка удаления"
     },
+    "deleteConfirm": "Подтвердите удаление",
+    "deleteMessage": "Удалить шаблон \"{label}\"?",
+    "deleteOnlyTemplate": "Только шаблон",
+    "deleteTemplateWithShifts": "Шаблон и смены",
+    "noShifts": "Нет смен",
+    "createFirst": "Создайте первую смену, чтобы начать",
+    "addShift": "Добавить смену",
     "noName": "(Без названия)",
     "unnamedShift": "Смена без названия",
-    "more": "ещё"
+    "more": "ещё",
+    "cancel": "Отмена",
+    "saving": "Сохранение...",
+    "nameLabel": "Название",
+    "namePlaceholder": "Введите название смены",
+    "visualStyle": "Внешний вид",
+    "accentColor": "Акцентный цвет",
+    "timeInterval": "Время",
+    "start": "Начало",
+    "end": "Конец",
+    "createButton": "Создать",
+    "save": "Сохранить",
+    "templateLabel": "Шаблон",
+    "workInterval": "Рабочее время"
   },
   "schedule": {
     "myCalendar": "Мой календарь",

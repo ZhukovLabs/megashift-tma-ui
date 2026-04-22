@@ -29,6 +29,7 @@ function BlockSettingsModal({
     isOpen,
     onClose,
     title,
+    description,
     items,
     excludedIds,
     onToggle
@@ -36,13 +37,14 @@ function BlockSettingsModal({
     isOpen: boolean;
     onClose: () => void;
     title: string;
+    description: string;
     items: Array<{id: string; label: string; color?: string; isExcluded?: boolean}>;
     excludedIds: Set<string>;
     onToggle: (id: string) => void;
 }) {
     return (
-        <ModalSheet 
-            isOpen={isOpen} 
+        <ModalSheet
+            isOpen={isOpen}
             onClose={onClose}
             title={
                 <div className="flex items-center gap-3">
@@ -55,7 +57,7 @@ function BlockSettingsModal({
         >
             <div className="space-y-6">
                 <p className="text-sm font-medium text-base-content/40 leading-relaxed">
-                    Выберите шаблоны смен, которые должны участвовать в расчете.
+                    {description}
                 </p>
                 
                 <div className="space-y-3 pb-8">
@@ -245,6 +247,7 @@ export function StatisticsPage() {
                 isOpen={settingsBlockId === BLOCK_IDS.SHIFT_COUNT}
                 onClose={closeSettings}
                 title={t('totalShifts')}
+                description={t('filterDescription')}
                 items={countBlock.itemsCount.items}
                 excludedIds={countBlock.excludedIds}
                 onToggle={countBlock.toggleExclude}
@@ -254,6 +257,7 @@ export function StatisticsPage() {
                 isOpen={settingsBlockId === BLOCK_IDS.SHIFT_HOURS}
                 onClose={closeSettings}
                 title={t('totalHours')}
+                description={t('filterDescription')}
                 items={hoursBlock.itemsHours.items}
                 excludedIds={hoursBlock.excludedIds}
                 onToggle={hoursBlock.toggleExclude}
@@ -262,7 +266,8 @@ export function StatisticsPage() {
             <BlockSettingsModal
                 isOpen={settingsBlockId === BLOCK_IDS.SALARY}
                 onClose={closeSettings}
-                title="Зарплата"
+                title={t('salary')}
+                description={t('filterDescription')}
                 items={salaryBlock.itemsCount.items}
                 excludedIds={salaryBlock.excludedIds}
                 onToggle={salaryBlock.toggleExclude}

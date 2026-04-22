@@ -13,7 +13,8 @@
     "error": "Error",
     "success": "Success",
     "add": "Add",
-    "optional": "(optional)"
+    "optional": "(optional)",
+    "at": "at"
   },
   "navigation": {
     "home": "Go home",
@@ -57,48 +58,116 @@
       "required": "Select a timezone",
       "currentTime": "Current time: {time} in selected timezone"
     },
+    "timezones": {
+      "minsk": "Minsk",
+      "moscow": "Moscow",
+      "kyiv": "Kyiv",
+      "london": "London",
+      "paris": "Paris",
+      "newYork": "New York",
+      "losAngeles": "Los Angeles",
+      "tokyo": "Tokyo",
+      "utc": "UTC"
+    },
+    "saved": "Saved",
+    "error": "Save error",
     "saveSuccess": "Saved",
-    "saveError": "Save error"
+    "saveError": "Save error",
+    "disabled": "Disabled",
+    "minutes30": "30 minutes",
+    "hour1": "1 hour",
+    "hours2": "2 hours",
+    "hours3": "3 hours"
   },
   "settings": {
-    "title": "Settings",
-    "sections": {
+    "main": {
+      "title": "Settings",
+      "subtitle": "Account management",
       "account": "Account",
       "app": "Application",
-      "work": "Work"
+      "work": "Work",
+      "profileDesc": "Name, photo, personal data",
+      "sharedAccess": "Shared Access",
+      "sharedAccessDesc": "Configure access for others to your schedule",
+      "calendarDesc": "Choose a calendar to display",
+      "appDesc": "Language, notifications",
+      "compensationDesc": "Payment type, rate and limits"
     },
-    "items": {
-      "profile": {
-        "label": "Profile",
-        "description": "Name, photo, personal data"
-      },
-      "sharedAccess": {
-        "label": "Shared Access",
-        "description": "Configure access for others to your schedule"
-      },
-      "calendar": {
-        "label": "Calendar Selection",
-        "description": "Choose a calendar to display"
-      },
-      "appSettings": {
-        "label": "App Settings",
-        "description": "Language, notifications"
-      },
-      "compensation": {
-        "label": "Compensation",
-        "description": "Payment type, rate and limits"
-      }
+    "profile": {
+      "title": "Profile",
+      "subtitle": "Personal information",
+      "localTime": "Local time",
+      "timezone": "Timezone",
+      "edit": "Edit",
+      "save": "Save",
+      "cancel": "Cancel",
+      "registrationDate": "Registration date"
+    },
+    "sharedAccess": {
+      "title": "Shared Access",
+      "subtitle": "Manage schedule access",
+      "newInvite": "New invitation",
+      "selectAccessLevel": "Select access level",
+      "always": "Always",
+      "creating": "Creating...",
+      "invite": "Invite",
+      "noAccess": "No access",
+      "haveAccess": "Have access",
+      "rightsManagement": "Rights management",
+      "save": "Save"
+    },
+    "calendar": {
+      "title": "Calendars",
+      "subtitle": "Choose calendar to display",
+      "myCalendar": "My calendar",
+      "thisUser": "This user",
+      "unsubscribe": "Unsubscribe",
+      "unsubscribeMessage": "Are you sure you want to unsubscribe from {name}'s calendar?",
+      "cancel": "Cancel",
+      "availableCalendars": "Available calendars",
+      "mainProfile": "Main profile",
+      "availableRights": "Available rights",
+      "yourCapabilities": "Your capabilities",
+      "searching": "Searching..."
     },
     "app": {
       "title": "App Settings",
-      "language": "Language"
+      "subtitle": "Language and notifications",
+      "language": "Language",
+      "languageSection": "Interface language",
+      "notifications": "Notifications",
+      "notifyBefore": "Notify before"
+    },
+    "compensation": {
+      "title": "Compensation",
+      "subtitle": "Configure earnings calculation",
+      "calculationMethod": "Calculation method",
+      "hourly": "Hour",
+      "shift": "Shift",
+      "monthly": "Month",
+      "hourlyRate": "Hourly rate",
+      "shiftRate": "Per shift rate",
+      "monthlyRate": "Monthly salary",
+      "placeholder": "Enter amount",
+      "financialGoal": "Financial goal",
+      "notSet": "Not set",
+      "enterCorrectAmount": "Enter a valid amount",
+      "goalCannotBeLess": "Goal cannot be less than base amount",
+      "saving": "Saving...",
+      "save": "Save"
     }
   },
   "statistics": {
     "title": "Statistics",
+    "subtitle": "Shift and earnings analysis",
     "total": "Total",
     "noData": "No data",
     "yearPlaceholder": "Year",
+    "totalShifts": "Total shifts",
+    "totalHours": "Total hours",
+    "filterDescription": "Select shift templates to include in calculation.",
+    "salary": "Salary",
+    "changeFilter": "Change filter",
     "salaryTypes": {
       "HOURLY": "Hourly",
       "SHIFT": "Per Shift",
@@ -108,6 +177,7 @@
   },
   "shifts": {
     "title": "Shifts",
+    "subtitle": "Manage shift templates",
     "addButton": "Add shift",
     "emptyState": "No shifts yet — add your first shift!",
     "create": {
@@ -130,9 +200,29 @@
       "success": "Deleted",
       "error": "Delete error"
     },
+    "deleteConfirm": "Confirm deletion",
+    "deleteMessage": "Delete template \"{label}\"?",
+    "deleteOnlyTemplate": "Template only",
+    "deleteTemplateWithShifts": "Template and shifts",
+    "noShifts": "No shifts",
+    "createFirst": "Create your first shift to get started",
+    "addShift": "Add shift",
     "noName": "(No name)",
     "unnamedShift": "Unnamed shift",
-    "more": "more"
+    "more": "more",
+    "cancel": "Cancel",
+    "saving": "Saving...",
+    "nameLabel": "Name",
+    "namePlaceholder": "Enter shift name",
+    "visualStyle": "Visual style",
+    "accentColor": "Accent color",
+    "timeInterval": "Time",
+    "start": "Start",
+    "end": "End",
+    "createButton": "Create",
+    "save": "Save",
+    "templateLabel": "Template",
+    "workInterval": "Work hours"
   },
   "schedule": {
     "myCalendar": "My calendar",
