@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { motion } from 'framer-motion';
 import { Check, Globe } from 'lucide-react';
 import { setLocale } from '@/shared/i18n/actions';
@@ -10,7 +10,8 @@ import type { StepProps } from '@/features/auth/model';
 
 export const LanguageStep = ({ onNext }: StepProps) => {
     const t = useTranslations('start-form.language-step');
-    const [selectedLocale, setSelectedLocale] = useState<string>('ru');
+    const currentLocale = useLocale();
+    const [selectedLocale, setSelectedLocale] = useState<string>(currentLocale);
     const [isPending, setIsPending] = useState(false);
 
     const handleLocaleSelect = async (localeKey: string) => {

@@ -35,7 +35,7 @@ export const EnterUserInfoStep = ({onNext, onBack, isValid}: EnterUserInfoStepPr
                         <div className="group">
                             <input
                                 {...register('surname')}
-                                className="w-full h-12 px-4 rounded-xl bg-base-200/50 border-2 border-transparent focus:border-primary/20 focus:bg-base-100 transition-all font-bold text-sm outline-none placeholder:font-normal placeholder:opacity-30"
+                                className="w-full h-12 px-4 rounded-xl bg-base-200/50 border-2 border-transparent focus:border-primary/20 focus:bg-base-100 transition-all font-bold text-base outline-none placeholder:font-normal placeholder:opacity-30"
                                 placeholder={t('start-form.enter-user-info-step.surname.placeholder')}
                                 autoComplete="family-name"
                                 required
@@ -46,7 +46,7 @@ export const EnterUserInfoStep = ({onNext, onBack, isValid}: EnterUserInfoStepPr
                         <div className="group">
                             <input
                                 {...register('name')}
-                                className="w-full h-12 px-4 rounded-xl bg-base-200/50 border-2 border-transparent focus:border-primary/20 focus:bg-base-100 transition-all font-bold text-sm outline-none placeholder:font-normal placeholder:opacity-30"
+                                className="w-full h-12 px-4 rounded-xl bg-base-200/50 border-2 border-transparent focus:border-primary/20 focus:bg-base-100 transition-all font-bold text-base outline-none placeholder:font-normal placeholder:opacity-30"
                                 placeholder={t('start-form.enter-user-info-step.name.placeholder')}
                                 autoComplete="given-name"
                                 required
@@ -57,7 +57,7 @@ export const EnterUserInfoStep = ({onNext, onBack, isValid}: EnterUserInfoStepPr
                         <div className="group">
                             <input
                                 {...register('patronymic')}
-                                className="w-full h-12 px-4 rounded-xl bg-base-200/50 border-2 border-transparent focus:border-primary/20 focus:bg-base-100 transition-all font-bold text-sm outline-none placeholder:font-normal placeholder:opacity-30"
+                                className="w-full h-12 px-4 rounded-xl bg-base-200/50 border-2 border-transparent focus:border-primary/20 focus:bg-base-100 transition-all font-bold text-base outline-none placeholder:font-normal placeholder:opacity-30"
                                 placeholder={t('start-form.enter-user-info-step.patronymic.placeholder')}
                                 autoComplete="additional-name"
                             />
@@ -69,7 +69,7 @@ export const EnterUserInfoStep = ({onNext, onBack, isValid}: EnterUserInfoStepPr
                         <label className="text-[10px] font-black uppercase tracking-widest text-base-content/30 ml-2 mb-2 block">{t('start-form.enter-user-info-step.timezoneLabel')}</label>
                         <select
                             {...register('timezone', {required: true})}
-                            className="w-full h-12 px-4 rounded-xl bg-base-200/50 border-2 border-transparent focus:border-primary/20 transition-all font-bold text-sm outline-none appearance-none"
+                            className="w-full h-12 px-4 rounded-xl bg-base-200/50 border-2 border-transparent focus:border-primary/20 transition-all font-bold text-base outline-none appearance-none"
                             defaultValue="UTC"
                         >
                             {TIMEZONES.map(({tz, label}) => (

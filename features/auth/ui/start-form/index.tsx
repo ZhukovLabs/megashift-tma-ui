@@ -22,12 +22,12 @@ export const StartForm = () => {
                 <div className="absolute top-[-5%] right-[-5%] w-48 h-48 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
                 
                 <div className="mb-10 relative z-10 shrink-0">
-                    <div className="flex justify-between items-end mb-4 px-1">
-                        <div className="flex flex-col items-center w-full">
+                    <div className="flex justify-between items-center mb-4 px-1">
+                        <div className="flex flex-col items-start">
                             <span className="text-[10px] font-black uppercase tracking-[0.2em] text-base-content/20 leading-none">Регистрация</span>
-                            <h1 className="text-xl font-black tracking-tight text-base-content mt-1.5">Новый аккаунт</h1>
+                            <h1 className="text-lg font-black tracking-tight text-base-content mt-1">Новый аккаунт</h1>
                         </div>
-                        <div className="text-[11px] font-black text-primary bg-primary/10 px-3 py-1 rounded-full uppercase tracking-wider">
+                        <div className="text-[11px] font-black text-primary bg-primary/10 px-3 py-1.5 rounded-full uppercase tracking-wider shrink-0 ml-2">
                             {currentStep} / {totalSteps}
                         </div>
                     </div>
