@@ -9,8 +9,10 @@ import {formatInTimeZone} from 'date-fns-tz';
 import {X, Edit2} from 'lucide-react';
 import Link from 'next/link';
 import {ROUTES} from '@/shared/constants/routes';
+import {useTranslation} from 'react-i18next';
 
 export function AdvancedBottomMenu() {
+    const {t} = useTranslation();
     const {data: templates = [], isLoading} = useGetShiftTemplates();
     const tz = useUserStore(s => s.user?.timezone ?? 'UTC');
     const selectedShiftId = useScheduleStore(s => s.selectedShiftId);
@@ -75,7 +77,7 @@ export function AdvancedBottomMenu() {
                             )}
                         >
                             {isLoading && (
-                                <span className="text-xs opacity-60 px-2">Загрузка...</span>
+                                <span className="text-xs opacity-60 px-2">{t('common.loading')}</span>
                             )}
 
                             {!isLoading && templates.length === 0 && (
@@ -89,7 +91,7 @@ export function AdvancedBottomMenu() {
                                         'whitespace-nowrap'
                                     )}
                                 >
-                                    + Создать смену
+                                    {t('schedule.createShiftButton')}
                                 </Link>
                             )}
 

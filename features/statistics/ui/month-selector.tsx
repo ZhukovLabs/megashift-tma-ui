@@ -1,7 +1,6 @@
 'use client';
 
-import { format } from 'date-fns';
-import { ru } from 'date-fns/locale/ru';
+import {useTranslation} from 'react-i18next';
 
 type MonthSelectorProps = {
     year: number;
@@ -13,13 +12,14 @@ type MonthSelectorProps = {
 };
 
 export function MonthSelector({
-                                  year,
-                                  month,
-                                  onChange,
-                                  minYear = 1900,
-                                  maxYear = 2200,
-                                  yearPlaceholder = 'Год',
-                              }: MonthSelectorProps) {
+                                   year,
+                                   month,
+                                   onChange,
+                                   minYear = 1900,
+                                   maxYear = 2200,
+                                   yearPlaceholder,
+                               }: MonthSelectorProps) {
+    const {t} = useTranslation();
     const handleYearChange = (value: number) => {
         onChange(value, month);
     };
@@ -37,7 +37,7 @@ export function MonthSelector({
                 max={maxYear}
                 onChange={(e) => handleYearChange(Number(e.target.value))}
                 className="input input-bordered w-32 mb-3"
-                placeholder={yearPlaceholder}
+                placeholder={yearPlaceholder || t('statistics.yearPlaceholder')}
             />
 
             <select
@@ -45,11 +45,19 @@ export function MonthSelector({
                 onChange={(e) => handleMonthChange(Number(e.target.value))}
                 className="select select-bordered w-32"
             >
-                {Array.from({ length: 12 }, (_, i) => (
-                    <option key={i + 1} value={i + 1}>
-                        {format(new Date(2020, i, 1), 'LLLL', { locale: ru })}
-                    </option>
-                ))}
+                {Array.from({ length: 12 }, (_, i) => {
+                    const monthNames = [
+                        t('months.january'), t('months.february'), t('months.march'),
+                        t('months.april'), t('months.may'), t('months.june'),
+                        t('months.july'), t('months.august'), t('months.september'),
+                        t('months.october'), t('months.november'), t('months.december')
+                    ];
+                    return (
+                        <option key={i + 1} value={i + 1}>
+                            {monthNames[i]}
+                        </option>
+                    );
+                })}
             </select>
         </div>
     );

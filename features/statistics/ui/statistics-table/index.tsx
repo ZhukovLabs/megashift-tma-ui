@@ -1,4 +1,5 @@
 import type {ReactNode} from "react";
+import {useTranslation} from "react-i18next";
 import {calculatePercentage} from "@/features/statistics/model/calculate-percentage";
 import {StatisticsRow} from "./statistics-row";
 import {LoaderLarge} from "@/shared/ui/loader-large";
@@ -20,19 +21,20 @@ type BaseStatisticsTableProps<T extends StatisticItem> = {
 };
 
 export const StatisticsTable = <T extends StatisticItem>({
-                                                                 data,
-                                                                 isLoading = false,
-                                                                 totalLabel = 'Всего',
-                                                                 noDataMessage = 'Нет данных',
-                                                                 formatNumber = (n) => n.toLocaleString(),
-                                                                 renderItem,
-                                                             }: BaseStatisticsTableProps<T>) => {
+                                                                  data,
+                                                                  isLoading = false,
+                                                                  totalLabel,
+                                                                  noDataMessage,
+                                                                  formatNumber = (n) => n.toLocaleString(),
+                                                                  renderItem,
+                                                              }: BaseStatisticsTableProps<T>) => {
+    const {t} = useTranslation();
     if (isLoading) {
         return <LoaderLarge/>
     }
 
     if (!data || data.length === 0) {
-        return <div className="text-center py-4 text-sm text-base-content/50">{noDataMessage}</div>;
+        return <div className="text-center py-4 text-sm text-base-content/50">{noDataMessage || t('statistics.noData')}</div>;
     }
 
     const totalValue = data.reduce((acc, item) => acc + item.value, 0);
@@ -51,7 +53,7 @@ export const StatisticsTable = <T extends StatisticItem>({
                 <div className="mt-3 flex justify-end">
                             <span
                                 className="px-4 py-1.5 rounded-full bg-primary text-primary-content font-semibold text-sm">
-                                {totalLabel}: {formatNumber(totalValue)}
+                                {(totalLabel || t('statistics.total'))}: {formatNumber(totalValue)}
                             </span>
                 </div>
             </div>

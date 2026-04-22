@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import {ROUTES} from "@/shared/constants/routes";
+import {useTranslation} from "react-i18next";
 
 interface ErrorProps {
     error: Error;
@@ -9,14 +10,15 @@ interface ErrorProps {
 }
 
 export default function GlobalError({error, reset}: ErrorProps) {
+    const {t} = useTranslation();
     const handleReportClick = () => {
         const ua = typeof navigator !== 'undefined' ? navigator.userAgent : 'unknown';
         const to = 'deniszhukov.hachiko@gmail.com';
-        const subject = encodeURIComponent('Ошибка приложения');
+        const subject = encodeURIComponent(t('errors.title'));
         const body = encodeURIComponent(
-            `Ошибка: ${error.message}\n` +
-            `Stack: ${error.stack || 'нет'}\n` +
-            `UserAgent: ${ua}\n\nОпиши, что делал(а):`
+            `${t('common.error')}: ${error.message}\n` +
+            `Stack: ${error.stack || 'none'}\n` +
+            `UserAgent: ${ua}\n\n${t('errors.describeAction')}`
         );
         window.location.href = `mailto:${to}?subject=${subject}&body=${body}`;
     };
@@ -24,9 +26,9 @@ export default function GlobalError({error, reset}: ErrorProps) {
     return (
         <main className="min-h-screen flex flex-col items-center justify-center bg-base-200 p-6">
             <div className="text-6xl mb-4 animate-bounce">💥</div>
-            <h1 className="text-4xl font-bold mb-2 text-center">Что-то пошло не так</h1>
+            <h1 className="text-4xl font-bold mb-2 text-center">{t('errors.title')}</h1>
             <p className="text-center text-base-content/70 mb-6">
-                Возникла ошибка в приложении. Не переживай, всё можно исправить!
+                {t('errors.description')}
             </p>
 
             <div className="flex flex-col gap-3 w-full max-w-xs">
@@ -34,26 +36,26 @@ export default function GlobalError({error, reset}: ErrorProps) {
                     className="btn btn-primary btn-block"
                     href={ROUTES.root}
                 >
-                    На главную
+                    {t('navigation.home')}
                 </Link>
 
                 <button
                     className="btn btn-outline btn-block"
                     onClick={handleReportClick}
                 >
-                    Сообщить о проблеме
+                    {t('navigation.reportProblem')}
                 </button>
 
                 <button
                     className="btn btn-secondary btn-block"
                     onClick={() => reset()}
                 >
-                    Попробовать снова
+                    {t('navigation.tryAgain')}
                 </button>
             </div>
 
             <p className="text-xs text-base-content/50 mt-6 text-center">
-                Мы автоматически получим сообщение о проблеме, если нажмёшь кнопку выше.
+                {t('errors.autoReport')}
             </p>
         </main>
     );

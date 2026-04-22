@@ -3,10 +3,14 @@ import {useEffect, useMemo} from "react";
 import {Check, X, Trash2} from "lucide-react";
 import {useUserStore} from "@/entities/user";
 import {useGetAvailableCalendars, AccessUser, useUnsubscribeFromCalendar} from "@/features/user/api";
-import { ACCESS_CLAIM_LABELS, AccessClaim } from '@/entities/access';
+import { AccessClaim } from '@/entities/access';
 import {popup} from "@tma.js/sdk";
+import {useTranslations} from 'next-intl';
 
 export function CalendarSettingsPage() {
+    const t = useTranslations('calendar');
+    const tClaims = useTranslations('accessClaims');
+    const tShared = useTranslations('sharedAccess');
     const userId = useUserStore((s) => s.user?.id ?? "");
     const ownerId = useUserStore((s) => s.ownerId);
     const setOwnerId = useUserStore((s) => s.setOwnerId);
@@ -20,12 +24,12 @@ export function CalendarSettingsPage() {
     const accessibleUsers: AccessUser[] = useMemo(() => {
         const me: AccessUser = {
             id: userId,
-            name: "Мой календарь",
+            name: t('myCalendar'),
             surname: "",
             claims: Object.values(AccessClaim),
         };
         return [me, ...accessData];
-    }, [userId, accessData]);
+    }, [userId, accessData, t]);
 
     const selectedUserId = useMemo(() => {
         const ownerIsValid = ownerId && accessibleUsers.some((u) => u.id === ownerId);
@@ -62,14 +66,14 @@ export function CalendarSettingsPage() {
         const user = accessibleUsers.find((u) => u.id === ownerUserId);
         if (!user) return;
 
-        const name = [user.name, user.surname].filter(Boolean).join(" ") || "этого пользователя";
+        const name = [user.name, user.surname].filter(Boolean).join(" ") || tShared('unsubscribe.message', {name: t('thisUser', {defaultValue: 'этого пользователя'})});
 
         const confirmed = await popup.show({
-            title: "Отписаться от календаря?",
-            message: `Вы действительно хотите отписаться от календаря ${name}?\nДоступ будет полностью удалён.`,
+            title: tShared('unsubscribe.title'),
+            message: tShared('unsubscribe.message', {name}),
             buttons: [
                 {id: "cancel", type: "cancel"},
-                {id: "confirm", type: "destructive", text: "Отписаться"},
+                {id: "confirm", type: "destructive", text: tShared('unsubscribe.confirm')},
             ],
         });
 
@@ -83,7 +87,7 @@ export function CalendarSettingsPage() {
     return (
         <div className="mx-auto w-full max-w-md px-4 pt-6">
             <h1 className="mb-7 text-center text-2xl font-bold tracking-tight text-base-content/90">
-                Календари
+                {t('title')}
             </h1>
 
             <div className="space-y-2.5">
@@ -109,7 +113,7 @@ export function CalendarSettingsPage() {
                                 </div>
                                 {isMyCalendar && (
                                     <div className="mt-0.5 text-xs text-base-content/50">
-                                        мой календарь
+                                        {t('myCalendar')}
                                     </div>
                                 )}
                             </div>
@@ -130,7 +134,7 @@ export function CalendarSettingsPage() {
                     btn btn-ghost btn-xs text-error 
                     ${isUnsubscribing ? "opacity-50 cursor-not-allowed" : "opacity-40 hover:opacity-100 group-hover:opacity-70"}
                   `}
-                                    aria-label="Отписаться от календаря"
+                                    aria-label={t('unsubscribeLabel')}
                                 >
                                     <Trash2 size={18}/>
                                 </button>
@@ -142,7 +146,7 @@ export function CalendarSettingsPage() {
 
             {selectedUser && selectedUser.id !== userId && (
                 <div className="mt-8 rounded-xl bg-base-100 p-5 shadow-sm">
-                    <h2 className="mb-3 text-lg font-semibold">Доступные права</h2>
+                    <h2 className="mb-3 text-lg font-semibold">{tShared('availableRights')}</h2>
                     <div className="space-y-2.5 text-sm">
                         {allClaims.map((claim) => {
                             const hasAccess = selectedUser.claims.includes(claim);
@@ -154,7 +158,7 @@ export function CalendarSettingsPage() {
                                         <X size={16} className="text-error/70"/>
                                     )}
                                     <span className={hasAccess ? "" : "text-base-content/60"}>
-                    {ACCESS_CLAIM_LABELS[claim]}
+                    {tClaims(claim)}
                   </span>
                                 </div>
                             );
@@ -165,13 +169,13 @@ export function CalendarSettingsPage() {
 
             {isLoading && (
                 <div className="mt-10 text-center text-base-content/50">
-                    Загрузка календарей...
+                    {t('loading')}
                 </div>
             )}
 
             {isUnsubscribing && (
                 <div className="mt-6 text-center text-base-content/60">
-                    Отписываемся...
+                    {t('unsubscribing')}
                 </div>
             )}
         </div>

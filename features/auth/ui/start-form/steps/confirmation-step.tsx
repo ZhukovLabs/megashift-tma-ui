@@ -6,6 +6,7 @@ import { useRegister } from '@/features/auth/api';
 import { useFormContext } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/shared/constants/routes';
+import { useTranslations } from 'next-intl';
 
 export const ConfirmationStep = ({
                                      onBack,
@@ -14,6 +15,7 @@ export const ConfirmationStep = ({
     const {handleSubmit, formState: {isSubmitting}} = useFormContext<FormData>();
     const {mutateAsync: createUser} = useRegister();
     const router = useRouter();
+    const t = useTranslations();
 
     const [currentTime, setCurrentTime] = useState<string>(getCurrentTimeInTZ(values.timezone));
 
@@ -42,40 +44,40 @@ export const ConfirmationStep = ({
                     <span className="text-2xl text-white">✓</span>
                 </div>
 
-                <h2 className="text-tg-text-color">Проверьте данные</h2>
+                <h2 className="text-tg-text-color">{t('start-form.confirmation-step.title')}</h2>
 
                 <div className="w-full bg-tg-bg-color rounded-xl p-4 space-y-3">
-                    <DataRow label="Фамилия" value={values.surname}/>
+                    <DataRow label={t('start-form.confirmation-step.fields.surname')} value={values.surname}/>
                     <div className="divider"/>
-                    <DataRow label="Имя" value={values.name}/>
+                    <DataRow label={t('start-form.confirmation-step.fields.name')} value={values.name}/>
                     <div className="divider"/>
-                    <DataRow label="Отчество" value={values.patronymic}/>
+                    <DataRow label={t('start-form.confirmation-step.fields.patronymic')} value={values.patronymic}/>
                     <div className="divider"/>
                     <DataRow
-                        label="Часовой пояс"
+                        label={t('start-form.confirmation-step.fields.timezone')}
                         value={tzInfo ? `${tzInfo.label} (${getOffset(tzInfo.tz)})` : values.timezone}
                     />
                 </div>
 
                 {values.timezone && (
                     <div className="text-tg-hint-color text-sm mt-2">
-                        Ваше текущее время: <span className="font-medium">{currentTime}</span> в выбранном часовом поясе
+                        {t('start-form.confirmation-step.currentTime', {time: currentTime})}
                     </div>
                 )}
 
                 <div className="text-tg-hint-color text-sm mt-2">
-                    Если всё верно, нажмите «Отправить». Или вернитесь назад для редактирования.
+                    {t('start-form.confirmation-step.description')}
                 </div>
 
                 <div className="flex gap-3 w-full mt-4">
-                    <button onClick={onBack} className="btn btn-outline flex-1">Назад</button>
+                    <button onClick={onBack} className="btn btn-outline flex-1">{t('common.back')}</button>
                     <button
                         type="submit"
                         onClick={handleClick}
                         disabled={isSubmitting}
                         className="btn btn-primary flex-1"
                     >
-                        {isSubmitting ? 'Отправка...' : 'Отправить'}
+                        {isSubmitting ? t('start-form.confirmation-step.submitting') : t('start-form.confirmation-step.submit')}
                     </button>
                 </div>
             </div>
@@ -83,9 +85,12 @@ export const ConfirmationStep = ({
     );
 };
 
-const DataRow = ({label, value}: { label: string; value?: string }) => (
-    <div className="flex justify-between">
-        <div className="text-tg-hint-color">{label}:</div>
-        <div className="text-tg-text-color font-medium">{value || 'Не указано'}</div>
-    </div>
-);
+const DataRow = ({label, value}: { label: string; value?: string }) => {
+    const t = useTranslations();
+    return (
+        <div className="flex justify-between">
+            <div className="text-tg-hint-color">{label}:</div>
+            <div className="text-tg-text-color font-medium">{value || t('start-form.confirmation-step.fields.notSpecified')}</div>
+        </div>
+    );
+};

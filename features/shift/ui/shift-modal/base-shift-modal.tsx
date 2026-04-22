@@ -2,6 +2,7 @@
 
 import {useForm, useWatch} from 'react-hook-form';
 import {ChangeEvent, useEffect} from 'react';
+import {useTranslations} from 'next-intl';
 import {ModalSheet} from '@/shared/ui/modal-sheet';
 import { defaultValues } from '@/features/shift/model';
 import {LoaderLarge} from '@/shared/ui/loader-large';
@@ -35,6 +36,7 @@ export function BaseShiftModal({
                                    onClose,
                                    onSubmit,
                                }: Props) {
+    const t = useTranslations('shifts');
     const {register, handleSubmit, reset, control, setValue} = useForm<ShiftFormValues>({
         defaultValues: initialValues ?? defaultValues,
     });
@@ -65,7 +67,7 @@ export function BaseShiftModal({
                         onClick={onClose}
                         className="flex-1 btn btn-ghost rounded-full py-3 text-sm sm:text-base"
                     >
-                        Отмена
+                        {t('common.cancel', {defaultValue: 'Отмена'})}
                     </button>
                     <button
                         type="button"
@@ -73,7 +75,7 @@ export function BaseShiftModal({
                         disabled={isPending || isLoading}
                         className="flex-1 btn btn-primary rounded-full py-3 text-sm sm:text-base"
                     >
-                        {isPending ? 'Сохраняем...' : submitLabel}
+                        {isPending ? t('edit.saving') : submitLabel}
                     </button>
                 </div>
             }
@@ -82,13 +84,13 @@ export function BaseShiftModal({
                 <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
                     <input
                         {...register('label', {required: true})}
-                        placeholder="Название смены"
+                        placeholder={t('create.namePlaceholder')}
                         disabled={isLoading}
                         className="input input-bordered w-full py-3 text-base sm:text-base"
                     />
 
                     <div className="flex flex-col gap-2 w-full">
-                        <label className="text-sm text-gray-600">Цвет</label>
+                        <label className="text-sm text-gray-600">{t('create.colorLabel')}</label>
                         <div
                             className="relative w-full h-14 rounded-lg border border-gray-200 shadow-sm overflow-hidden transition-transform duration-150"
                             style={{
@@ -116,7 +118,7 @@ export function BaseShiftModal({
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-3">
-                                    <span className="text-xs opacity-80 select-none">Нажмите для выбора</span>
+                                    <span className="text-xs opacity-80 select-none">{t('create.colorHint')}</span>
                                 </div>
                             </div>
 
@@ -127,7 +129,7 @@ export function BaseShiftModal({
                                 onChange={onColorChange}
                                 disabled={isLoading}
                                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                                aria-label="Выбрать цвет смены"
+                                aria-label={t('create.colorLabel')}
                             />
                         </div>
                     </div>

@@ -8,47 +8,35 @@ import {DollarSign, CalendarDays, Wallet} from 'lucide-react';
 import {z} from 'zod';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {CURRENCIES, Currency} from "@/entities/currency";
+import {useTranslations} from 'next-intl';
 
 const currencyValues = CURRENCIES.map(
     (c) => c.value
 ) as [Currency, ...Currency[]];
 
-const SALARY_LABELS: Record<SalaryType, string> = {
-    HOURLY: 'Час',
-    SHIFT: 'Смена',
-    MONTHLY: 'Месяц',
-    UNKNOWN: 'Неизвестно',
-};
-
-const SALARY_FULL_LABELS: Record<SalaryType, string> = {
-    HOURLY: 'Ставка в час',
-    SHIFT: 'Ставка за смену',
-    MONTHLY: 'Месячная зарплата',
-    UNKNOWN: 'Неизвестно',
-};
-
-const schema = z
-    .object({
-        typeSalary: z.enum(['HOURLY', 'SHIFT', 'MONTHLY']),
-        salary: z.number().min(0, 'Введите корректную сумму'),
-        maxSalary: z.number().min(0).optional(),
-        currency: z.enum(currencyValues),
-    })
-    .refine(
-        (data) =>
-            data.maxSalary === undefined ||
-            data.maxSalary >= data.salary,
-        {
-            message: 'Максимальная сумма меньше основной',
-            path: ['maxSalary'],
-        }
-    );
-
-type FormValues = z.infer<typeof schema>;
-
 export function CompensationSettingsPage() {
+    const t = useTranslations('compensation');
     const {data: settings, isLoading} = useGetUserSettings();
     const mutation = useUpdateSalary();
+
+    const schema = useMemo(() => z
+        .object({
+            typeSalary: z.enum(['HOURLY', 'SHIFT', 'MONTHLY']),
+            salary: z.number().min(0, t('validation.invalidAmount')),
+            maxSalary: z.number().min(0).optional(),
+            currency: z.enum(currencyValues),
+        })
+        .refine(
+            (data) =>
+                data.maxSalary === undefined ||
+                data.maxSalary >= data.salary,
+            {
+                message: t('validation.maxLessThanBase'),
+                path: ['maxSalary'],
+            }
+        ), [t]);
+
+    type FormValues = z.infer<typeof schema>;
 
     const {
         control,
@@ -98,7 +86,7 @@ export function CompensationSettingsPage() {
         <div className="min-h-screen bg-base-200 pb-12">
             <div className="mx-auto w-full max-w-md px-4 pt-7">
                 <h1 className="mb-8 text-center text-2xl font-semibold tracking-tight text-base-content/90">
-                    Оплата труда
+                    {t('title')}
                 </h1>
 
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
@@ -106,7 +94,7 @@ export function CompensationSettingsPage() {
                         <div className="px-5 pt-5 pb-6">
                             <div className="mb-3 flex items-center gap-2.5 text-sm font-medium text-base-content/70">
                                 <Wallet size={17}/>
-                                <span>Тип оплаты</span>
+                                <span>{t('paymentType.label')}</span>
                             </div>
 
                             <Controller
@@ -128,7 +116,7 @@ export function CompensationSettingsPage() {
                                                             : 'bg-base-200/70 hover:bg-base-200 text-base-content/80'
                                                     }`}
                                                 >
-                                                    {SALARY_LABELS[type]}
+                                                    {t(`paymentType.${type}`)}
                                                 </button>
                                             );
                                         })}
@@ -142,7 +130,7 @@ export function CompensationSettingsPage() {
                         <div className="px-5 pt-5 pb-6 space-y-4">
                             <div className="flex items-center gap-2.5 text-sm font-medium text-base-content/70">
                                 <DollarSign size={17}/>
-                                <span>{SALARY_FULL_LABELS[typeSalary]}</span>
+                                <span>{t(`paymentTypeFull.${typeSalary}`)}</span>
                             </div>
 
                             <div className="flex gap-3">
@@ -182,7 +170,7 @@ export function CompensationSettingsPage() {
                         <div className="px-5 pt-5 pb-6">
                             <div className="mb-3 flex items-center gap-2.5 text-sm font-medium text-base-content/70">
                                 <CalendarDays size={17}/>
-                                <span>Максимальная сумма (опционально)</span>
+                                <span>{t('maxSalaryHint')}</span>
                             </div>
 
                             <div className="flex items-center gap-3">
@@ -213,7 +201,7 @@ export function CompensationSettingsPage() {
                         disabled={!isValid || mutation.isPending || isLoading}
                         className="btn btn-primary w-full h-12 text-base shadow-md mt-3"
                     >
-                        {mutation.isPending ? 'Сохраняется…' : 'Сохранить'}
+                        {mutation.isPending ? t('saving') : 'Сохранить'}
                     </button>
                 </form>
             </div>

@@ -13,8 +13,10 @@ import {ModalSheet} from '@/shared/ui/modal-sheet';
 import {ShiftRow} from './shift-row';
 import * as timeUtils from '@/shared/lib/time';
 import {LoaderLarge} from "@/shared/ui/loader-large";
+import {useTranslation} from 'react-i18next';
 
 export const ShiftModal = () => {
+    const {t} = useTranslation();
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
@@ -53,9 +55,9 @@ export const ShiftModal = () => {
 
     const handleDelete = (shiftId: string) => async () => {
         const confirmed = await popup.show({
-            title: 'Удалить смену?',
-            message: 'Это действие нельзя отменить',
-            buttons: [{id: 'yes', type: 'destructive', text: 'Удалить'}, {id: 'no', type: 'cancel'}]
+            title: t('schedule.deleteShift.title'),
+            message: t('schedule.deleteShift.message'),
+            buttons: [{id: 'yes', type: 'destructive', text: t('schedule.deleteShift.confirm')}, {id: 'no', type: 'cancel'}]
         });
         if (confirmed !== 'yes' || !selectedDayStr) return;
 
@@ -76,15 +78,15 @@ export const ShiftModal = () => {
                     </div>
                 )
             }
-            footer={<button className="btn btn-primary w-full" onClick={onClose}>Закрыть</button>}
+            footer={<button className="btn btn-primary w-full" onClick={onClose}>{t('common.close')}</button>}
         >
             <div className="flex flex-col gap-2">
                 {isAnyFetching ? (
-                    <LoaderLarge/>
+                    <LoaderLarge text={t('common.loading')}/>
                 ) : (
                     <>
                         {enhancedShifts.length === 0 ? (
-                            <p className="text-center opacity-60 py-8">На этот день нет смен</p>
+                            <p className="text-center opacity-60 py-8">{t('schedule.noShifts')}</p>
                         ) : (
                             enhancedShifts.map(({shift, template}) => (
                                 <ShiftRow

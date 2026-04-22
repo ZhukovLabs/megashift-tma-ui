@@ -6,11 +6,13 @@ import {useLaunchParams} from '@tma.js/sdk-react';
 import {popup} from '@tma.js/sdk';
 import {useInviteProcessor} from '@/features/invite/model';
 import {useUserStore} from '@/entities/user';
-import { ACCESS_CLAIM_LABELS } from '@/entities/access';
+import { ACCESS_CLAIM_KEYS } from '@/entities/access';
+import {useTranslation} from 'react-i18next';
 
 type PopupChoice = 'accept' | 'decline' | string | null;
 
 export function InviteGate({children}: {children: ReactNode}) {
+    const {t} = useTranslation();
     const user = useUserStore((s) => s.user);
 
     const launchParams = useLaunchParams(true);
@@ -28,11 +30,11 @@ export function InviteGate({children}: {children: ReactNode}) {
     const formattedClaims = useMemo(() => {
         if (!claims || claims.length === 0) return '';
         return claims
-            .map((c) => ACCESS_CLAIM_LABELS[c])
+            .map((c) => t(ACCESS_CLAIM_KEYS[c]))
             .filter(Boolean)
             .map((s) => s!.toLowerCase())
             .join(', ');
-    }, [claims]);
+    }, [claims, t]);
 
     useEffect(() => {
         if (!user || shownRef.current || (state !== 'ready' && state !== 'done')) return;
@@ -52,8 +54,8 @@ export function InviteGate({children}: {children: ReactNode}) {
         (async () => {
             if (state === 'done') {
                 await safeShow({
-                    title: 'Приглашение',
-                    message: 'Приглашение устарело',
+                    title: t('invite.title'),
+                    message: t('invite.expired'),
                 });
 
                 return;
@@ -61,14 +63,14 @@ export function InviteGate({children}: {children: ReactNode}) {
 
             if (!inviterName || !claims || !formattedClaims) return;
 
-            const message = `${inviterName} пригласил вас к своему расписанию\n\nДоступ: ${formattedClaims}.`;
+            const message = t('invite.message', {name: inviterName, claims: formattedClaims});
 
             const choice = await safeShow({
-                title: 'Приглашение',
+                title: t('invite.title'),
                 message,
                 buttons: [
-                    {id: 'accept', type: 'default', text: 'Принять'},
-                    {id: 'decline', type: 'destructive', text: 'Отклонить'},
+                    {id: 'accept', type: 'default', text: t('invite.accept')},
+                    {id: 'decline', type: 'destructive', text: t('invite.decline')},
                 ],
             });
 

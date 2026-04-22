@@ -9,61 +9,64 @@ import {
     Users,
     AppWindow
 } from "lucide-react";
+import {useTranslations} from 'next-intl';
 import {ROUTES} from "@/shared/constants/routes";
 
-const settingsSections = [
-    {
-        title: "Аккаунт",
-        items: [
-            {
-                label: "Профиль",
-                description: "Имя, фото, личные данные",
-                href: ROUTES.settingsProfile,
-                icon: User,
-            },
-            {
-                label: "Общий доступ",
-                description: "Настройка доступа другим людям к вашему расписанию",
-                href: ROUTES.settingsSharedAccess,
-                icon: Users,
-            },
-            {
-                label: "Выбор календаря",
-                description: "Выберите календарь для отображения",
-                href: ROUTES.settingsCalendar,
-                icon: CalendarCog,
-            },
-        ],
-    },
-    {
-        title: "Приложение",
-        items: [
-            {
-                label: "Настройки приложения",
-                description: "Язык, уведомления",
-                href: ROUTES.settingsApp,
-                icon: AppWindow,
-            },
-        ],
-    },
-    {
-        title: "Работа",
-        items: [
-            {
-                label: "Оплата труда",
-                description: "Тип оплаты, ставка и лимиты",
-                href: ROUTES.settingsCompensation,
-                icon: Wallet,
-            }
-        ],
-    }
-];
-
 export function SettingsPage() {
+    const t = useTranslations('settings');
+
+    const settingsSections = [
+        {
+            title: t('sections.account'),
+            items: [
+                {
+                    label: t('items.profile.label'),
+                    description: t('items.profile.description'),
+                    href: ROUTES.settingsProfile,
+                    icon: User,
+                },
+                {
+                    label: t('items.sharedAccess.label'),
+                    description: t('items.sharedAccess.description'),
+                    href: ROUTES.settingsSharedAccess,
+                    icon: Users,
+                },
+                {
+                    label: t('items.calendar.label'),
+                    description: t('items.calendar.description'),
+                    href: ROUTES.settingsCalendar,
+                    icon: CalendarCog,
+                },
+            ],
+        },
+        {
+            title: t('sections.app'),
+            items: [
+                {
+                    label: t('items.appSettings.label'),
+                    description: t('items.appSettings.description'),
+                    href: ROUTES.settingsApp,
+                    icon: AppWindow,
+                },
+            ],
+        },
+        {
+            title: t('sections.work'),
+            items: [
+                {
+                    label: t('items.compensation.label'),
+                    description: t('items.compensation.description'),
+                    href: ROUTES.settingsCompensation,
+                    icon: Wallet,
+                }
+            ],
+        }
+    ];
+
     return (
         <div className="flex flex-col">
             <h1 className="text-center text-2xl font-bold tracking-tight text-base-content">
-                Настройки
+                {t('title')}
             </h1>
 
             <div className="space-y-6 mt-6">

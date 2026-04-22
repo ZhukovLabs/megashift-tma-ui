@@ -1,11 +1,96 @@
 {
+  "common": {
+    "cancel": "Cancel",
+    "save": "Save",
+    "create": "Create",
+    "edit": "Edit",
+    "delete": "Delete",
+    "close": "Close",
+    "back": "Back",
+    "continue": "Continue",
+    "submit": "Submit",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "add": "Add",
+    "optional": "(optional)"
+  },
+  "navigation": {
+    "home": "Go home",
+    "reportProblem": "Report a problem",
+    "tryAgain": "Try again"
+  },
+  "errors": {
+    "title": "Something went wrong",
+    "description": "An error occurred in the application. Don't worry, everything can be fixed!",
+    "globalTitle": "Something went wrong",
+    "globalDescription": "Global application error. Don't worry, we'll fix everything!",
+    "autoReport": "We will automatically receive a message about the problem if you click the button above.",
+    "describeAction": "Describe what you were doing:",
+    "pageNotFound": "It seems this page is lost.",
+    "pageNotFoundTitle": "404",
+    "pageNotFoundMagic": "Sometimes pages like to disappear... 🪄",
+    "validation": {
+      "required": "Required field",
+      "invalid": "Invalid value"
+    }
+  },
   "profile": {
     "title": "Profile",
-    "registered": "Registered"
+    "registered": "Registered",
+    "surname": {
+      "label": "Last name",
+      "placeholder": "Last name",
+      "required": "Last name is required"
+    },
+    "name": {
+      "label": "First name",
+      "placeholder": "First name",
+      "required": "First name is required"
+    },
+    "patronymic": {
+      "label": "Middle name",
+      "placeholder": "Middle name (optional)"
+    },
+    "timezone": {
+      "label": "Timezone",
+      "required": "Select a timezone",
+      "currentTime": "Current time: {time} in selected timezone"
+    },
+    "saveSuccess": "Saved",
+    "saveError": "Save error"
   },
   "settings": {
+    "title": "Settings",
+    "sections": {
+      "account": "Account",
+      "app": "Application",
+      "work": "Work"
+    },
+    "items": {
+      "profile": {
+        "label": "Profile",
+        "description": "Name, photo, personal data"
+      },
+      "sharedAccess": {
+        "label": "Shared Access",
+        "description": "Configure access for others to your schedule"
+      },
+      "calendar": {
+        "label": "Calendar Selection",
+        "description": "Choose a calendar to display"
+      },
+      "appSettings": {
+        "label": "App Settings",
+        "description": "Language, notifications"
+      },
+      "compensation": {
+        "label": "Compensation",
+        "description": "Payment type, rate and limits"
+      }
+    },
     "app": {
-      "title": "App settings",
+      "title": "App Settings",
       "language": "Language"
     }
   },
@@ -16,10 +101,118 @@
     "yearPlaceholder": "Year",
     "salaryTypes": {
       "HOURLY": "Hourly",
-      "SHIFT": "Shift",
+      "SHIFT": "Per Shift",
       "MONTHLY": "Monthly",
       "UNKNOWN": "Unknown"
     }
+  },
+  "shifts": {
+    "title": "Shifts",
+    "addButton": "Add shift",
+    "emptyState": "No shifts yet — add your first shift!",
+    "create": {
+      "title": "Create Shift",
+      "submitLabel": "Create",
+      "namePlaceholder": "Shift name",
+      "colorLabel": "Color",
+      "colorHint": "Click to select"
+    },
+    "edit": {
+      "title": "Edit Shift",
+      "submitLabel": "Save",
+      "saving": "Saving..."
+    },
+    "delete": {
+      "popupTitle": "Delete?",
+      "popupMessage": "Delete template \"{label}\"?\nThis action cannot be undone",
+      "onlyTemplate": "Delete template only",
+      "withShifts": "Delete template and shifts",
+      "success": "Deleted",
+      "error": "Delete error"
+    },
+    "noName": "(No name)",
+    "unnamedShift": "Unnamed shift",
+    "more": "more"
+  },
+  "schedule": {
+    "myCalendar": "My calendar",
+    "noShifts": "No shifts for this day",
+    "deleteShift": {
+      "title": "Delete shift?",
+      "message": "This action cannot be undone",
+      "confirm": "Delete"
+    },
+    "createShiftButton": "+ Create shift",
+    "loading": "Loading..."
+  },
+  "sharedAccess": {
+    "title": "Shared Access",
+    "accessRightsTitle": "Access rights for invited user:",
+    "shareButton": "Share schedule",
+    "creatingLink": "Creating link...",
+    "shareMessage": "I invite you to follow my shifts",
+    "successMessage": "Invitation sent!",
+    "errorMessage": "Failed to create link, please try again later",
+    "hint": "Send an invitation and allow others to follow your schedule",
+    "usersTitle": "Users with access to your schedule:",
+    "noUsers": "No one has access to your schedule yet",
+    "saveButton": "Save",
+    "accessUpdated": "Access rights updated",
+    "accessUpdateError": "Update error",
+    "deleteConfirm": "Delete access completely?",
+    "accessDeleted": "Access deleted",
+    "deleteError": "Delete error",
+    "unsubscribe": {
+      "title": "Unsubscribe from calendar?",
+      "message": "Are you sure you want to unsubscribe from {name}'s calendar?\nAccess will be completely removed.",
+      "confirm": "Unsubscribe",
+      "loading": "Unsubscribing..."
+    },
+    "availableRights": "Available rights"
+  },
+  "accessClaims": {
+    "READ": "Read",
+    "EDIT_SELF": "Edit own data",
+    "DELETE_SELF": "Delete own data",
+    "EDIT_ALL": "Edit all data",
+    "DELETE_ALL": "Delete all data",
+    "READ_STATISTICS": "View statistics"
+  },
+  "invite": {
+    "title": "Invitation",
+    "expired": "Invitation has expired",
+    "message": "{{name}} has invited you to their schedule\n\nAccess: {{claims}}.",
+    "accept": "Accept",
+    "decline": "Decline"
+  },
+  "compensation": {
+    "title": "Compensation",
+    "paymentType": {
+      "label": "Payment type",
+      "HOURLY": "Hour",
+      "SHIFT": "Shift",
+      "MONTHLY": "Month"
+    },
+    "paymentTypeFull": {
+      "HOURLY": "Hourly rate",
+      "SHIFT": "Per shift rate",
+      "MONTHLY": "Monthly salary"
+    },
+    "salaryLabel": "Amount",
+    "maxSalaryLabel": "Maximum amount",
+    "maxSalaryHint": "Maximum amount (optional)",
+    "validation": {
+      "invalidAmount": "Enter a valid amount",
+      "maxLessThanBase": "Maximum amount is less than base amount"
+    },
+    "saving": "Saving..."
+  },
+  "calendar": {
+    "title": "Calendars",
+    "myCalendar": "my calendar",
+    "loading": "Loading calendars...",
+    "unsubscribing": "Unsubscribing...",
+    "unsubscribeLabel": "Unsubscribe from calendar"
   },
   "start-form": {
     "welcome-step": {
@@ -28,6 +221,72 @@
       "description": "In the next step, you will need to enter your personal data. We guarantee the confidentiality and security of your information.",
       "next": "Start filling out",
       "user": "User"
+    },
+    "enter-user-info-step": {
+      "title": "Personal Information",
+      "timezoneLabel": "Timezone",
+      "surname": {
+        "label": "Last name*",
+        "placeholder": "Enter your last name"
+      },
+      "name": {
+        "label": "First name*",
+        "placeholder": "Enter your first name"
+      },
+      "patronymic": {
+        "label": "Middle name",
+        "placeholder": "Enter your middle name (if any)"
+      }
+    },
+    "confirmation-step": {
+      "title": "Verify your data",
+      "description": "If everything is correct, click «Submit». Or go back to edit.",
+      "currentTime": "Your current time: {time} in selected timezone",
+      "submit": "Submit",
+      "submitting": "Submitting...",
+      "fields": {
+        "surname": "Last name",
+        "name": "First name",
+        "patronymic": "Middle name",
+        "timezone": "Timezone",
+        "notSpecified": "Not specified"
+      }
+    },
+    "development-step": {
+      "title": "Welcome!",
+      "titleWithName": "Welcome, {name}!",
+      "status": "🚧 Application in development",
+      "description": "We are actively working on creating a functional and user-friendly application. Many interesting features will be available soon!",
+      "thankYou": "Thank you for registering and showing interest! We will notify you when the application is ready.",
+      "additionalInfo": "Wait for launch notifications",
+      "continue": "Got it"
     }
+  },
+  "timezones": {
+    "minsk": "Minsk",
+    "moscow": "Moscow",
+    "kyiv": "Kyiv",
+    "london": "London",
+    "paris": "Paris",
+    "newYork": "New York",
+    "losAngeles": "Los Angeles",
+    "tokyo": "Tokyo",
+    "chicago": "Chicago",
+    "shanghai": "Shanghai",
+    "kolkata": "Kolkata"
+  },
+  "months": {
+    "january": "January",
+    "february": "February",
+    "march": "March",
+    "april": "April",
+    "may": "May",
+    "june": "June",
+    "july": "July",
+    "august": "August",
+    "september": "September",
+    "october": "October",
+    "november": "November",
+    "december": "December"
   }
 }

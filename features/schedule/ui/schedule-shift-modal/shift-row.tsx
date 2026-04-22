@@ -3,6 +3,7 @@
 import {useState} from 'react';
 import {useForm, Controller, useWatch} from 'react-hook-form';
 import {Trash2, Edit2, Check, X} from 'lucide-react';
+import {useTranslation} from 'react-i18next';
 
 import type {UpdateShiftPayload} from '@/features/shift/api';
 
@@ -16,6 +17,7 @@ type ShiftRowProps = {
 };
 
 export const ShiftRow = ({shift, template, updateShift, getDuration, handleDelete, formatTime}: ShiftRowProps) => {
+    const {t} = useTranslation();
     const [editing, setEditing] = useState(false);
 
     const {control, handleSubmit, reset} = useForm<UpdateShiftPayload>({
@@ -98,9 +100,9 @@ export const ShiftRow = ({shift, template, updateShift, getDuration, handleDelet
                         </>
                     )}
                 </div>
-                <div className="text-sm font-medium">{template?.label ?? 'Смена без названия'}</div>
+                <div className="text-sm font-medium">{template?.label ?? t('shifts.unnamedShift')}</div>
             </div>
-            <button type="button" onClick={handleDelete(shift.id)} className="p-3" aria-label="Удалить смену">
+            <button type="button" onClick={handleDelete(shift.id)} className="p-3" aria-label={t('common.delete')}>
                 <Trash2 className="w-5 h-5 text-red-500"/>
             </button>
         </div>

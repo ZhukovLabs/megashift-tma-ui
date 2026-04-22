@@ -2,6 +2,7 @@
 
 import {useRouter, useSearchParams} from "next/navigation";
 import {formatInTimeZone} from "date-fns-tz";
+import {useTranslations} from 'next-intl';
 import {BaseShiftModal, ShiftFormValues} from "./base-shift-modal";
 import {useUpdateShiftTemplate, useGetShiftTemplate} from "@/features/shift-template/api";
 import {useUserStore} from "@/entities/user";
@@ -9,6 +10,7 @@ import {useUserStore} from "@/entities/user";
 export function UpdateShiftModal() {
     const router = useRouter();
     const searchParams = useSearchParams();
+    const t = useTranslations('shifts');
     const tz = useUserStore(s => s.user?.timezone ?? "UTC");
 
     const shiftId = searchParams.get("shiftId");
@@ -40,8 +42,8 @@ export function UpdateShiftModal() {
     return (
         <BaseShiftModal
             isOpen={isOpen}
-            title="Редактировать смену"
-            submitLabel="Сохранить"
+            title={t('edit.title')}
+            submitLabel={t('edit.submitLabel')}
             initialValues={initialValues}
             isLoading={isLoading}
             isPending={isPending}

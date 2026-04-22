@@ -1,10 +1,11 @@
 "use client";
 
 import {useState} from "react";
-import { AccessClaim, ACCESS_CLAIM_LABELS } from '@/entities/access';
+import { AccessClaim } from '@/entities/access';
 import {useUpdateAccess, useRevokeAllAccess} from "@/features/user/api";
 import {Trash2, Save, ChevronDown} from "lucide-react";
 import {toast} from "react-toastify";
+import {useTranslations} from 'next-intl';
 
 type AccessUser = {
     id: string;
@@ -19,6 +20,8 @@ type Props = {
 };
 
 export function AccessTable({users}: Props) {
+    const t = useTranslations('sharedAccess');
+    const tClaims = useTranslations('accessClaims');
     const {mutateAsync: updateAccess, isPending: isUpdating} = useUpdateAccess();
     const {mutateAsync: revokeAll, isPending: isDeleting} = useRevokeAllAccess();
 
@@ -52,37 +55,35 @@ export function AccessTable({users}: Props) {
                 claims
             });
 
-            toast.success("Права обновлены");
+            toast.success(t('accessUpdated'));
             setOpenUser(null);
         } catch {
-            toast.error("Ошибка обновления");
+            toast.error(t('accessUpdateError'));
         }
     };
 
     const handleDelete = async (userId: string) => {
-        if (!confirm("Удалить доступ полностью?")) return;
+        if (!confirm(t('deleteConfirm'))) return;
 
         try {
             await revokeAll(userId);
-            toast.success("Доступ удалён");
+            toast.success(t('accessDeleted'));
         } catch {
-            toast.error("Ошибка удаления");
+            toast.error(t('deleteError'));
         }
     };
 
     if (!users?.length) {
         return (
             <div className="mt-8 text-center text-sm text-base-content/60">
-                Пока никто не имеет доступ к вашему расписанию
+                {t('noUsers')}
             </div>
         );
     }
 
     return (
         <div className="mt-8 space-y-5">
-            <h2
-                className="font-medium text-base-content mb-2 block">Пользователи имеющие доступ к вашему
-                расписанию:</h2>
+            <h2 className="font-medium text-base-content mb-2 block">{t('usersTitle')}</h2>
 
             {users.map((user) => {
                 const currentClaims = edited[user.id] ?? user.claims;
@@ -119,7 +120,7 @@ export function AccessTable({users}: Props) {
                                                 key={claim}
                                                 className="badge badge-primary badge-soft badge-xs"
                                             >
-                                                {ACCESS_CLAIM_LABELS[claim]}
+                                                {tClaims(claim)}
                                             </span>
                                         ))}
                                     </div>
@@ -155,7 +156,7 @@ export function AccessTable({users}: Props) {
                                                 className="flex items-center justify-between bg-base-200/40 hover:bg-base-200 rounded-xl px-3 py-2 transition-colors"
                                             >
                                                 <span className="text-sm">
-                                                    {ACCESS_CLAIM_LABELS[claim]}
+                                                    {tClaims(claim)}
                                                 </span>
 
                                                 <input
@@ -179,7 +180,7 @@ export function AccessTable({users}: Props) {
                                         onClick={() => handleSave(user.id)}
                                     >
                                         <Save size={16}/>
-                                        Сохранить
+                                        {t('saveButton')}
                                     </button>
 
                                     <button

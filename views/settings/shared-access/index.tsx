@@ -6,7 +6,8 @@ import {useCreateInvite} from "@/features/invite/api";
 import {shareURL} from "@tma.js/sdk";
 import {Share2} from "lucide-react";
 import {toast} from 'react-toastify';
-import { ACCESS_CLAIM_LABELS, AccessClaim } from '@/entities/access';
+import {useTranslations} from 'next-intl';
+import { AccessClaim } from '@/entities/access';
 import {useAvailableAccess} from "@/features/user/api";
 import {AccessTable} from "./access-table";
 
@@ -15,6 +16,8 @@ type FormValues = {
 };
 
 export function SharedAccessPage() {
+    const t = useTranslations('sharedAccess');
+    const tClaims = useTranslations('accessClaims');
     const {mutateAsync: createInvite, isPending} = useCreateInvite();
     const {data: accessUsers = []} = useAvailableAccess();
     const [error, setError] = useState<string | null>(null);
@@ -32,19 +35,19 @@ export function SharedAccessPage() {
         try {
             const {id} = await createInvite({claims: data.claims});
             const url = `https://t.me/megashiftbot?startapp=${id}`;
-            shareURL(url, "Приглашаю тебя следить за моими сменами");
+            shareURL(url, t('shareMessage'));
 
-            toast.success('Приглашение отправлено!');
+            toast.success(t('successMessage'));
         } catch (e) {
             console.error("Invite creation failed", e);
-            setError("Не удалось создать ссылку, попробуйте позже");
+            setError(t('errorMessage'));
         }
     };
 
     return (
         <div className="flex min-h-screen flex-col bg-gradient-to-b from-base-100 via-base-200 to-base-100 px-4 pb-10">
             <h1 className="text-center text-2xl font-bold tracking-tight mb-6">
-                Общий доступ
+                {t('title')}
             </h1>
 
             <form onSubmit={handleSubmit(onSubmit)} className="mt-6 rounded-2xl bg-base-100 p-6 shadow space-y-4">
@@ -53,12 +56,10 @@ export function SharedAccessPage() {
                     control={control}
                     render={({field}) => (
                         <div>
-                            <h2
-                                className="font-medium text-base-content mb-2 block">Права доступа для приглашённого:</h2>
+                            <h2 className="font-medium text-base-content mb-2 block">{t('accessRightsTitle')}</h2>
                             <div className="flex flex-col gap-2">
                                 {Object.keys(AccessClaim).map((key) => {
                                     const claim = key as keyof typeof AccessClaim;
-                                    const label = ACCESS_CLAIM_LABELS[claim];
                                     const isRead = claim === AccessClaim.READ;
 
                                     return (
@@ -82,7 +83,7 @@ export function SharedAccessPage() {
                                                 }}
                                                 className="checkbox checkbox-primary"
                                             />
-                                            <span className="text-sm font-medium">{label}</span>
+                                            <span className="text-sm font-medium">{tClaims(claim)}</span>
                                         </label>
                                     );
                                 })}
@@ -100,7 +101,7 @@ export function SharedAccessPage() {
                     className="btn btn-primary w-full gap-2"
                 >
                     <Share2 size={18}/>
-                    {isPending ? "Создание ссылки..." : "Поделиться расписанием"}
+                    {isPending ? t('creatingLink') : t('shareButton')}
                 </button>
 
                 {error && (
@@ -108,7 +109,7 @@ export function SharedAccessPage() {
                 )}
 
                 <p className="mt-3 text-xs text-base-content/50 text-center">
-                    Отправьте приглашение и позвольте другим следить за вашим расписанием
+                    {t('hint')}
                 </p>
             </form>
 

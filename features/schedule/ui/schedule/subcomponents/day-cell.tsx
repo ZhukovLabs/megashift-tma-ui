@@ -6,6 +6,7 @@ import { useSchedule } from "../context";
 import { useGetShiftTemplates } from "@/features/shift-template/api";
 import { getContrastColor, lightenHex } from "@/shared/lib";
 import {useUserStore} from "@/entities/user";
+import {useTranslation} from "react-i18next";
 
 type DayCellProps = {
     day: Date;
@@ -14,10 +15,10 @@ type DayCellProps = {
 
 const MAX_VISIBLE = 2;
 const DEFAULT_COLOR = "#64748b";
-const DEFAULT_LABEL = "(Без названия)";
 const TIME_FORMAT = "HH:mm";
 
 export const DayCell = ({ day, monthDate }: DayCellProps) => {
+    const { t } = useTranslation();
     const { shifts, onDayClick, cellHeight } = useSchedule();
     const { data: templates = [] } = useGetShiftTemplates();
     const tz = useUserStore(s => s.user?.timezone || "UTC");
@@ -67,7 +68,7 @@ export const DayCell = ({ day, monthDate }: DayCellProps) => {
                 <div className="flex-1 px-0.5 pb-0.5 flex flex-col gap-0.5 overflow-hidden">
                     {visible.map(event => {
                         const tpl = event.shiftTemplateId ? templateMap[event.shiftTemplateId] : null;
-                        const label = tpl?.label ?? DEFAULT_LABEL;
+                        const label = tpl?.label ?? t('shifts.noName');
                         const color = tpl?.color ?? DEFAULT_COLOR;
                         const textColor = getContrastColor(color);
                         const time = event.actualStartTime ?? tpl?.startTime;
@@ -103,7 +104,7 @@ export const DayCell = ({ day, monthDate }: DayCellProps) => {
 
                     {more > 0 && (
                         <div className="mt-0.5 rounded text-[10px] text-center text-base-content/60 bg-base-300/60 py-0.5 leading-none">
-                            +{more} ещё
+                            +{more} {t('shifts.more')}
                         </div>
                     )}
                 </div>

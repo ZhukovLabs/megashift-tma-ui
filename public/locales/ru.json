@@ -1,9 +1,94 @@
 {
+  "common": {
+    "cancel": "Отмена",
+    "save": "Сохранить",
+    "create": "Создать",
+    "edit": "Редактировать",
+    "delete": "Удалить",
+    "close": "Закрыть",
+    "back": "Назад",
+    "continue": "Продолжить",
+    "submit": "Отправить",
+    "loading": "Загрузка...",
+    "error": "Ошибка",
+    "success": "Успешно",
+    "add": "Добавить",
+    "optional": "(опционально)"
+  },
+  "navigation": {
+    "home": "На главную",
+    "reportProblem": "Сообщить о проблеме",
+    "tryAgain": "Попробовать снова"
+  },
+  "errors": {
+    "title": "Что-то пошло не так",
+    "description": "Возникла ошибка в приложении. Не переживай, всё можно исправить!",
+    "globalTitle": "Что-то пошло не так",
+    "globalDescription": "Глобальная ошибка приложения. Не переживай, мы всё исправим!",
+    "autoReport": "Мы автоматически получим сообщение о проблеме, если нажмёшь кнопку выше.",
+    "describeAction": "Опиши, что делал(а):",
+    "pageNotFound": "Похоже, эта страница потерялась.",
+    "pageNotFoundTitle": "404",
+    "pageNotFoundMagic": "Иногда страницы любят исчезать... 🪄",
+    "validation": {
+      "required": "Обязательное поле",
+      "invalid": "Неверное значение"
+    }
+  },
   "profile": {
     "title": "Профиль",
-    "registered": "Зарегистрирован"
+    "registered": "Зарегистрирован",
+    "surname": {
+      "label": "Фамилия",
+      "placeholder": "Фамилия",
+      "required": "Фамилия обязательна"
+    },
+    "name": {
+      "label": "Имя",
+      "placeholder": "Имя",
+      "required": "Имя обязательно"
+    },
+    "patronymic": {
+      "label": "Отчество",
+      "placeholder": "Отчество (необязательно)"
+    },
+    "timezone": {
+      "label": "Часовой пояс",
+      "required": "Выберите часовой пояс",
+      "currentTime": "У вас сейчас: {time} в выбранном часовом поясе"
+    },
+    "saveSuccess": "Сохранено",
+    "saveError": "Ошибка сохранения"
   },
   "settings": {
+    "title": "Настройки",
+    "sections": {
+      "account": "Аккаунт",
+      "app": "Приложение",
+      "work": "Работа"
+    },
+    "items": {
+      "profile": {
+        "label": "Профиль",
+        "description": "Имя, фото, личные данные"
+      },
+      "sharedAccess": {
+        "label": "Общий доступ",
+        "description": "Настройка доступа другим людям к вашему расписанию"
+      },
+      "calendar": {
+        "label": "Выбор календаря",
+        "description": "Выберите календарь для отображения"
+      },
+      "appSettings": {
+        "label": "Настройки приложения",
+        "description": "Язык, уведомления"
+      },
+      "compensation": {
+        "label": "Оплата труда",
+        "description": "Тип оплаты, ставка и лимиты"
+      }
+    },
     "app": {
       "title": "Настройки приложения",
       "language": "Язык"
@@ -21,6 +106,114 @@
       "UNKNOWN": "Неизвестно"
     }
   },
+  "shifts": {
+    "title": "Смены",
+    "addButton": "Добавить смену",
+    "emptyState": "Сейчас смен нет — добавьте первую смену!",
+    "create": {
+      "title": "Создать смену",
+      "submitLabel": "Создать",
+      "namePlaceholder": "Название смены",
+      "colorLabel": "Цвет",
+      "colorHint": "Нажмите для выбора"
+    },
+    "edit": {
+      "title": "Редактировать смену",
+      "submitLabel": "Сохранить",
+      "saving": "Сохраняем..."
+    },
+    "delete": {
+      "popupTitle": "Удалить?",
+      "popupMessage": "Удалить шаблон \"{label}\"?\nЭто действие нельзя отменить",
+      "onlyTemplate": "Удалить только шаблон",
+      "withShifts": "Удалить шаблон и смены",
+      "success": "Удалено",
+      "error": "Ошибка удаления"
+    },
+    "noName": "(Без названия)",
+    "unnamedShift": "Смена без названия",
+    "more": "ещё"
+  },
+  "schedule": {
+    "myCalendar": "Мой календарь",
+    "noShifts": "На этот день нет смен",
+    "deleteShift": {
+      "title": "Удалить смену?",
+      "message": "Это действие нельзя отменить",
+      "confirm": "Удалить"
+    },
+    "createShiftButton": "+ Создать смену",
+    "loading": "Загрузка..."
+  },
+  "sharedAccess": {
+    "title": "Общий доступ",
+    "accessRightsTitle": "Права доступа для приглашённого:",
+    "shareButton": "Поделиться расписанием",
+    "creatingLink": "Создание ссылки...",
+    "shareMessage": "Приглашаю тебя следить за моими сменами",
+    "successMessage": "Приглашение отправлено!",
+    "errorMessage": "Не удалось создать ссылку, попробуйте позже",
+    "hint": "Отправьте приглашение и позвольте другим следить за вашим расписанием",
+    "usersTitle": "Пользователи имеющие доступ к вашему расписанию:",
+    "noUsers": "Пока никто не имеет доступ к вашему расписанию",
+    "saveButton": "Сохранить",
+    "accessUpdated": "Права обновлены",
+    "accessUpdateError": "Ошибка обновления",
+    "deleteConfirm": "Удалить доступ полностью?",
+    "accessDeleted": "Доступ удалён",
+    "deleteError": "Ошибка удаления",
+    "unsubscribe": {
+      "title": "Отписаться от календаря?",
+      "message": "Вы действительно хотите отписаться от календаря {name}?\nДоступ будет полностью удалён.",
+      "confirm": "Отписаться",
+      "loading": "Отписываемся..."
+    },
+    "availableRights": "Доступные права"
+  },
+  "accessClaims": {
+    "READ": "Чтение",
+    "EDIT_SELF": "Редактирование своих данных",
+    "DELETE_SELF": "Удаление своих данных",
+    "EDIT_ALL": "Редактирование данных всех",
+    "DELETE_ALL": "Удаление данных всех",
+    "READ_STATISTICS": "Просмотр статистики"
+  },
+  "invite": {
+    "title": "Приглашение",
+    "expired": "Приглашение устарело",
+    "message": "{{name}} пригласил вас к своему расписанию\n\nДоступ: {{claims}}.",
+    "accept": "Принять",
+    "decline": "Отклонить"
+  },
+  "compensation": {
+    "title": "Оплата труда",
+    "paymentType": {
+      "label": "Тип оплаты",
+      "HOURLY": "Час",
+      "SHIFT": "Смена",
+      "MONTHLY": "Месяц"
+    },
+    "paymentTypeFull": {
+      "HOURLY": "Ставка в час",
+      "SHIFT": "Ставка за смену",
+      "MONTHLY": "Месячная зарплата"
+    },
+    "salaryLabel": "Сумма",
+    "maxSalaryLabel": "Максимальная сумма",
+    "maxSalaryHint": "Максимальная сумма (опционально)",
+    "validation": {
+      "invalidAmount": "Введите корректную сумму",
+      "maxLessThanBase": "Максимальная сумма меньше основной"
+    },
+    "saving": "Сохраняется…"
+  },
+  "calendar": {
+    "title": "Календари",
+    "myCalendar": "мой календарь",
+    "loading": "Загрузка календарей...",
+    "unsubscribing": "Отписываемся...",
+    "unsubscribeLabel": "Отписаться от календаря"
+  },
   "start-form": {
     "welcome-step": {
       "title": "Привет",
@@ -31,17 +224,32 @@
     },
     "enter-user-info-step": {
       "title": "Личные данные",
+      "timezoneLabel": "Часовой пояс",
       "surname": {
         "label": "Фамилия*",
         "placeholder": "Введите вашу фамилию"
       },
       "name": {
         "label": "Имя*",
-        "placeholder": "Введите вашу имя"
+        "placeholder": "Введите ваше имя"
       },
       "patronymic": {
         "label": "Отчество",
         "placeholder": "Введите ваше отчество (если есть)"
+      }
+    },
+    "confirmation-step": {
+      "title": "Проверьте данные",
+      "description": "Если всё верно, нажмите «Отправить». Или вернитесь назад для редактирования.",
+      "currentTime": "Ваше текущее время: {time} в выбранном часовом поясе",
+      "submit": "Отправить",
+      "submitting": "Отправка...",
+      "fields": {
+        "surname": "Фамилия",
+        "name": "Имя",
+        "patronymic": "Отчество",
+        "timezone": "Часовой пояс",
+        "notSpecified": "Не указано"
       }
     },
     "development-step": {
@@ -53,5 +261,32 @@
       "additionalInfo": "Ожидайте уведомлений о запуске",
       "continue": "Понятно"
     }
+  },
+  "timezones": {
+    "minsk": "Минск",
+    "moscow": "Москва",
+    "kyiv": "Киев",
+    "london": "Лондон",
+    "paris": "Париж",
+    "newYork": "Нью-Йорк",
+    "losAngeles": "Лос-Анджелес",
+    "tokyo": "Токио",
+    "chicago": "Чикаго",
+    "shanghai": "Шанхай",
+    "kolkata": "Калькутта"
+  },
+  "months": {
+    "january": "январь",
+    "february": "февраль",
+    "march": "март",
+    "april": "апрель",
+    "may": "май",
+    "june": "июнь",
+    "july": "июль",
+    "august": "август",
+    "september": "сентябрь",
+    "october": "октябрь",
+    "november": "ноябрь",
+    "december": "декабрь"
   }
 }
