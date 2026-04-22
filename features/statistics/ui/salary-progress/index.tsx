@@ -11,7 +11,7 @@ import {TrendingUp, Settings2} from 'lucide-react';
 type SalaryProgressProps = {
     typeSalary: SalaryType;
     salary: number;
-    maxSalary: number;
+    maxSalary?: number;
     currencySymbol?: string;
     isLoading?: boolean;
     salaryTypeLabel?: string;
@@ -90,7 +90,7 @@ export const SalaryProgress = ({typeSalary, salary, maxSalary, currencySymbol, i
                 </div>
                 <div className="bg-base-100 rounded-2xl p-3 border border-base-200/60 shadow-sm flex flex-col items-center">
                     <span className="text-[9px] font-black uppercase tracking-widest text-base-content/20 mb-1">Цель</span>
-                    <span className="text-sm font-bold text-base-content/60">{formatMoney(maxSalary, currencySymbol)}</span>
+                    <span className="text-sm font-bold text-base-content/60">{formatMoney(maxSalary ?? 0, currencySymbol)}</span>
                 </div>
             </div>
         </div>

@@ -317,6 +317,11 @@
       "next": "Start filling out",
       "user": "User"
     },
+    "language-step": {
+      "title": "Select Language",
+      "subtitle": "You can change the language later in settings",
+      "continue": "Continue"
+    },
     "enter-user-info-step": {
       "title": "Personal Information",
       "timezoneLabel": "Timezone",

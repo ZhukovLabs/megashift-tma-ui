@@ -1,6 +1,6 @@
 import { FormProvider } from 'react-hook-form';
 import { useStartForm } from '@/features/auth/model';
-import { ConfirmationStep, EnterUserInfoStep, WelcomeStep } from './steps';
+import { ConfirmationStep, EnterUserInfoStep, LanguageStep, WelcomeStep } from './steps';
 import { motion, AnimatePresence } from 'framer-motion';
 import cn from 'classnames';
 
@@ -23,7 +23,7 @@ export const StartForm = () => {
                 
                 <div className="mb-10 relative z-10 shrink-0">
                     <div className="flex justify-between items-end mb-4 px-1">
-                        <div className="flex flex-col">
+                        <div className="flex flex-col items-center w-full">
                             <span className="text-[10px] font-black uppercase tracking-[0.2em] text-base-content/20 leading-none">Регистрация</span>
                             <h1 className="text-xl font-black tracking-tight text-base-content mt-1.5">Новый аккаунт</h1>
                         </div>
@@ -65,10 +65,11 @@ export const StartForm = () => {
                             className="flex flex-col flex-1 min-h-0"
                         >
                             {currentStep === 1 && <WelcomeStep onNext={goToNext}/>}
-                            {currentStep === 2 && (
+                            {currentStep === 2 && <LanguageStep onNext={goToNext}/>}
+                            {currentStep === 3 && (
                                 <EnterUserInfoStep onNext={goToNext} onBack={goToBack} isValid={isValid}/>
                             )}
-                            {currentStep === 3 && (
+                            {currentStep === 4 && (
                                 <ConfirmationStep onBack={goToBack} values={values}/>
                             )}
                         </motion.div>

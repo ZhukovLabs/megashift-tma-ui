@@ -22,7 +22,7 @@ export type ShiftStatisticsHoursItem = {
 export type SalaryStatistics = {
     salary: number;
     typeSalary: SalaryType;
-    maxSalary: number;
+    maxSalary?: number;
 };
 
 export type StatisticsCombinedResponse = {

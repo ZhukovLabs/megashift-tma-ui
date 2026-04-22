@@ -120,7 +120,7 @@ export function useStatisticsData(year: number, month: number) {
 
         return {
             salary: calculated,
-            maxSalary: data.salary.maxSalary,
+            maxSalary: data.salary.maxSalary ?? 0,
             typeSalary: data.salary.typeSalary,
         };
     }, [data?.salary]);

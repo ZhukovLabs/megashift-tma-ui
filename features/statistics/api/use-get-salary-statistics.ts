@@ -7,7 +7,7 @@ import {ENDPOINTS} from "@/shared/config/api";
 export type SalaryStatistics = {
     salary: number;
     typeSalary: SalaryType;
-    maxSalary: number;
+    maxSalary?: number;
 };
 
 const salaryStatisticsKey = (year: number, month: number) =>

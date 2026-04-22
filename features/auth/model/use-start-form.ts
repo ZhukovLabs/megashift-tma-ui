@@ -6,7 +6,7 @@ import {FormData} from './types';
 
 export const useStartForm = () => {
     const [currentStep, setCurrentStep] = useState(1);
-    const totalSteps = 3;
+    const totalSteps = 4;
 
     const methods = useForm<FormData>({
         resolver: zodResolver(formSchema),
@@ -31,7 +31,7 @@ export const useStartForm = () => {
     });
 
     const goToNext = async () => {
-        if (currentStep === 2) {
+        if (currentStep === 3) {
             const isStepValid = await trigger(['surname', 'name']);
             if (!isStepValid) return;
         }
