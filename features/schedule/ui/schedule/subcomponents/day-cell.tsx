@@ -1,33 +1,58 @@
-import { format, isSameDay, isSameMonth, isToday } from "date-fns";
-import { formatInTimeZone } from "date-fns-tz";
+import {format, isSameDay, isSameMonth, isToday} from "date-fns";
+import {formatInTimeZone} from "date-fns-tz";
 import cn from "classnames";
-import { useMemo } from "react";
-import { useSchedule } from "../context";
-import { useGetShiftTemplates } from "@/features/shift-template/api";
-import { getContrastColor, lightenHex } from "@/shared/lib";
+import {useMemo, memo} from "react";
+import {useSchedule} from "../context";
+import {useGetShiftTemplates} from "@/features/shift-template/api";
+import {getContrastColor, lightenHex} from "@/shared/lib";
 import {useUserStore} from "@/entities/user";
 import {useTranslation} from "react-i18next";
 
 type DayCellProps = {
     day: Date;
     monthDate: Date;
+    isLastInRow?: boolean;
 };
 
 const MAX_VISIBLE = 2;
-const DEFAULT_COLOR = "#64748b";
+const DEFAULT_LABEL = "";
 const TIME_FORMAT = "HH:mm";
 
-export const DayCell = ({ day, monthDate }: DayCellProps) => {
-    const { t } = useTranslation();
-    const { shifts, onDayClick, cellHeight } = useSchedule();
-    const { data: templates = [] } = useGetShiftTemplates();
+const TEMPLATE_PALETTE = [
+    "#2563eb",
+    "#16a34a",
+    "#d97706",
+    "#ef4444",
+    "#7c3aed",
+    "#0ea5a4",
+    "#f97316",
+    "#06b6d4",
+];
+
+function hashStringToIndex(s: string | number | undefined, modulo = TEMPLATE_PALETTE.length) {
+    if (s == null) return 0;
+    const str = String(s);
+    let h = 0;
+    for (let i = 0; i < str.length; i++) {
+        h = (h << 5) - h + str.charCodeAt(i);
+        h |= 0;
+    }
+    return Math.abs(h) % modulo;
+}
+
+export const DayCell = memo(function DayCell({day, monthDate, isLastInRow}: DayCellProps) {
+    const {shifts, onDayClick, config, isHoliday, isWeekend} = useSchedule();
+    const {data: templates = []} = useGetShiftTemplates();
+    const {t} = useTranslation();
     const tz = useUserStore(s => s.user?.timezone || "UTC");
 
     const isCurrentMonth = isSameMonth(day, monthDate);
-    const isTodayDay = isToday(day);
+    const isTodayDay = config.highlightToday && isToday(day);
+    const holiday = isHoliday(day);
+    const weekend = isWeekend(day);
 
     const templateMap = useMemo(
-        () => Object.fromEntries(templates.map(t => [t.id, t])),
+        () => new Map(templates.map(t => [t.id, t])),
         [templates]
     );
 
@@ -39,76 +64,107 @@ export const DayCell = ({ day, monthDate }: DayCellProps) => {
     const visible = events.slice(0, MAX_VISIBLE);
     const more = events.length - visible.length;
 
+    const getDayClasses = () => {
+        const classes: string[] = ["flex flex-col flex-1 min-h-0 cursor-pointer select-none transition-all duration-300 active:bg-base-200/50 relative overflow-hidden group"];
+
+        if (isTodayDay) {
+            classes.push("bg-primary/[0.03]");
+        } else if (holiday) {
+            classes.push("bg-error/[0.04]");
+        } else if (config.showWeekends && weekend) {
+            if (config.weekendHighlight === "background" || config.weekendHighlight === "both") {
+                classes.push("bg-base-200/30");
+            } else {
+                classes.push("bg-base-100");
+            }
+        } else if (!isCurrentMonth) {
+            classes.push("bg-base-200/10 opacity-40");
+        } else {
+            classes.push("bg-base-100");
+        }
+
+        return classes;
+    };
+
     return (
         <div
-            style={{ height: cellHeight }}
             onClick={() => onDayClick?.(day, events)}
             className={cn(
-                "relative cursor-pointer select-none transition-colors",
-                isCurrentMonth ? "bg-base-100" : "bg-base-200/30 opacity-70"
+                getDayClasses(),
+                "border-r border-b border-base-200/50",
+                isLastInRow && "border-r-0",
+                "w-full min-w-0 box-border"
             )}
         >
+            {/* Декоративный индикатор текущего дня */}
             {isTodayDay && (
-                <div className="absolute inset-0 border-2 border-primary/50 rounded pointer-events-none z-0" />
+                <div className="absolute top-0 left-0 right-0 h-0.5 bg-primary shadow-[0_0_8px_rgba(var(--p),0.5)] z-20" />
             )}
 
-            <div className="relative z-10 flex flex-col h-full p-0.5">
-                <div className="text-center pt-0.5">
-          <span
-              className={cn("text-xs font-medium", {
-                  "text-primary": isTodayDay,
-                  "text-base-content": isCurrentMonth && !isTodayDay,
-                  "text-base-content/50": !isCurrentMonth
-              })}
-          >
-            {format(day, "d")}
-          </span>
+            <div className="relative z-10 flex flex-col h-full p-1 min-h-0 pointer-events-none">
+                <div className="flex justify-center items-center h-6 mb-1 shrink-0">
+                    <span className={cn(
+                        "text-[13px] font-black transition-all flex items-center justify-center min-w-[24px] h-[24px] rounded-full",
+                        isTodayDay 
+                            ? "bg-primary text-primary-content shadow-lg shadow-primary/30 scale-110" 
+                            : holiday 
+                                ? "text-error" 
+                                : isCurrentMonth 
+                                    ? (weekend && config.showWeekends && (config.weekendHighlight === 'text' || config.weekendHighlight === 'both') ? "text-error/70" : "text-base-content/80")
+                                    : "text-base-content/20"
+                    )}>
+                        {format(day, "d")}
+                    </span>
                 </div>
 
-                <div className="flex-1 px-0.5 pb-0.5 flex flex-col gap-0.5 overflow-hidden">
+                <div className="flex-1 px-0.5 flex flex-col gap-1 overflow-hidden min-h-0 justify-start">
                     {visible.map(event => {
-                        const tpl = event.shiftTemplateId ? templateMap[event.shiftTemplateId] : null;
-                        const label = tpl?.label ?? t('shifts.noName');
-                        const color = tpl?.color ?? DEFAULT_COLOR;
-                        const textColor = getContrastColor(color);
+                        const tpl = event.shiftTemplateId ? templateMap.get(event.shiftTemplateId) : null;
+                        const label = tpl?.label ?? DEFAULT_LABEL;
+                        const color = (tpl?.color && tpl.color.trim()) ?? TEMPLATE_PALETTE[hashStringToIndex(event.shiftTemplateId ?? event.id)];
+                        const textColor = getContrastColor(color) ?? "#000000";
                         const time = event.actualStartTime ?? tpl?.startTime;
                         const isActual = !!event.actualStartTime;
+
+                        const cardBackground = isActual
+                            ? undefined
+                            : lightenHex(color, 22);
+
+                        const cardBackgroundImage = isActual
+                            ? `repeating-linear-gradient(45deg, ${lightenHex(color, 28)}, ${lightenHex(color, 28)} 3px, ${color} 3px, ${color} 6px)`
+                            : undefined;
 
                         return (
                             <div
                                 key={event.id}
                                 className={cn(
-                                    "rounded text-[10px] font-medium text-center truncate shadow-sm",
-                                    isActual ? "striped-bg" : ""
+                                    "rounded-[6px] text-[8px] font-black text-center truncate px-1 py-1 flex flex-col justify-center leading-none shadow-sm shrink-0 border-l-2",
                                 )}
                                 style={{
-                                    backgroundColor: isActual ? undefined : lightenHex(color, 12),
-                                    backgroundImage: isActual
-                                        ? `repeating-linear-gradient(45deg, ${lightenHex(color, 25)}, ${lightenHex(color, 25)} 4px, ${color} 4px, ${color} 8px)`
-                                        : undefined,
-                                    color: textColor
+                                    backgroundColor: cardBackground || color,
+                                    backgroundImage: cardBackgroundImage,
+                                    color: textColor,
+                                    borderLeftColor: color
                                 }}
                             >
-                                <div className="px-1.5 py-0.5 leading-tight">{label}</div>
+                                <span className="truncate uppercase tracking-tighter">{label}</span>
                                 {time && (
-                                    <div
-                                        className="px-1.5 pb-0.5 text-[9px] bg-black/15 leading-none"
-                                        style={{ color: textColor }}
-                                    >
+                                    <span className="opacity-70 text-[7px] font-bold mt-0.5">
                                         {formatInTimeZone(new Date(time), tz, TIME_FORMAT)}
-                                    </div>
+                                    </span>
                                 )}
                             </div>
                         );
                     })}
 
                     {more > 0 && (
-                        <div className="mt-0.5 rounded text-[10px] text-center text-base-content/60 bg-base-300/60 py-0.5 leading-none">
-                            +{more} {t('shifts.more')}
+                        <div
+                            className="text-[8px] font-black text-center text-base-content/40 bg-base-300/30 rounded-lg py-0.5 leading-none shrink-0 border border-base-300/20">
+                            +{more}
                         </div>
                     )}
                 </div>
             </div>
         </div>
     );
-};
+});

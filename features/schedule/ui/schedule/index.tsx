@@ -1,49 +1,144 @@
 "use client";
 
-import React, {useState, useEffect} from "react";
-import {useMotionValue, animate, PanInfo} from "framer-motion";
-import {CalendarHeader, WeekdaysHeader, MonthStack} from "./subcomponents";
+import {useMemo, useRef, useState, useEffect, useCallback} from "react";
+import {CalendarHeader, WeekdaysHeader} from "./subcomponents";
+import {WeekRow} from "@/features/schedule/ui";
 import {useSchedule} from "./context";
-import { Direction, THRESHOLD_FACTOR, SPRING_MAIN, SPRING_SNAP, useScheduleStore } from '@/features/schedule/model';
+import {THRESHOLD_FACTOR} from "@/features/schedule/model";
+import {motion, useAnimation} from "framer-motion";
+
+const CELL_ROWS = 6;
+
+const SPRING = {
+    stiffness: 400,
+    damping: 40,
+    mass: 0.5,
+};
 
 export const Schedule = () => {
-    const {currentDate, nextMonth, prevMonth, monthHeight} = useSchedule();
-    const y = useMotionValue(0);
+    const {currentDate, getCalendarDays, nextMonth, prevMonth} = useSchedule();
+    const gridRef = useRef<HTMLDivElement>(null); // Outer container for measuring height
+    const calendarGridControls = useAnimation(); // Controls for the draggable part
+    const [cellHeight, setCellHeight] = useState(0);
     const [isAnimating, setIsAnimating] = useState(false);
 
-    useEffect(() => {
-        if (monthHeight > 0) y.set(-monthHeight);
-    }, [monthHeight, y]);
+    const weeks = useMemo(() => {
+        const days = getCalendarDays(currentDate);
+        const weeksArray: Date[][] = [];
+        while (weeksArray.length < CELL_ROWS) {
+            const week = days.slice(weeksArray.length * 7, weeksArray.length * 7 + 7);
+            if (week.length === 0) break;
+            weeksArray.push(week);
+        }
+        return weeksArray;
+    }, [currentDate, getCalendarDays]);
 
-    const changeMonth = async (direction: Direction) => {
-        if (isAnimating) return;
+    useEffect(() => {
+        const measure = () => {
+            if (!gridRef.current) return;
+            const rect = gridRef.current.getBoundingClientRect();
+            setCellHeight(Math.floor(rect.height / CELL_ROWS));
+        };
+        measure();
+        const resizeObserver = new ResizeObserver(() => measure());
+        if (gridRef.current) resizeObserver.observe(gridRef.current);
+        return () => resizeObserver.disconnect();
+    }, []);
+
+    const dragRef = useRef(false);
+
+    const handleDragEnd = useCallback(async (info: { offset: { y: number } }) => {
+        dragRef.current = false;
+        if (!gridRef.current || isAnimating) return;
+        
+        const height = gridRef.current.clientHeight;
+        const threshold = height * THRESHOLD_FACTOR;
+        const offset = info.offset.y;
+
+        // Only trigger month change if drag is significant
+        if (Math.abs(offset) < 30) { // Increased threshold slightly for better tap detection
+            await calendarGridControls.start({ y: 0, transition: { duration: 0 } });
+            return;
+        }
+
         setIsAnimating(true);
 
-        const targetY = direction === "prev" ? 0 : -monthHeight * 2;
-        await animate(y, targetY, SPRING_MAIN);
-
-        if (direction === "prev") prevMonth();
-        else nextMonth();
-
-        y.set(-monthHeight);
+        if (offset < -threshold) {
+            await calendarGridControls.start({
+                y: -height * 0.2,
+                opacity: 0,
+                transition: {duration: 0.15, ease: "easeOut"}
+            });
+            nextMonth();
+            await calendarGridControls.set({y: height * 0.2, opacity: 0});
+            await calendarGridControls.start({
+                y: 0,
+                opacity: 1,
+                transition: SPRING
+            });
+        } else if (offset > threshold) {
+            await calendarGridControls.start({
+                y: height * 0.2,
+                opacity: 0,
+                transition: {duration: 0.15, ease: "easeOut"}
+            });
+            prevMonth();
+            await calendarGridControls.set({y: -height * 0.2, opacity: 0});
+            await calendarGridControls.start({
+                y: 0,
+                opacity: 1,
+                transition: SPRING
+            });
+        } else {
+            await calendarGridControls.start({
+                y: 0,
+                opacity: 1,
+                transition: SPRING
+            });
+        }
         setIsAnimating(false);
-    };
-
-    const handleDragEnd = (_: unknown, info: PanInfo) => {
-        if (isAnimating) return;
-
-        const threshold = monthHeight * THRESHOLD_FACTOR;
-
-        if (info.offset.y < -threshold) changeMonth("next");
-        else if (info.offset.y > threshold) changeMonth("prev");
-        else animate(y, -monthHeight, SPRING_SNAP);
-    };
+    }, [calendarGridControls, nextMonth, prevMonth, isAnimating]);
 
     return (
-        <div className="h-dvh bg-base-100 flex flex-col select-none touch-none">
-            <CalendarHeader currentDate={currentDate}/>
+        <div className="flex flex-col w-full h-full flex-1 overflow-hidden bg-base-100 relative">
+            <CalendarHeader/>
             <WeekdaysHeader/>
-            <MonthStack dragProps={{y, isAnimating, handleDragEnd}}/>
+            <div // This div is now the outer container for measuring height and holding the draggable grid
+                ref={gridRef}
+                className="flex-1 flex flex-col min-h-0 relative select-none overflow-hidden"
+            >
+                <motion.div // This motion.div handles the drag for month switching
+                    className="flex-1 flex flex-col min-h-0"
+                    drag={!isAnimating ? "y" : false}
+                    dragElastic={0.05}
+                    dragConstraints={{top: 0, bottom: 0}}
+                    dragMomentum={false}
+                    animate={calendarGridControls}
+                    onDragStart={() => {
+                        dragRef.current = true;
+                    }}
+                    onDragEnd={(_, info) => {
+                        if (dragRef.current) {
+                            dragRef.current = false;
+                            handleDragEnd(info);
+                        }
+                    }}
+                    style={{
+                        willChange: 'transform, opacity',
+                        touchAction: 'pan-x' // Allows horizontal scrolling (if any) but vertical is handled by drag
+                    }}
+                >
+                    {weeks.map((week, w) => (
+                        <div
+                            key={w}
+                            className="grid grid-cols-7 border-b border-base-200/30 last:border-b-0"
+                            style={{height: cellHeight || 'auto'}}
+                        >
+                            <WeekRow week={week} monthDate={currentDate}/>
+                        </div>
+                    ))}
+                </motion.div>
+            </div>
         </div>
     );
 };

@@ -1,24 +1,28 @@
-import React from "react";
-import { addDays } from "date-fns";
-import { getMonthDates } from '@/features/schedule/model';
+import { useMemo } from "react";
 import { WeekRow } from "./week-row";
 import { useSchedule } from "../context";
 
 type MonthType = "prev" | "current" | "next";
 
 export const MonthGrid = ({ monthType }: { monthType: MonthType }) => {
-    const { currentDate, prevDate, nextDate } = useSchedule();
+    const { currentDate, prevDate, nextDate, getCalendarDays } = useSchedule();
 
     const monthDate = monthType === "prev" ? prevDate : monthType === "next" ? nextDate : currentDate;
 
-    const { startDate } = getMonthDates(monthDate);
+    const weeks = useMemo(() => {
+        const days = getCalendarDays(monthDate);
+        const weeksArray: Date[][] = [];
+        for (let i = 0; i < days.length; i += 7) {
+            weeksArray.push(days.slice(i, i + 7));
+        }
+        return weeksArray;
+    }, [monthDate, getCalendarDays]);
 
     return (
-        <div className="flex flex-col gap-1">
-            {Array.from({ length: 6 }, (_, w) => {
-                const weekStart = addDays(startDate, w * 7);
-                return <WeekRow key={w} weekStart={weekStart} monthDate={monthDate} />;
-            })}
+        <div className="flex flex-col flex-1 w-full h-full">
+            {weeks.map((week, w) => (
+                <WeekRow key={w} week={week} monthDate={monthDate} />
+            ))}
         </div>
     );
 };

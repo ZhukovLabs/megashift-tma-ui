@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef } from "react";
+import { useEffect, useState } from "react";
 import { motion, MotionValue, PanInfo } from "framer-motion";
 import { MonthGrid } from "./month-grid";
 import { useSchedule } from "../context";
@@ -17,20 +17,28 @@ type MonthStackProps = {
 };
 
 export const MonthStack = ({ dragProps }: MonthStackProps) => {
-    const { monthHeight } = useSchedule();
-    const motionRef = useRef<HTMLDivElement>(null);
+    const { nextMonth, prevMonth } = useSchedule();
+    const [height, setHeight] = useState(0);
+
+    useEffect(() => {
+        const updateHeight = () => {
+            setHeight(window.innerHeight);
+        };
+        updateHeight();
+        window.addEventListener('resize', updateHeight);
+        return () => window.removeEventListener('resize', updateHeight);
+    }, []);
 
     const monthTypes = ["prev", "current", "next"] as const;
 
     return (
-        <div className="relative overflow-hidden rounded-2xl bg-base-200/40 shadow-inner flex-1">
+        <div className="relative flex-1 overflow-hidden">
             <motion.div
-                ref={motionRef}
                 drag={!dragProps.isAnimating ? "y" : false}
                 dragElastic={DRAG_ELASTIC}
                 dragMomentum={false}
                 dragConstraints={{
-                    top: -monthHeight * DRAG_CONSTRAINTS_MULTIPLIER,
+                    top: -height * DRAG_CONSTRAINTS_MULTIPLIER,
                     bottom: 0,
                 }}
                 onDragEnd={dragProps.handleDragEnd}
@@ -40,8 +48,7 @@ export const MonthStack = ({ dragProps }: MonthStackProps) => {
                 {monthTypes.map((type, index) => (
                     <div
                         key={index}
-                        style={{ height: monthHeight, padding: '0.5rem' }}
-                        className="flex flex-col gap-1.5"
+                        className="flex flex-col w-full h-screen"
                     >
                         <MonthGrid monthType={type} />
                     </div>

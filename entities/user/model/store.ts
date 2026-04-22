@@ -17,11 +17,15 @@ type UserState = {
     logout: () => void;
 };
 
+// Простая обертка над sessionStorage для консистентности (так как в TMA обычно используется session или cloud)
+// Но по запросу используем session-ориентированное поведение для deviceStorage
+const storage = typeof window !== 'undefined' ? window.sessionStorage : null;
+
 export const useUserStore = create<UserState>((set, get) => ({
     user: null,
     status: 'idle',
     isInitialized: false,
-    ownerId: typeof window !== 'undefined' ? localStorage.getItem('ownerId') : null,
+    ownerId: storage ? storage.getItem('ownerId') : null,
     currentClaims: null,
 
     initialize: () => {
@@ -37,11 +41,11 @@ export const useUserStore = create<UserState>((set, get) => ({
     setOwnerId: (id: string | null) => {
         set({ownerId: id});
 
-        if (typeof window !== 'undefined') {
+        if (storage) {
             if (id !== null) {
-                localStorage.setItem('ownerId', id);
+                storage.setItem('ownerId', id);
             } else {
-                localStorage.removeItem('ownerId');
+                storage.removeItem('ownerId');
             }
         }
     },

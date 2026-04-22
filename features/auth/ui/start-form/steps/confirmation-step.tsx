@@ -7,6 +7,7 @@ import { useFormContext } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/shared/constants/routes';
 import { useTranslations } from 'next-intl';
+import { Check } from 'lucide-react';
 
 export const ConfirmationStep = ({
                                      onBack,
@@ -38,48 +39,53 @@ export const ConfirmationStep = ({
     const tzInfo = TIMEZONES.find(t => t.tz === values.timezone);
 
     return (
-        <div className="w-full mx-auto p-6 rounded-2xl">
-            <div className="flex flex-col items-center text-center space-y-4">
-                <div className="w-16 h-16 bg-tg-success-color rounded-full flex items-center justify-center">
-                    <span className="text-2xl text-white">✓</span>
-                </div>
-
-                <h2 className="text-tg-text-color">{t('start-form.confirmation-step.title')}</h2>
-
-                <div className="w-full bg-tg-bg-color rounded-xl p-4 space-y-3">
-                    <DataRow label={t('start-form.confirmation-step.fields.surname')} value={values.surname}/>
-                    <div className="divider"/>
-                    <DataRow label={t('start-form.confirmation-step.fields.name')} value={values.name}/>
-                    <div className="divider"/>
-                    <DataRow label={t('start-form.confirmation-step.fields.patronymic')} value={values.patronymic}/>
-                    <div className="divider"/>
-                    <DataRow
-                        label={t('start-form.confirmation-step.fields.timezone')}
-                        value={tzInfo ? `${tzInfo.label} (${getOffset(tzInfo.tz)})` : values.timezone}
-                    />
-                </div>
-
-                {values.timezone && (
-                    <div className="text-tg-hint-color text-sm mt-2">
-                        {t('start-form.confirmation-step.currentTime', {time: currentTime})}
+        <div className="w-full flex flex-col flex-1 min-h-0 overflow-hidden">
+            <div className="flex-1 overflow-y-auto no-scrollbar pr-1">
+                <div className="flex flex-col items-center text-center">
+                    <div className="w-14 h-14 bg-success/10 text-success rounded-2xl flex items-center justify-center mb-4 shrink-0">
+                        <Check size={32} strokeWidth={3} />
                     </div>
-                )}
 
-                <div className="text-tg-hint-color text-sm mt-2">
-                    {t('start-form.confirmation-step.description')}
-                </div>
+                    <h2 className="text-xl font-black tracking-tight mb-4 text-base-content/90">{t('start-form.confirmation-step.title')}</h2>
 
-                <div className="flex gap-3 w-full mt-4">
-                    <button onClick={onBack} className="btn btn-outline flex-1">{t('common.back')}</button>
-                    <button
-                        type="submit"
-                        onClick={handleClick}
-                        disabled={isSubmitting}
-                        className="btn btn-primary flex-1"
-                    >
-                        {isSubmitting ? t('start-form.confirmation-step.submitting') : t('start-form.confirmation-step.submit')}
-                    </button>
+                    <div className="w-full bg-base-200/40 rounded-[24px] p-4 space-y-2.5 border border-base-200/50">
+                        <DataRow label={t('start-form.confirmation-step.fields.surname')} value={values.surname}/>
+                        <DataRow label={t('start-form.confirmation-step.fields.name')} value={values.name}/>
+                        <DataRow label={t('start-form.confirmation-step.fields.patronymic')} value={values.patronymic}/>
+                        <div className="pt-1 mt-1 border-t border-base-200/50">
+                            <DataRow
+                                label={t('start-form.confirmation-step.fields.timezone')}
+                                value={tzInfo ? `${tzInfo.label} (${getOffset(tzInfo.tz)})` : values.timezone}
+                            />
+                        </div>
+                    </div>
+
+                    <div className="mt-4 px-2 space-y-2">
+                        <p className="text-[10px] font-bold text-base-content/40 uppercase tracking-widest leading-relaxed">
+                            {t('start-form.confirmation-step.currentTime', {time: currentTime})}
+                        </p>
+                        <p className="text-[10px] font-medium text-base-content/25 leading-relaxed">
+                            {t('start-form.confirmation-step.description')}
+                        </p>
+                    </div>
                 </div>
+            </div>
+
+            <div className="mt-4 flex gap-3 pb-2 shrink-0">
+                <button 
+                    type="button" 
+                    onClick={onBack} 
+                    className="h-14 flex-1 rounded-2xl bg-base-200 text-base-content/60 font-black uppercase tracking-widest text-xs active:scale-95 transition-all"
+                >
+                    {t('common.back')}
+                </button>
+                <button
+                    onClick={handleClick}
+                    disabled={isSubmitting}
+                    className="h-14 flex-1 rounded-2xl bg-primary text-primary-content font-black uppercase tracking-widest text-xs shadow-lg shadow-primary/20 active:scale-95 transition-all disabled:opacity-50"
+                >
+                    {isSubmitting ? t('start-form.confirmation-step.submitting') : t('start-form.confirmation-step.submit')}
+                </button>
             </div>
         </div>
     );
@@ -88,9 +94,9 @@ export const ConfirmationStep = ({
 const DataRow = ({label, value}: { label: string; value?: string }) => {
     const t = useTranslations();
     return (
-        <div className="flex justify-between">
-            <div className="text-tg-hint-color">{label}:</div>
-            <div className="text-tg-text-color font-medium">{value || t('start-form.confirmation-step.fields.notSpecified')}</div>
+        <div className="flex justify-between items-center gap-4 py-0.5">
+            <div className="text-[10px] font-black uppercase tracking-widest text-base-content/20">{label}</div>
+            <div className="text-sm font-bold text-base-content/80 truncate">{value || t('start-form.confirmation-step.fields.notSpecified')}</div>
         </div>
     );
 };

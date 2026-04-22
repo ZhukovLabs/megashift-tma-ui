@@ -1,8 +1,8 @@
 "use client";
 
 import {useRouter, useSearchParams} from "next/navigation";
+import {useTranslations} from "next-intl";
 import {formatInTimeZone} from "date-fns-tz";
-import {useTranslations} from 'next-intl';
 import {BaseShiftModal, ShiftFormValues} from "./base-shift-modal";
 import {useUpdateShiftTemplate, useGetShiftTemplate} from "@/features/shift-template/api";
 import {useUserStore} from "@/entities/user";
@@ -42,8 +42,8 @@ export function UpdateShiftModal() {
     return (
         <BaseShiftModal
             isOpen={isOpen}
-            title={t('edit.title')}
-            submitLabel={t('edit.submitLabel')}
+            title={t('edit')}
+            submitLabel={t('save')}
             initialValues={initialValues}
             isLoading={isLoading}
             isPending={isPending}

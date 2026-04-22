@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import {useTranslations} from "next-intl";
 import {
     User,
     CalendarCog,
@@ -9,74 +10,90 @@ import {
     Users,
     AppWindow
 } from "lucide-react";
-import {useTranslations} from 'next-intl';
 import {ROUTES} from "@/shared/constants/routes";
+import {motion} from "framer-motion";
+import cn from "classnames";
 
 export function SettingsPage() {
-    const t = useTranslations('settings');
+    const t = useTranslations('settings.main');
+    const tProfile = useTranslations('settings.profile');
+    const tCalendar = useTranslations('settings.calendar');
+    const tApp = useTranslations('settings.app');
+    const tCompensation = useTranslations('settings.compensation');
 
     const settingsSections = [
         {
-            title: t('sections.account'),
+            title: t('account'),
             items: [
                 {
-                    label: t('items.profile.label'),
-                    description: t('items.profile.description'),
-                    href: ROUTES.settingsProfile,
+                    label: tProfile('title'),
+                    description: t('profileDesc'),
                     icon: User,
+                    href: ROUTES.settingsProfile,
                 },
                 {
-                    label: t('items.sharedAccess.label'),
-                    description: t('items.sharedAccess.description'),
-                    href: ROUTES.settingsSharedAccess,
+                    label: t('sharedAccess'),
+                    description: t('sharedAccessDesc'),
                     icon: Users,
+                    href: ROUTES.settingsSharedAccess,
                 },
                 {
-                    label: t('items.calendar.label'),
-                    description: t('items.calendar.description'),
-                    href: ROUTES.settingsCalendar,
+                    label: tCalendar('title'),
+                    description: t('calendarDesc'),
                     icon: CalendarCog,
+                    href: ROUTES.settingsCalendar,
                 },
             ],
         },
         {
-            title: t('sections.app'),
+            title: t('app'),
             items: [
                 {
-                    label: t('items.appSettings.label'),
-                    description: t('items.appSettings.description'),
-                    href: ROUTES.settingsApp,
+                    label: tApp('title'),
+                    description: t('appDesc'),
                     icon: AppWindow,
+                    href: ROUTES.settingsApp,
                 },
             ],
         },
         {
-            title: t('sections.work'),
+            title: t('work'),
             items: [
                 {
-                    label: t('items.compensation.label'),
-                    description: t('items.compensation.description'),
-                    href: ROUTES.settingsCompensation,
+                    label: tCompensation('title'),
+                    description: t('compensationDesc'),
                     icon: Wallet,
+                    href: ROUTES.settingsCompensation,
                 }
             ],
         }
     ];
 
     return (
-        <div className="flex flex-col">
-            <h1 className="text-center text-2xl font-bold tracking-tight text-base-content">
-                {t('title')}
-            </h1>
+        <div className="flex flex-col items-center w-full min-h-full bg-base-100">
+            <header className="w-full pt-3 pb-5 px-6 sticky top-0 z-30 bg-base-100/80 backdrop-blur-md border-b border-base-200/50 mb-6">
+                <div className="flex flex-col items-center justify-center max-w-xl mx-auto text-center">
+                    <h1 className="text-3xl font-black tracking-tight text-base-content leading-none">
+                        {t('title')}
+                    </h1>
+                    <p className="text-[9px] font-black uppercase tracking-[0.2em] text-base-content/20 mt-2 leading-none">
+                        {t('subtitle')}
+                    </p>
+                </div>
+            </header>
 
-            <div className="space-y-6 mt-6">
+            <main className="w-full px-4 max-w-xl mx-auto space-y-8 pb-32">
                 {settingsSections.map((section) => (
-                    <div key={section.title}>
-                        <h2 className="mb-2 px-2 text-sm font-semibold uppercase text-base-content/60">
+                    <motion.div 
+                        key={section.title}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                    >
+                        <h2 className="mb-3 px-2 text-[10px] font-black uppercase tracking-widest text-base-content/30">
                             {section.title}
                         </h2>
 
-                        <div className="rounded-2xl bg-base-100 shadow">
+                        <div className="rounded-[32px] bg-base-100 border border-base-200 overflow-hidden shadow-[0_4px_20px_rgba(0,0,0,0.02)]">
                             {section.items.map((item, index) => {
                                 const Icon = item.icon;
 
@@ -84,36 +101,36 @@ export function SettingsPage() {
                                     <Link
                                         key={item.label}
                                         href={item.href}
-                                        className={`
-                                          flex items-center gap-4 px-4 py-4 active:bg-base-200
-                                          ${index !== section.items.length - 1 ? "border-b border-base-200" : ""}
-                                        `}
+                                        className={cn(
+                                            "flex items-center gap-4 px-5 py-4 active:bg-base-200/50 transition-colors group",
+                                            index !== section.items.length - 1 ? "border-b border-base-200/50" : ""
+                                        )}
                                     >
                                         <div
-                                            className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                                            <Icon size={20}/>
+                                            className="flex h-12 w-12 items-center justify-center rounded-[18px] bg-base-200/50 text-base-content/40 group-active:text-primary transition-colors">
+                                            <Icon size={22} strokeWidth={2.5}/>
                                         </div>
 
-                                        <div className="flex flex-1 flex-col">
-                                            <span className="text-base font-medium text-base-content">
+                                        <div className="flex flex-1 flex-col min-w-0">
+                                            <span className="text-base font-bold text-base-content/90 truncate">
                                                 {item.label}
                                             </span>
-                                            <span className="text-sm text-base-content/60">
+                                            <span className="text-[11px] font-medium text-base-content/35 truncate uppercase tracking-tight">
                                                 {item.description}
                                             </span>
                                         </div>
 
                                         <ChevronRight
                                             size={18}
-                                            className="text-base-content/40"
+                                            className="text-base-content/15 group-hover:text-primary transition-colors"
                                         />
                                     </Link>
                                 );
                             })}
                         </div>
-                    </div>
+                    </motion.div>
                 ))}
-            </div>
+            </main>
         </div>
     );
 }

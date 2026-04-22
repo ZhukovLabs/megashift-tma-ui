@@ -1,11 +1,37 @@
 'use client';
 
-import {createContext, useContext, ReactNode, useRef, useLayoutEffect, useState} from "react";
-import {addMonths, subMonths} from "date-fns";
-import { CELL_ROWS } from '@/features/schedule/model';
-import type { ShiftDto } from '@/features/shift/model';
+import {createContext, useContext, ReactNode, useCallback, useMemo} from "react";
+import {
+    addMonths,
+    subMonths,
+    format,
+    getDay,
+    startOfMonth,
+    endOfMonth,
+    eachDayOfInterval,
+    startOfWeek as startOfWeekFn,
+    endOfWeek as endOfWeekFn
+} from "date-fns";
+import type {ShiftDto} from '@/features/shift/model';
 
 export type CalendarEvent = ShiftDto;
+
+export type Holiday = {
+    date: Date;
+    name?: string;
+    type?: 'holiday' | 'celebration';
+};
+
+export type WeekendHighlight = 'none' | 'background' | 'text' | 'both';
+
+export type ScheduleProps = {
+    showWeekends?: boolean;
+    weekendHighlight?: WeekendHighlight;
+    startOfWeek?: 0 | 1 | 2 | 3 | 4 | 5 | 6;
+    holidays?: Holiday[];
+    highlightToday?: boolean;
+    showWeekNumbers?: boolean;
+};
 
 type ScheduleContextType = {
     currentDate: Date;
@@ -13,10 +39,12 @@ type ScheduleContextType = {
     nextDate: Date;
     nextMonth: VoidFunction;
     prevMonth: VoidFunction;
-    monthHeight: number;
-    cellHeight: number;
     shifts: CalendarEvent[];
     onDayClick?: (day: Date, events: CalendarEvent[]) => void;
+    config: ScheduleProps;
+    isHoliday: (day: Date) => Holiday | undefined;
+    isWeekend: (day: Date) => boolean;
+    getCalendarDays: (monthDate: Date) => Date[];
 };
 
 type ScheduleProviderProps = {
@@ -25,9 +53,31 @@ type ScheduleProviderProps = {
     onDateChange: (date: Date) => void;
     shifts?: CalendarEvent[];
     onDayClick?: (day: Date, events: CalendarEvent[]) => void;
-};
+} & ScheduleProps;
 
 const ScheduleContext = createContext<ScheduleContextType | undefined>(undefined);
+
+const DEFAULT_PROPS: ScheduleProps = {
+    showWeekends: true,
+    weekendHighlight: 'background',
+    startOfWeek: 1,
+    holidays: [
+        {date: new Date(2026, 2, 8), name: 'Women\' Day', type: 'holiday'}
+    ],
+    highlightToday: true,
+    showWeekNumbers: false,
+};
+
+const DAY_NAMES = ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"];
+
+export const getDayNames = (startOfWeek: 0 | 1 | 2 | 3 | 4 | 5 | 6) => {
+    const result = [];
+    for (let i = 0; i < 7; i++) {
+        const idx = (startOfWeek + i) % 7;
+        result.push(DAY_NAMES[idx]);
+    }
+    return result;
+};
 
 export const ScheduleProvider = ({
                                      children,
@@ -35,35 +85,51 @@ export const ScheduleProvider = ({
                                      onDateChange,
                                      shifts = [],
                                      onDayClick,
+                                     showWeekends = DEFAULT_PROPS.showWeekends,
+                                     weekendHighlight = DEFAULT_PROPS.weekendHighlight,
+                                     startOfWeek = DEFAULT_PROPS.startOfWeek,
+                                     holidays = DEFAULT_PROPS.holidays,
+                                     highlightToday = DEFAULT_PROPS.highlightToday,
+                                     showWeekNumbers = DEFAULT_PROPS.showWeekNumbers,
                                  }: ScheduleProviderProps) => {
-    const [monthHeight, setMonthHeight] = useState(0);
-    const [cellHeight, setCellHeight] = useState(0);
-    const viewportRef = useRef<HTMLDivElement>(null);
 
-    const nextMonth = () => onDateChange(addMonths(currentDate, 1));
-    const prevMonth = () => onDateChange(subMonths(currentDate, 1));
+    const config = useMemo(() => ({
+        showWeekends,
+        weekendHighlight,
+        startOfWeek,
+        holidays,
+        highlightToday,
+        showWeekNumbers,
+    }), [showWeekends, weekendHighlight, startOfWeek, holidays, highlightToday, showWeekNumbers]);
 
-    const prevDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
-    const nextDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1);
+    const nextMonth = useCallback(() => onDateChange(addMonths(currentDate, 1)), [currentDate, onDateChange]);
+    const prevMonth = useCallback(() => onDateChange(subMonths(currentDate, 1)), [currentDate, onDateChange]);
 
-    useLayoutEffect(() => {
-        const measure = () => {
-            if (!viewportRef.current) return;
-            const style = getComputedStyle(viewportRef.current);
-            const paddingTop = parseInt(style.paddingTop) || 0;
-            const paddingBottom = parseInt(style.paddingBottom) || 0;
-            const gap = 37;
-            const totalGap = gap * (CELL_ROWS - 1);
-            const totalHeight = viewportRef.current.clientHeight - paddingTop - paddingBottom - totalGap;
+    const prevDate = useMemo(() => new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1), [currentDate]);
+    const nextDate = useMemo(() => new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1), [currentDate]);
 
-            setMonthHeight(viewportRef.current.clientHeight);
-            setCellHeight(Math.floor(totalHeight / CELL_ROWS));
-        };
+    const isHoliday = useCallback((day: Date) => {
+        const dayStr = format(day, 'yyyy-MM-dd');
+        return (holidays || []).find(h => {
+            return format(h.date, 'yyyy-MM-dd') === dayStr;
+        });
+    }, [holidays]);
 
-        measure();
-        window.addEventListener("resize", measure);
-        return () => window.removeEventListener("resize", measure);
+    const isWeekend = useCallback((day: Date) => {
+        const dayOfWeek = getDay(day);
+        return dayOfWeek === 0 || dayOfWeek === 6;
     }, []);
+
+    const getCalendarDays = useCallback((monthDate: Date): Date[] => {
+        const monthStart = startOfMonth(monthDate);
+        const weekStart = config.startOfWeek ?? 1;
+        const calendarStart = startOfWeekFn(monthStart, {weekStartsOn: weekStart});
+
+        const calendarEnd = new Date(calendarStart);
+        calendarEnd.setDate(calendarEnd.getDate() + 41);
+
+        return eachDayOfInterval({start: calendarStart, end: calendarEnd});
+    }, [config.startOfWeek]);
 
     return (
         <ScheduleContext.Provider
@@ -73,13 +139,15 @@ export const ScheduleProvider = ({
                 nextDate,
                 nextMonth,
                 prevMonth,
-                monthHeight,
-                cellHeight,
                 shifts,
                 onDayClick,
+                config,
+                isHoliday,
+                isWeekend,
+                getCalendarDays,
             }}
         >
-            <div ref={viewportRef} className="flex-1">{children}</div>
+            {children}
         </ScheduleContext.Provider>
     );
 };

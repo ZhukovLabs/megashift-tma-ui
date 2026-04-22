@@ -1,24 +1,36 @@
-'use client';
-
-import {Plus} from "lucide-react";
-import {useTranslations} from 'next-intl';
+import {Plus, ClipboardList} from "lucide-react";
+import {useTranslations} from "next-intl";
+import {motion} from "framer-motion";
 
 export const EmptyState = ({onCreateClick}: { onCreateClick?: VoidFunction }) => {
     const t = useTranslations('shifts');
 
     return (
-        <div className="flex flex-col items-center gap-4 py-10">
-            <p className="px-4 text-center text-base-content/60">
-                {t('emptyState')}
-            </p>
+        <motion.div 
+            initial={{opacity: 0, scale: 0.9}}
+            animate={{opacity: 1, scale: 1}}
+            className="flex flex-col items-center justify-center gap-6 py-20 px-6 bg-base-200/20 rounded-[40px] border-2 border-dashed border-base-300/50 mt-4"
+        >
+            <div className="w-20 h-20 rounded-[30px] bg-primary/10 flex items-center justify-center text-primary/40 relative">
+                <ClipboardList size={40} strokeWidth={1.5} />
+                <div className="absolute -bottom-2 -right-2 w-8 h-8 rounded-full bg-base-100 flex items-center justify-center shadow-lg text-primary">
+                    <Plus size={16} strokeWidth={3} />
+                </div>
+            </div>
+
+            <div className="flex flex-col gap-2 items-center">
+                <h3 className="text-xl font-black text-base-content/80">{t('noShifts')}</h3>
+                <p className="text-center text-sm font-medium text-base-content/40 max-w-[220px] leading-relaxed">
+                    {t('createFirst')}
+                </p>
+            </div>
 
             <button
                 onClick={onCreateClick}
-                aria-label={t('addButton')}
-                className="flex h-16 w-16 items-center justify-center rounded-full bg-primary text-primary-content shadow-md transition hover:shadow-lg"
+                className="btn btn-primary btn-wide rounded-2xl font-black uppercase tracking-widest shadow-lg shadow-primary/20 h-14"
             >
-                <Plus size={24} strokeWidth={2}/>
+                {t('addShift')}
             </button>
-        </div>
+        </motion.div>
     );
-}
+};
