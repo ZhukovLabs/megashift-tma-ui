@@ -17,10 +17,12 @@ export default function RootPage() {
     const {user, isFetching, isError} = useSyncRegisteredUser();
     const initialize = useUserStore((s) => s.initialize);
     const loadOwnerId = useUserStore((s) => s.loadOwnerId);
+    const loadCurrentClaims = useUserStore((s) => s.loadCurrentClaims);
 
     useEffect(() => {
         initialize();
         loadOwnerId();
+        loadCurrentClaims();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 

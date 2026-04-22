@@ -32,17 +32,25 @@ export function CalendarSettingsPage() {
     }, [userId, accessData, t]);
 
     const selectedUserId = useMemo(() => {
+        // If data is still loading, trust ownerId if it's set
+        if (isLoading) {
+            return ownerId || userId;
+        }
+        // After data is loaded, validate ownerId against accessibleUsers
         const ownerIsValid = ownerId && accessibleUsers.some((u) => u.id === ownerId);
         return ownerIsValid ? ownerId : userId;
-    }, [ownerId, accessibleUsers, userId]);
+    }, [ownerId, accessibleUsers, userId, isLoading]);
 
     useEffect(() => {
+        // Only validate ownerId after data is loaded (not during loading)
+        if (isLoading) return;
+
         const ownerIsValid = ownerId && accessibleUsers.some((u) => u.id === ownerId);
         const desiredOwner = ownerIsValid ? ownerId : userId;
         if (ownerId !== desiredOwner) {
             setOwnerId(desiredOwner);
         }
-    }, [ownerId, accessibleUsers, userId, setOwnerId]);
+    }, [ownerId, accessibleUsers, userId, setOwnerId, isLoading]);
 
     const selectedUser = useMemo(
         () => accessibleUsers.find((u) => u.id === selectedUserId),
@@ -50,13 +58,14 @@ export function CalendarSettingsPage() {
     );
 
     useEffect(() => {
-        if (!selectedUser) return;
+        // Don't update claims while data is loading to avoid overwriting persisted claims
+        if (isLoading || !selectedUser) return;
         if (selectedUser.id === userId) {
             setCurrentClaims(null);
         } else {
             setCurrentClaims(selectedUser.claims);
         }
-    }, [selectedUser, userId, setCurrentClaims]);
+    }, [selectedUser, userId, setCurrentClaims, isLoading]);
 
     const handleSelect = (id: string) => {
         setOwnerId(id);

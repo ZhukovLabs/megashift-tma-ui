@@ -12,6 +12,7 @@ type UserState = {
 
     initialize: () => void;
     loadOwnerId: () => Promise<void>;
+    loadCurrentClaims: () => Promise<void>;
     setUser: (user: User) => void;
     setOwnerId: (id: string | null) => void;
     setCurrentClaims: (claims: (keyof typeof AccessClaim)[] | null) => void,
@@ -43,7 +44,31 @@ export const useUserStore = create<UserState>((set, get) => ({
         }
     },
 
-    setCurrentClaims: (claims: (keyof typeof AccessClaim)[] | null) => set({currentClaims: claims}),
+    loadCurrentClaims: async () => {
+        try {
+            const savedClaims = await deviceStorage.get('currentClaims');
+            if (savedClaims) {
+                const parsedClaims = JSON.parse(savedClaims) as (keyof typeof AccessClaim)[];
+                set({currentClaims: parsedClaims});
+            }
+        } catch (e) {
+            console.error('Failed to load currentClaims from deviceStorage', e);
+        }
+    },
+
+    setCurrentClaims: (claims: (keyof typeof AccessClaim)[] | null) => {
+        set({currentClaims: claims});
+
+        if (claims !== null) {
+            deviceStorage.set('currentClaims', JSON.stringify(claims)).catch((e) => {
+                console.error('Failed to save currentClaims to deviceStorage', e);
+            });
+        } else {
+            deviceStorage.set('currentClaims', null).catch((e) => {
+                console.error('Failed to remove currentClaims from deviceStorage', e);
+            });
+        }
+    },
 
     setUser: (user) => set({user, status: 'authenticated', isInitialized: true}),
 
@@ -62,7 +87,15 @@ export const useUserStore = create<UserState>((set, get) => ({
     },
 
     setUnauthenticated: () => set({user: null, status: 'unauthenticated', isInitialized: true, ownerId: null}),
-    logout: () => set({user: null, status: 'unauthenticated', isInitialized: true, ownerId: null}),
+    logout: () => {
+        deviceStorage.set('ownerId', null).catch((e) => {
+            console.error('Failed to remove ownerId from deviceStorage on logout', e);
+        });
+        deviceStorage.set('currentClaims', null).catch((e) => {
+            console.error('Failed to remove currentClaims from deviceStorage on logout', e);
+        });
+        set({user: null, status: 'unauthenticated', isInitialized: true, ownerId: null, currentClaims: null});
+    },
 }));
 
 export type AuthStatus = 'idle' | 'initializing' | 'authenticated' | 'unauthenticated';

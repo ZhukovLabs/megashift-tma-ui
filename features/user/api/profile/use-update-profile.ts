@@ -20,8 +20,15 @@ export const useUpdateProfile = () => {
             return data;
         },
 
-        onSuccess: (data) => {
+        onSuccess: (data, variables) => {
             queryClient.setQueryData(['profile'], data);
+
+            // Invalidate shifts and shift templates when timezone changes
+            // as they depend on timezone for proper display
+            if (variables.timezone !== undefined) {
+                queryClient.invalidateQueries({ queryKey: ['month-shifts'] });
+                queryClient.invalidateQueries({ queryKey: ['shift-templates'] });
+            }
         },
     });
 };
