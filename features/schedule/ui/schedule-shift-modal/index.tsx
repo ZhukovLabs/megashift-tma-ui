@@ -82,7 +82,7 @@ export const ShiftModal = () => {
         >
             <div className="flex flex-col gap-2">
                 {isAnyFetching ? (
-                    <LoaderLarge text={t('common.loading')}/>
+                    <LoaderLarge />
                 ) : (
                     <>
                         {enhancedShifts.length === 0 ? (
