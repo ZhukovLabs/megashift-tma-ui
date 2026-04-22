@@ -3,6 +3,7 @@ import {calculatePercentage} from "../../model/calculate-percentage";
 import {motion, AnimatePresence} from "framer-motion";
 import {CheckCircle2} from "lucide-react";
 import cn from "classnames";
+import {useTranslations} from "next-intl";
 
 type Props = {
     item: StatisticItem;
@@ -12,6 +13,7 @@ type Props = {
 };
 
 export const StatisticsRow = ({ item, total, formatNumber, onToggle }: Props) => {
+    const t = useTranslations('statistics');
     const pct = calculatePercentage(item.value, total);
     const color = item.color || "#3b82f6";
 
@@ -46,7 +48,7 @@ export const StatisticsRow = ({ item, total, formatNumber, onToggle }: Props) =>
                             {item.label}
                         </span>
                         <span className="text-[9px] font-black uppercase tracking-[0.2em] text-base-content/25">
-                            Category stats
+                            {t('categoryStats')}
                         </span>
                     </div>
                 </div>

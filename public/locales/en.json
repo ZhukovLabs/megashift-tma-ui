@@ -168,6 +168,7 @@
     "filterDescription": "Select shift templates to include in calculation.",
     "salary": "Salary",
     "changeFilter": "Change filter",
+    "categoryStats": "Category stats",
     "salaryTypes": {
       "HOURLY": "Hourly",
       "SHIFT": "Per Shift",
@@ -220,6 +221,7 @@
     "start": "Start",
     "end": "End",
     "createButton": "Create",
+    "edit": "Edit shift",
     "save": "Save",
     "templateLabel": "Template",
     "workInterval": "Work hours"
@@ -302,7 +304,10 @@
     "myCalendar": "my calendar",
     "loading": "Loading calendars...",
     "unsubscribing": "Unsubscribing...",
-    "unsubscribeLabel": "Unsubscribe from calendar"
+    "unsubscribeLabel": "Unsubscribe from calendar",
+    "prevMonth": "Previous month",
+    "currentMonth": "Current month",
+    "nextMonth": "Next month"
   },
   "start-form": {
     "welcome-step": {

@@ -168,6 +168,7 @@
     "filterDescription": "Выберите шаблоны смен, которые должны участвовать в расчете.",
     "salary": "Зарплата",
     "changeFilter": "Изменить фильтр",
+    "categoryStats": "Статистика категории",
     "salaryTypes": {
       "HOURLY": "Почасовая",
       "SHIFT": "Посменная",
@@ -220,6 +221,7 @@
     "start": "Начало",
     "end": "Конец",
     "createButton": "Создать",
+    "edit": "Редактировать смену",
     "save": "Сохранить",
     "templateLabel": "Шаблон",
     "workInterval": "Рабочее время"
@@ -302,7 +304,10 @@
     "myCalendar": "мой календарь",
     "loading": "Загрузка календарей...",
     "unsubscribing": "Отписываемся...",
-    "unsubscribeLabel": "Отписаться от календаря"
+    "unsubscribeLabel": "Отписаться от календаря",
+    "prevMonth": "Предыдущий месяц",
+    "currentMonth": "Текущий месяц",
+    "nextMonth": "Следующий месяц"
   },
   "start-form": {
     "welcome-step": {

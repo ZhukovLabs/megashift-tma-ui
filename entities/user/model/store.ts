@@ -1,6 +1,7 @@
 import { AccessClaim } from '@/entities/access';
 import {create} from "zustand/index";
 import {User} from "./types";
+import { deviceStorage } from '@/shared/lib/device-storage';
 
 type UserState = {
     user: User | null;
@@ -10,6 +11,7 @@ type UserState = {
     currentClaims: (keyof typeof AccessClaim)[] | null;
 
     initialize: () => void;
+    loadOwnerId: () => Promise<void>;
     setUser: (user: User) => void;
     setOwnerId: (id: string | null) => void;
     setCurrentClaims: (claims: (keyof typeof AccessClaim)[] | null) => void,
@@ -17,20 +19,27 @@ type UserState = {
     logout: () => void;
 };
 
-// Простая обертка над sessionStorage для консистентности (так как в TMA обычно используется session или cloud)
-// Но по запросу используем session-ориентированное поведение для deviceStorage
-const storage = typeof window !== 'undefined' ? window.sessionStorage : null;
-
 export const useUserStore = create<UserState>((set, get) => ({
     user: null,
     status: 'idle',
     isInitialized: false,
-    ownerId: storage ? storage.getItem('ownerId') : null,
+    ownerId: null,
     currentClaims: null,
 
     initialize: () => {
         if (!get().isInitialized && get().status !== 'initializing') {
             set({status: 'initializing', isInitialized: false});
+        }
+    },
+
+    loadOwnerId: async () => {
+        try {
+            const savedOwnerId = await deviceStorage.get('ownerId');
+            if (savedOwnerId) {
+                set({ownerId: savedOwnerId});
+            }
+        } catch (e) {
+            console.error('Failed to load ownerId from deviceStorage', e);
         }
     },
 
@@ -41,12 +50,14 @@ export const useUserStore = create<UserState>((set, get) => ({
     setOwnerId: (id: string | null) => {
         set({ownerId: id});
 
-        if (storage) {
-            if (id !== null) {
-                storage.setItem('ownerId', id);
-            } else {
-                storage.removeItem('ownerId');
-            }
+        if (id !== null) {
+            deviceStorage.set('ownerId', id).catch((e) => {
+                console.error('Failed to save ownerId to deviceStorage', e);
+            });
+        } else {
+            deviceStorage.set('ownerId', null).catch((e) => {
+                console.error('Failed to remove ownerId from deviceStorage', e);
+            });
         }
     },
 

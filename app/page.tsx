@@ -16,9 +16,11 @@ export default function RootPage() {
 
     const {user, isFetching, isError} = useSyncRegisteredUser();
     const initialize = useUserStore((s) => s.initialize);
+    const loadOwnerId = useUserStore((s) => s.loadOwnerId);
 
     useEffect(() => {
         initialize();
+        loadOwnerId();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
